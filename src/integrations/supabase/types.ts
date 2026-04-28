@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          customer_phone: string | null
+          id: string
+          items: Json
+          notes: string | null
+          payment_method: string
+          payment_status: string
+          pickup_slot_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          subtotal_cents: number
+          total_cents: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          customer_phone?: string | null
+          id?: string
+          items: Json
+          notes?: string | null
+          payment_method: string
+          payment_status?: string
+          pickup_slot_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          subtotal_cents: number
+          total_cents: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          payment_method?: string
+          payment_status?: string
+          pickup_slot_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          subtotal_cents?: number
+          total_cents?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_pickup_slot_id_fkey"
+            columns: ["pickup_slot_id"]
+            isOneToOne: false
+            referencedRelation: "pickup_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pickup_slots: {
         Row: {
           capacity: number
