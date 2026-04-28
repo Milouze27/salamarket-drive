@@ -25,7 +25,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    toast("Tunnel de commande disponible bientôt — Bloc 2 en cours");
+    navigate("/creneaux");
   };
 
   return (
