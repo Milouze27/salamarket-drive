@@ -74,13 +74,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // 2) Récupère la session existante (UNE seule fois, au mount)
     supabase.auth
       .getSession()
-      .then(({ data: { session: current } }) => {
+      .then(async ({ data: { session: current } }) => {
         if (!mounted) return;
         setSession(current);
         setUser(current?.user ?? null);
         if (current?.user) {
-          // Fire profile fetch in background — ne bloque pas `loading`
-          fetchProfile(current.user.id);
+          await fetchProfile(current.user.id);
         }
       })
       .finally(() => {
@@ -129,7 +128,7 @@ const FALLBACK_AUTH: AuthContextValue = {
   user: null,
   session: null,
   profile: null,
-  loading: false,
+  loading: true,
   signUp: async () => {
     throw new Error("AuthProvider non monté");
   },
