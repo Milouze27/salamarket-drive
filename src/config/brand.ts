@@ -1,0 +1,30 @@
+export const BRAND = {
+  name: "Salamarket Drive",
+  tagline: "Votre supermarché halal en click & collect",
+  store: {
+    name: "Salamarket Larrieu-Thibaud",
+    city: "Toulouse",
+    pickupOnly: true,
+  },
+  colors: {
+    primary: "#0F4C3A",
+    accent: "#D4A574",
+    bg: "#FAFAF7",
+    text: "#1A1A1A",
+    muted: "#6B6B6B",
+    border: "#E5E5E0",
+  },
+  font: "Manrope",
+  categories: [
+    { slug: "boucherie", name: "Boucherie", emoji: "🥩" },
+    { slug: "charcuterie", name: "Charcuterie", emoji: "🌭" },
+    { slug: "epicerie", name: "Épicerie", emoji: "🫙" },
+    { slug: "frais", name: "Frais", emoji: "🧀" },
+    { slug: "surgele", name: "Surgelé", emoji: "🧊" },
+    { slug: "fruits-legumes", name: "Fruits & Légumes", emoji: "🥬" },
+    { slug: "boissons", name: "Boissons", emoji: "🥤" },
+    { slug: "bazar", name: "Bazar", emoji: "🧴" },
+  ],
+} as const;
+
+export type Category = (typeof BRAND.categories)[number];
