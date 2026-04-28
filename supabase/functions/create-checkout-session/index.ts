@@ -1,17 +1,12 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import Stripe from "https://esm.sh/stripe@16.12.0?target=deno";
+import Stripe from "https://esm.sh/stripe@18?target=denonext";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-  apiVersion: "2024-09-30.acacia",
-  httpClient: Stripe.createFetchHttpClient(),
-});
 
 const SITE_URL = Deno.env.get("SITE_URL") ?? "http://localhost:5173";
 
@@ -29,6 +24,11 @@ interface Payload {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+    apiVersion: "2024-11-20.acacia",
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   let reservedSlotId: string | null = null;
   let createdOrderId: string | null = null;
