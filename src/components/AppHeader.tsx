@@ -56,7 +56,12 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
           )}
         </div>
         <div className="flex items-center gap-1">
-          {user && (
+          {loading ? (
+            <div
+              aria-hidden
+              className="w-9 h-9 rounded-full bg-accent/30 animate-pulse"
+            />
+          ) : user ? (
             <button
               onClick={() => navigate("/compte")}
               aria-label="Mon compte"
@@ -64,7 +69,7 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
             >
               {initials}
             </button>
-          )}
+          ) : null}
           <button
             onClick={() => navigate("/panier")}
             aria-label="Voir le panier"
