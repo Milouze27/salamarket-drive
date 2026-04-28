@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      pickup_slots: {
+        Row: {
+          capacity: number
+          created_at: string
+          id: string
+          reserved_count: number
+          slot_end: string
+          slot_start: string
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          reserved_count?: number
+          slot_end: string
+          slot_start: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          reserved_count?: number
+          slot_end?: string
+          slot_start?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
