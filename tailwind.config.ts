@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { BRAND } from "./src/config/brand";
 
 export default {
   darkMode: ["class"],
@@ -13,15 +14,29 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        manrope: ["Manrope", "system-ui", "sans-serif"],
+        sans: ["Manrope", "system-ui", "sans-serif"],
+      },
       colors: {
-        border: "hsl(var(--border))",
+        border: BRAND.colors.border,
         input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        ring: BRAND.colors.primary,
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        bg: BRAND.colors.bg,
+        text: BRAND.colors.text,
+        muted: {
+          DEFAULT: BRAND.colors.muted,
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: BRAND.colors.accent,
+          foreground: "#FFFFFF",
+        },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: BRAND.colors.primary,
+          foreground: "#FFFFFF",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
