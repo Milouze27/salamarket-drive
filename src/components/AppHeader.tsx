@@ -2,15 +2,29 @@ import { ShoppingBag, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BRAND } from "@/config/brand";
 import { useCartStore } from "@/stores/cartStore";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
   showBack?: boolean;
   title?: string;
 }
 
+function getInitials(name?: string | null, email?: string | null) {
+  const source = (name?.trim() || email?.trim() || "").trim();
+  if (!source) return "?";
+  const parts = source.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return source.slice(0, 2).toUpperCase();
+}
+
 export const AppHeader = ({ showBack = false, title }: Props) => {
   const navigate = useNavigate();
   const count = useCartStore((s) => s.items.reduce((n, i) => n + i.quantity, 0));
+  const { user, profile } = useAuth();
+
+  const initials = getInitials(profile?.full_name, user?.email);
 
   return (
     <header className="sticky top-0 z-40 bg-bg/95 backdrop-blur border-b border-border">
@@ -41,18 +55,29 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
             </h1>
           )}
         </div>
-        <button
-          onClick={() => navigate("/panier")}
-          aria-label="Voir le panier"
-          className="relative p-2 -mr-2 text-text"
-        >
-          <ShoppingBag size={24} />
-          {count > 0 && (
-            <span className="absolute top-0 right-0 min-w-[20px] h-5 px-1 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center">
-              {count}
-            </span>
+        <div className="flex items-center gap-1">
+          {user && (
+            <button
+              onClick={() => navigate("/compte")}
+              aria-label="Mon compte"
+              className="w-9 h-9 rounded-full bg-accent text-primary text-xs font-bold flex items-center justify-center"
+            >
+              {initials}
+            </button>
           )}
-        </button>
+          <button
+            onClick={() => navigate("/panier")}
+            aria-label="Voir le panier"
+            className="relative p-2 -mr-2 text-text"
+          >
+            <ShoppingBag size={24} />
+            {count > 0 && (
+              <span className="absolute top-0 right-0 min-w-[20px] h-5 px-1 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
