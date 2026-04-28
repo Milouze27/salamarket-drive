@@ -88,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
     return () => {
+      mounted = false;
       sub.subscription.unsubscribe();
     };
   }, []);
