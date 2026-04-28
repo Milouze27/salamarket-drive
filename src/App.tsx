@@ -11,6 +11,7 @@ import ProductDetail from "./pages/ProductDetail.tsx";
 import Cart from "./pages/Cart.tsx";
 import Slots from "./pages/Slots.tsx";
 import Checkout from "./pages/Checkout.tsx";
+import OrderConfirmation from "./pages/OrderConfirmation.tsx";
 import Login from "./pages/Login.tsx";
 import Signup from "./pages/Signup.tsx";
 import Account from "./pages/Account.tsx";
@@ -37,6 +38,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Checkout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/commande/confirmee/:orderId"
+              element={
+                <ProtectedRoute>
+                  <OrderConfirmation />
                 </ProtectedRoute>
               }
             />
