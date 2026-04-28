@@ -22,7 +22,7 @@ function getInitials(name?: string | null, email?: string | null) {
 export const AppHeader = ({ showBack = false, title }: Props) => {
   const navigate = useNavigate();
   const count = useCartStore((s) => s.items.reduce((n, i) => n + i.quantity, 0));
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
 
   const initials = getInitials(profile?.full_name, user?.email);
 
