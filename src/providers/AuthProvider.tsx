@@ -54,8 +54,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    let mounted = true;
+
     // 1) Listener AVANT getSession (évite les race conditions)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (!mounted) return;
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
@@ -68,18 +71,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    // 2) Récupère la session existante
-    supabase.auth.getSession().then(({ data: { session: current } }) => {
-      setSession(current);
-      setUser(current?.user ?? null);
-      if (current?.user) {
-        fetchProfile(current.user.id).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
+    // 2) Récupère la session existante (UNE seule fois, au mount)
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: current } }) => {
+        if (!mounted) return;
+        setSession(current);
+        setUser(current?.user ?? null);
+        if (current?.user) {
+          // Fire profile fetch in background — ne bloque pas `loading`
+          fetchProfile(current.user.id);
+        }
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
 
     return () => {
+      mounted = false;
       sub.subscription.unsubscribe();
     };
   }, []);
