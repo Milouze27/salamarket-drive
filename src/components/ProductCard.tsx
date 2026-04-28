@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Product } from "@/types/product";
 import { formatPrice, unitLabel } from "@/lib/format";
 import { useCartStore } from "@/stores/cartStore";
@@ -9,17 +10,31 @@ interface Props {
 }
 
 export const ProductCard = ({ product }: Props) => {
+  const navigate = useNavigate();
   const addItem = useCartStore((s) => s.addItem);
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
     addItem(product);
     toast.success("Ajouté au panier", {
       description: product.name,
     });
   };
 
+  const handleOpen = () => {
+    navigate(`/produit/${product.id}`);
+  };
+
   return (
-    <div className="flex flex-col bg-white rounded-2xl border border-border overflow-hidden">
+    <div
+      onClick={handleOpen}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") handleOpen();
+      }}
+      className="flex flex-col bg-white rounded-2xl border border-border overflow-hidden cursor-pointer hover:border-primary/40 transition-colors text-left"
+    >
       <div className="aspect-square w-full bg-bg overflow-hidden">
         <img
           src={product.imageUrl}
