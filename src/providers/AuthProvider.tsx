@@ -116,8 +116,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const FALLBACK_AUTH: AuthContextValue = {
+  user: null,
+  session: null,
+  profile: null,
+  loading: false,
+  signUp: async () => {
+    throw new Error("AuthProvider non monté");
+  },
+  signIn: async () => {
+    throw new Error("AuthProvider non monté");
+  },
+  signOut: async () => {},
+};
+
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth doit être utilisé dans <AuthProvider>");
-  return ctx;
+  return ctx ?? FALLBACK_AUTH;
 };
