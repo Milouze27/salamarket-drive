@@ -1,21 +1,36 @@
-import { useMemo, useState } from "react";
-import { Search, AlertCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, AlertCircle, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { CategoryPills } from "@/components/CategoryPills";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
 import { BRAND } from "@/config/brand";
+import { normalizeSearch } from "@/lib/search";
 
 const Index = () => {
   const [category, setCategory] = useState<string>("all");
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const { data: allProducts, isLoading, isError, error, refetch } = useProducts();
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput), 200);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   const products = useMemo(() => {
     if (!allProducts) return [];
-    if (category === "all") return allProducts;
-    return allProducts.filter((p) => p.category === category);
-  }, [allProducts, category]);
+    const term = normalizeSearch(debouncedSearch);
+    return allProducts.filter((p) => {
+      if (category !== "all" && p.category !== category) return false;
+      if (!term) return true;
+      const haystack = normalizeSearch(`${p.name} ${p.description ?? ""}`);
+      return haystack.includes(term);
+    });
+  }, [allProducts, category, debouncedSearch]);
+
+  const hasSearch = debouncedSearch.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-bg text-text flex flex-col">
@@ -30,9 +45,20 @@ const Index = () => {
           />
           <input
             type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Rechercher un produit..."
-            className="w-full h-11 pl-10 pr-4 rounded-full bg-white border border-border text-sm placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
+            className="w-full h-11 pl-10 pr-10 rounded-full bg-white border border-border text-sm placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
           />
+          {searchInput && (
+            <button
+              onClick={() => setSearchInput("")}
+              aria-label="Effacer la recherche"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-muted hover:bg-bg"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
 
         {/* Categories */}
@@ -71,6 +97,18 @@ const Index = () => {
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
+          </div>
+        ) : hasSearch ? (
+          <div className="text-center py-12 flex flex-col items-center gap-3">
+            <p className="text-muted">
+              Aucun produit ne correspond à «&nbsp;{debouncedSearch}&nbsp;»
+            </p>
+            <button
+              onClick={() => setSearchInput("")}
+              className="px-4 py-2 rounded-full bg-primary text-white text-sm font-medium"
+            >
+              Effacer la recherche
+            </button>
           </div>
         ) : (
           <div className="text-center text-muted py-12">
