@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import type { Product } from "@/data/mockProducts";
+import type { Product } from "@/types/product";
 import { formatPrice, unitLabel } from "@/lib/format";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";

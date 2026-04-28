@@ -1,4 +1,4 @@
-import type { ProductUnit } from "@/data/mockProducts";
+import type { ProductUnit } from "@/types/product";
 
 export const formatPrice = (cents: number) =>
   new Intl.NumberFormat("fr-FR", {
