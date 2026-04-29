@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { OnboardingGate } from "@/components/OnboardingGate";
 import Index from "./pages/Index.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
 import Cart from "./pages/Cart.tsx";
@@ -28,6 +30,8 @@ const App = () => (
       <ErrorBoundary>
         <BrowserRouter>
           <AuthProvider>
+            <OnboardingGate />
+            <InstallPrompt />
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/produit/:id" element={<ProductDetail />} />
