@@ -49,13 +49,14 @@ export const OnboardingFlow = () => {
     };
   }, [api]);
 
-  const finish = () => {
+  const handleComplete = () => {
     try {
       localStorage.setItem("onboarding_completed", "true");
     } catch {
       // ignore
     }
-    navigate("/");
+    window.dispatchEvent(new CustomEvent("onboarding:completed"));
+    navigate("/", { replace: true });
   };
 
   const isLastSlide = current === SLIDES.length - 1;
@@ -65,7 +66,7 @@ export const OnboardingFlow = () => {
       {!isLastSlide && (
         <button
           type="button"
-          onClick={finish}
+          onClick={handleComplete}
           className="absolute right-4 top-4 z-10 text-sm font-medium text-muted-foreground hover:text-foreground"
         >
           Passer
@@ -108,7 +109,7 @@ export const OnboardingFlow = () => {
           ))}
         </div>
         {isLastSlide && (
-          <Button onClick={finish} className="w-full" size="lg">
+          <Button onClick={handleComplete} className="w-full" size="lg">
             Découvrir le catalogue
           </Button>
         )}
