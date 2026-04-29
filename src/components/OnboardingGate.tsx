@@ -12,6 +12,12 @@ export const OnboardingGate = () => {
     } catch {
       setCompleted(true);
     }
+
+    const handleCompleted = () => setCompleted(true);
+    window.addEventListener("onboarding:completed", handleCompleted);
+    return () => {
+      window.removeEventListener("onboarding:completed", handleCompleted);
+    };
   }, []);
 
   if (completed || user) return null;
