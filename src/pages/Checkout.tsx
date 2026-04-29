@@ -195,7 +195,7 @@ export default function Checkout() {
       : `Confirmer la commande (${totalLabel})`;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-dvh bg-background pb-24">
       {/* Header sticky */}
       <header className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background px-4 py-3">
         <button

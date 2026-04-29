@@ -30,7 +30,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-dvh bg-bg">
       <AppHeader showBack title="Connexion" />
       <main className="max-w-md mx-auto px-4 py-6">
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
