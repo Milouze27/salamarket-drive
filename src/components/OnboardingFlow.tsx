@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, CreditCard, ShoppingBag, type LucideIcon } from "lucide-react";
 import {
@@ -37,6 +37,10 @@ export const OnboardingFlow = () => {
   const navigate = useNavigate();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  // Slides déjà arrivés en position active dans cette session.
+  // Ref (pas state) pour ne pas déclencher de re-render qui interromprait
+  // l'animation CSS en cours.
+  const visitedRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (!api) return;
@@ -47,6 +51,10 @@ export const OnboardingFlow = () => {
       api.off("select", handleSelect);
     };
   }, [api]);
+
+  useEffect(() => {
+    visitedRef.current.add(current);
+  }, [current]);
 
   const handleComplete = () => {
     try {
@@ -79,42 +87,68 @@ export const OnboardingFlow = () => {
         className="h-full [&>div]:h-full"
       >
         <CarouselContent className="ml-0 h-full">
-          {SLIDES.map(({ Icon, title, subtitle }, index) => (
-            <CarouselItem
-              key={index}
-              className="flex h-full flex-col items-center justify-center pl-0"
-            >
-              <div
-                key={`slide-${index}-${current}`}
-                className="flex flex-col items-center"
+          {SLIDES.map(({ Icon, title, subtitle }, index) => {
+            const shouldAnimate =
+              index === current && !visitedRef.current.has(index);
+            return (
+              <CarouselItem
+                key={index}
+                className="flex h-full flex-col items-center justify-center pl-0"
               >
-                {/* Cercle doré + halo + icône */}
                 <div
-                  className={cn(
-                    "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#D4A93C]/20",
-                    "before:absolute before:inset-0 before:rounded-full before:bg-[#D4A93C]/30 before:blur-2xl before:content-['']",
-                    "animate-in fade-in zoom-in-95 duration-500",
-                  )}
+                  key={`slide-${index}-${current}`}
+                  className="flex flex-col items-center"
                 >
-                  <Icon
-                    className="relative z-10 text-[#D4A93C]"
-                    size={120}
-                    strokeWidth={1.5}
-                  />
-                </div>
+                  {/* Cercle doré + halo radial + icône */}
+                  <div
+                    className={cn(
+                      "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#D4A93C]/20",
+                      // Halo radial circulaire (évite le bug iOS Safari du
+                      // filter:blur qui produit un halo carré).
+                      "before:absolute before:-inset-6 before:rounded-full before:content-['']",
+                      "before:bg-[radial-gradient(circle,rgba(212,169,60,0.35)_0%,transparent_70%)]",
+                      shouldAnimate &&
+                        "animate-in fade-in zoom-in-95 duration-500 [animation-fill-mode:backwards]",
+                    )}
+                  >
+                    <Icon
+                      className="relative z-10 text-[#D4A93C]"
+                      size={120}
+                      strokeWidth={1.5}
+                    />
+                  </div>
 
-                <div className="mt-10 flex flex-col items-center">
-                  <h2 className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 text-3xl md:text-4xl font-bold tracking-tight text-white text-center px-6">
-                    {title}
-                  </h2>
-                  <div className="animate-in fade-in duration-500 delay-200 my-5 mx-auto h-0.5 w-16 bg-[#D4A93C]" />
-                  <p className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 max-w-sm px-6 text-center text-lg leading-relaxed text-white/80">
-                    {subtitle}
-                  </p>
+                  <div className="mt-10 flex flex-col items-center">
+                    <h2
+                      className={cn(
+                        "text-3xl md:text-4xl font-bold tracking-tight text-white text-center px-6",
+                        shouldAnimate &&
+                          "animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {title}
+                    </h2>
+                    <div
+                      className={cn(
+                        "my-5 mx-auto h-0.5 w-16 bg-[#D4A93C]",
+                        shouldAnimate &&
+                          "animate-in fade-in duration-500 delay-200 [animation-fill-mode:backwards]",
+                      )}
+                    />
+                    <p
+                      className={cn(
+                        "max-w-sm px-6 text-center text-lg leading-relaxed text-white/80",
+                        shouldAnimate &&
+                          "animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {subtitle}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
 
