@@ -27,7 +27,10 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
   const initials = getInitials(profile?.full_name, user?.email);
 
   return (
-    <header className="sticky top-0 z-40 bg-bg/95 backdrop-blur border-b border-border">
+    <header
+      className="sticky top-0 z-40 bg-bg/95 backdrop-blur border-b border-border"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           {showBack && (

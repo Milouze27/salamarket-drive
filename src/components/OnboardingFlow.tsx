@@ -52,9 +52,25 @@ export const OnboardingFlow = () => {
     };
   }, [api]);
 
+  // Marque le slide comme visité APRÈS la durée de l'animation cascade.
+  // Sinon, un re-render rapide (par ex. embla qui set son api après mount)
+  // retire les classes animate-* avant la fin et interrompt l'animation.
   useEffect(() => {
-    visitedRef.current.add(current);
+    const timer = window.setTimeout(() => {
+      visitedRef.current.add(current);
+    }, 800);
+    return () => window.clearTimeout(timer);
   }, [current]);
+
+  // Verrouille le scroll du body pendant que l'onboarding est affiché,
+  // sinon la scrollbar de la page sous-jacente reste visible à droite.
+  useEffect(() => {
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, []);
 
   const handleComplete = () => {
     try {
