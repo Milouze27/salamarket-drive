@@ -76,21 +76,19 @@ export const OnboardingFlow = () => {
       <Carousel
         setApi={setApi}
         opts={{ loop: false }}
-        className="flex flex-1 flex-col"
+        className="flex-1 [&>div]:h-full"
       >
-        <CarouselContent className="flex-1">
+        <CarouselContent className="ml-0 h-full">
           {SLIDES.map(({ Icon, title, subtitle }, index) => (
             <CarouselItem
               key={index}
-              className="flex h-full flex-col items-center justify-center px-6 text-center"
+              className="flex h-full flex-col items-center justify-center gap-6 px-6 pl-6 text-center"
             >
-              <div className="flex flex-col items-center gap-6">
-                <Icon className="text-primary" size={80} strokeWidth={1.5} />
-                <h2 className="text-2xl font-bold">{title}</h2>
-                <p className="max-w-xs text-base text-muted-foreground">
-                  {subtitle}
-                </p>
-              </div>
+              <Icon className="text-primary" size={80} strokeWidth={1.5} />
+              <h2 className="text-2xl font-bold">{title}</h2>
+              <p className="max-w-xs text-base text-muted-foreground">
+                {subtitle}
+              </p>
             </CarouselItem>
           ))}
         </CarouselContent>

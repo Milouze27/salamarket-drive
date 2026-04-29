@@ -33,7 +33,7 @@ const Index = () => {
   const hasSearch = debouncedSearch.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-bg text-text flex flex-col">
+    <div className="min-h-dvh bg-bg text-text flex flex-col">
       <AppHeader />
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-4 flex flex-col gap-4">

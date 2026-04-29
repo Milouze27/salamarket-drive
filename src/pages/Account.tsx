@@ -12,7 +12,7 @@ export default function Account() {
   };
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-dvh bg-bg">
       <AppHeader showBack title="Mon compte" />
       <main className="max-w-md mx-auto px-4 py-6 flex flex-col gap-6">
         {loading ? (

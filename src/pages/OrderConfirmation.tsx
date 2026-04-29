@@ -156,7 +156,7 @@ const OrderConfirmation = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background p-4">
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-3 bg-background p-4">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
         <p className="text-sm text-muted-foreground">
           Vérification de votre commande...
@@ -167,7 +167,7 @@ const OrderConfirmation = () => {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background p-4 text-center">
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 bg-background p-4 text-center">
         <AlertCircle className="w-16 h-16 text-destructive" />
         <h1 className="text-2xl font-semibold">Commande introuvable</h1>
         <p className="text-sm text-muted-foreground max-w-sm">
@@ -184,7 +184,7 @@ const OrderConfirmation = () => {
   const items = Array.isArray(order.items) ? order.items : [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <div className="max-w-md mx-auto p-4 space-y-4">
         {/* Header */}
         <div className="flex flex-col items-center gap-3 pt-6 pb-2">

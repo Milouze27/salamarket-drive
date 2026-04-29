@@ -1,9 +1,10 @@
-const CACHE_NAME = 'salamarket-v2';
+const CACHE_NAME = 'salamarket-v3';
 const OFFLINE_URL = '/offline.html';
+const OFFLINE_ASSETS = [OFFLINE_URL, '/brand/logo-horizontal.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.add(OFFLINE_URL))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_ASSETS))
   );
   self.skipWaiting();
 });
@@ -32,6 +33,15 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
+
+  // Pour les assets pré-cachés (logo affiché dans offline.html) :
+  // network-first avec fallback cache pour rester visibles hors ligne.
+  if (OFFLINE_ASSETS.some((asset) => url.endsWith(asset))) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
     );
     return;
   }

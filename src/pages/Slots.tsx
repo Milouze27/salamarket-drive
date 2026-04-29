@@ -61,7 +61,7 @@ const Slots = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text flex flex-col">
+    <div className="min-h-dvh bg-bg text-text flex flex-col">
       <AppHeader showBack title="Choisir mon créneau" />
 
       <main className="flex-1 max-w-2xl w-full mx-auto px-4 pt-3 pb-36 flex flex-col gap-3">
