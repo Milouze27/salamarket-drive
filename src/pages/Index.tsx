@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, AlertCircle, X } from "lucide-react";
-import { AppHeader } from "@/components/AppHeader";
-import { CategoryPills } from "@/components/CategoryPills";
+import { useSearchParams } from "react-router-dom";
+import { AlertCircle, SearchX } from "lucide-react";
+import { Header } from "@/components/Header";
+import { HeroSlider } from "@/components/HeroSlider";
+import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
@@ -9,10 +11,18 @@ import { BRAND } from "@/config/brand";
 import { normalizeSearch } from "@/lib/search";
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
   const [category, setCategory] = useState<string>("all");
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const { data: allProducts, isLoading, isError, error, refetch } = useProducts();
+
+  // Pré-sélection de la catégorie via le query param (?category=...)
+  // utilisé par les CTAs du hero slider.
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setCategory(cat);
+  }, [searchParams]);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchInput), 200);
@@ -30,58 +40,32 @@ const Index = () => {
     });
   }, [allProducts, category, debouncedSearch]);
 
-  const hasSearch = debouncedSearch.trim().length > 0;
+  const resetFilters = () => {
+    setCategory("all");
+    setSearchInput("");
+  };
 
   return (
-    <div className="min-h-dvh bg-bg text-text flex flex-col">
-      <AppHeader />
+    <div className="min-h-dvh bg-[#FAFAFA]">
+      <Header searchValue={searchInput} onSearchChange={setSearchInput} />
+      <HeroSlider />
+      <CategoryTabs active={category} onChange={setCategory} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-4 flex flex-col gap-4">
-        {/* Search */}
-        <div className="relative">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
-          />
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Rechercher un produit..."
-            className="w-full h-11 pl-10 pr-10 rounded-full bg-white border border-border text-sm placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
-          />
-          {searchInput && (
-            <button
-              onClick={() => setSearchInput("")}
-              aria-label="Effacer la recherche"
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-muted hover:bg-bg"
-            >
-              <X size={16} />
-            </button>
-          )}
-        </div>
-
-        {/* Categories */}
-        <CategoryPills active={category} onChange={setCategory} />
-
-        {/* Tagline */}
-        <p className="text-sm text-muted -mt-1">{BRAND.tagline}</p>
-
-        {/* States */}
+      <main className="max-w-7xl mx-auto px-4 py-6">
         {isError ? (
           <div className="flex flex-col items-center justify-center text-center py-16 px-4 gap-3">
             <AlertCircle size={36} className="text-destructive" />
-            <h2 className="font-semibold text-text">
+            <h2 className="font-semibold text-gray-900">
               Impossible de charger le catalogue
             </h2>
-            <p className="text-sm text-muted max-w-sm">
+            <p className="text-sm text-gray-500 max-w-sm">
               {error instanceof Error
                 ? error.message
                 : "Une erreur est survenue. Vérifiez votre connexion et réessayez."}
             </p>
             <button
               onClick={() => refetch()}
-              className="mt-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="mt-2 px-4 py-2 rounded-full bg-[#0F4C3A] text-white text-sm font-medium hover:bg-[#0A3A2C] transition-colors"
             >
               Réessayer
             </button>
@@ -98,26 +82,26 @@ const Index = () => {
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
-        ) : hasSearch ? (
-          <div className="text-center py-12 flex flex-col items-center gap-3">
-            <p className="text-muted">
-              Aucun produit ne correspond à «&nbsp;{debouncedSearch}&nbsp;»
+        ) : (
+          <div className="text-center py-16 flex flex-col items-center gap-3">
+            <SearchX size={48} className="text-gray-400" />
+            <p className="text-lg font-medium text-gray-900">
+              Aucun produit trouvé
+            </p>
+            <p className="text-sm text-gray-500">
+              Essayez une autre recherche ou catégorie
             </p>
             <button
-              onClick={() => setSearchInput("")}
-              className="px-4 py-2 rounded-full bg-primary text-white text-sm font-medium"
+              onClick={resetFilters}
+              className="mt-2 px-4 py-2 rounded-full bg-[#0F4C3A] text-white text-sm font-medium hover:bg-[#0A3A2C] transition-colors"
             >
-              Effacer la recherche
+              Voir tous les produits
             </button>
-          </div>
-        ) : (
-          <div className="text-center text-muted py-12">
-            Aucun produit dans cette catégorie pour le moment.
           </div>
         )}
       </main>
 
-      <footer className="py-6 px-4 text-center text-xs text-muted border-t border-border mt-8">
+      <footer className="py-6 px-4 text-center text-xs text-gray-500 border-t border-gray-200 mt-8">
         Retrait magasin uniquement · {BRAND.store.name} · {BRAND.store.city}
       </footer>
     </div>
