@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-const SOUND_URL = "/sounds/cha-ching.MP3";
+const SOUND_URL = "/sounds/cha-ching.mp3";
 const STORAGE_KEY = "sound_enabled";
 
 interface UseNewOrderSoundOptions {
