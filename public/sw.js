@@ -50,3 +50,51 @@ self.addEventListener('fetch', (event) => {
   // Le navigateur gère lui-même réseau + erreurs natives, ce qui évite
   // de polluer ces ressources avec une réponse "Hors ligne" inutile.
 });
+
+// ── Web Push ─────────────────────────────────────────────────────────
+// Reçoit les notifications poussées par l'edge function notify-new-order
+// et les affiche au gérant même si l'app est fermée.
+
+self.addEventListener('push', (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { title: 'Salamarket', body: event.data ? event.data.text() : '' };
+  }
+
+  const title = data.title || 'Nouvelle commande';
+  const options = {
+    body: data.body || 'Vous avez une nouvelle commande.',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    data: { url: data.url || '/admin' },
+    vibrate: [200, 100, 200],
+    requireInteraction: false,
+    tag: data.tag || 'new-order',
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = event.notification.data?.url || '/admin';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+      // Si une fenêtre de l'app est déjà ouverte, on la focus + navigate.
+      for (const win of wins) {
+        if ('focus' in win) {
+          win.focus();
+          if ('navigate' in win) {
+            win.navigate(target);
+          }
+          return;
+        }
+      }
+      // Sinon on en ouvre une nouvelle.
+      return clients.openWindow(target);
+    })
+  );
+});
