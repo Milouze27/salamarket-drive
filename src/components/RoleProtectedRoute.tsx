@@ -1,9 +1,10 @@
 import { ReactNode, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { buildLoginUrl } from "@/lib/redirect";
 
 type Role = "admin" | "employee" | "client";
 
@@ -40,6 +41,7 @@ export const RoleProtectedRoute = ({
   requiredRoles,
 }: Props) => {
   const { user, loading: authLoading } = useAuth();
+  const location = useLocation();
 
   const {
     data: role,
@@ -73,7 +75,12 @@ export const RoleProtectedRoute = ({
   }
 
   if (!user) {
-    return <Navigate to="/connexion" replace />;
+    return (
+      <Navigate
+        to={buildLoginUrl(location.pathname + location.search)}
+        replace
+      />
+    );
   }
 
   if (isError || !hasAccess) {

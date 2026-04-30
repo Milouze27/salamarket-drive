@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AppHeader } from "@/components/AppHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { translateAuthError } from "@/lib/authErrors";
+import { getRedirectFromSearch } from "@/lib/redirect";
 
 const PHONE_RE = /^(\+33|0)[1-9](\d{8})$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,7 +12,7 @@ export default function Signup() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? "/panier";
+  const redirectTo = getRedirectFromSearch(location.search);
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,7 +49,7 @@ export default function Signup() {
         full_name: fullName.trim(),
         phone: phone.replace(/\s/g, ""),
       });
-      navigate(from, { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setServerError(translateAuthError(err));
     } finally {
