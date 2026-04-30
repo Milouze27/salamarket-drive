@@ -1,0 +1,492 @@
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+import { ArrowLeft, Banknote, Clock, CreditCard, Phone, Mail, GripVertical } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { toZonedTime } from "date-fns-tz";
+import { toast } from "sonner";
+
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
+import {
+  useEmployeeOrders,
+  type EmployeeOrder,
+  type OrderItem,
+  type PickupSlotRef,
+} from "@/hooks/useEmployeeOrders";
+import { useNewOrderDing } from "@/hooks/useNewOrderDing";
+
+const PARIS_TZ = "Europe/Paris";
+
+const formatEUR = (cents: number) =>
+  new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(
+    (cents ?? 0) / 100,
+  );
+
+interface ColumnConfig {
+  id: "confirmed" | "preparing" | "ready" | "picked_up" | "cancelled";
+  label: string;
+  bg: string;
+  border: string;
+  badge: string;
+  sortAsc: boolean;
+}
+
+const COLUMNS: ColumnConfig[] = [
+  {
+    id: "confirmed",
+    label: "À préparer",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    badge: "bg-amber-500 text-white",
+    sortAsc: false,
+  },
+  {
+    id: "preparing",
+    label: "En préparation",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    badge: "bg-blue-500 text-white",
+    sortAsc: true,
+  },
+  {
+    id: "ready",
+    label: "Prête",
+    bg: "bg-green-50",
+    border: "border-green-200",
+    badge: "bg-green-600 text-white",
+    sortAsc: true,
+  },
+  {
+    id: "picked_up",
+    label: "Retirée",
+    bg: "bg-gray-50",
+    border: "border-gray-200",
+    badge: "bg-gray-500 text-white",
+    sortAsc: true,
+  },
+  {
+    id: "cancelled",
+    label: "Annulée",
+    bg: "bg-red-50",
+    border: "border-red-200",
+    badge: "bg-red-500 text-white",
+    sortAsc: true,
+  },
+];
+
+function formatSlotLabel(slot: PickupSlotRef | null | undefined) {
+  if (!slot) return "Créneau —";
+  const start = toZonedTime(new Date(slot.slot_start), PARIS_TZ);
+  const end = toZonedTime(new Date(slot.slot_end), PARIS_TZ);
+  const today = toZonedTime(new Date(), PARIS_TZ);
+  const isSameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  let dayLabel: string;
+  if (isSameDay(start, today)) dayLabel = "Aujourd'hui";
+  else if (isSameDay(start, tomorrow)) dayLabel = "Demain";
+  else dayLabel = format(start, "EEE d MMM", { locale: fr });
+
+  return `${dayLabel} · ${format(start, "HH'h'mm", { locale: fr })} - ${format(end, "HH'h'mm", { locale: fr })}`;
+}
+
+function customerLabel(order: EmployeeOrder) {
+  if (order.customer_email) return order.customer_email.split("@")[0];
+  return "Client";
+}
+
+function shortId(id: string) {
+  return `#${id.slice(0, 6).toUpperCase()}`;
+}
+
+interface DraggableCardProps {
+  order: EmployeeOrder;
+  onClick: () => void;
+}
+
+const DraggableCard = ({ order, onClick }: DraggableCardProps) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({ id: order.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const items: OrderItem[] = Array.isArray(order.items) ? order.items : [];
+  const itemCount = items.reduce((acc, it) => acc + (it.quantity ?? 0), 0);
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "group bg-white rounded-lg border border-gray-200 p-3 shadow-sm",
+        "hover:shadow-md transition-shadow cursor-pointer touch-none",
+      )}
+      onClick={(e) => {
+        if (isDragging) return;
+        // ne pas ouvrir le dialog si le clic vient du handle de drag
+        const target = e.target as HTMLElement;
+        if (target.closest("[data-drag-handle]")) return;
+        onClick();
+      }}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <p className="font-mono text-xs text-gray-500">{shortId(order.id)}</p>
+          <p className="text-sm font-semibold text-gray-900 truncate">
+            {customerLabel(order)}
+          </p>
+        </div>
+        <button
+          data-drag-handle
+          {...attributes}
+          {...listeners}
+          className="shrink-0 p-1 -m-1 rounded text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing"
+          aria-label="Déplacer la carte"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <GripVertical size={16} />
+        </button>
+      </div>
+
+      <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-600">
+        <Clock size={12} />
+        <span className="truncate">{formatSlotLabel(order.pickup_slot)}</span>
+      </div>
+
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <Badge
+          variant="secondary"
+          className="text-[10px] font-medium px-1.5 py-0.5"
+        >
+          {order.payment_method === "online" ? "💳 En ligne" : "🏪 Magasin"}
+        </Badge>
+        <span className="text-xs text-gray-500">
+          {itemCount} article{itemCount > 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-gray-100">
+        <p className="text-base font-bold text-[#0F4C3A]">
+          {formatEUR(order.total_cents)}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+interface ColumnProps {
+  column: ColumnConfig;
+  orders: EmployeeOrder[];
+  onCardClick: (order: EmployeeOrder) => void;
+}
+
+const Column = ({ column, orders, onCardClick }: ColumnProps) => {
+  const { setNodeRef, isOver } = useDroppable({ id: column.id });
+
+  const sorted = useMemo(() => {
+    const arr = [...orders];
+    arr.sort((a, b) => {
+      const ta = new Date(a.created_at).getTime();
+      const tb = new Date(b.created_at).getTime();
+      return column.sortAsc ? ta - tb : tb - ta;
+    });
+    return arr;
+  }, [orders, column.sortAsc]);
+
+  return (
+    <div
+      className={cn(
+        "flex flex-col rounded-lg border min-w-[280px] lg:min-w-0",
+        column.bg,
+        column.border,
+        isOver && "ring-2 ring-[#0F4C3A]/40",
+      )}
+    >
+      <div className="px-3 py-2.5 flex items-center justify-between border-b border-current/10">
+        <h2 className="text-sm font-semibold text-gray-900">{column.label}</h2>
+        <span
+          className={cn(
+            "text-xs font-bold px-2 py-0.5 rounded-full tabular-nums",
+            column.badge,
+          )}
+        >
+          {sorted.length}
+        </span>
+      </div>
+      <div
+        ref={setNodeRef}
+        className="flex-1 p-2 space-y-2 min-h-[200px] overflow-y-auto"
+      >
+        {sorted.map((order) => (
+          <DraggableCard
+            key={order.id}
+            order={order}
+            onClick={() => onCardClick(order)}
+          />
+        ))}
+        {sorted.length === 0 && (
+          <p className="text-xs text-gray-400 italic text-center py-8">
+            Aucune commande
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const EmployeeKanban = () => {
+  const { orders, loading, error, optimisticUpdate, rollback } =
+    useEmployeeOrders();
+  useNewOrderDing();
+
+  const [openOrder, setOpenOrder] = useState<EmployeeOrder | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    }),
+  );
+
+  const ordersByStatus = useMemo(() => {
+    const map = new Map<string, EmployeeOrder[]>();
+    for (const col of COLUMNS) map.set(col.id, []);
+    for (const o of orders) {
+      const list = map.get(o.status);
+      if (list) list.push(o);
+    }
+    return map;
+  }, [orders]);
+
+  const toPrepareCount = ordersByStatus.get("confirmed")?.length ?? 0;
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const orderId = String(active.id);
+    const newStatus = String(over.id);
+
+    const current = orders.find((o) => o.id === orderId);
+    if (!current) return;
+    if (current.status === newStatus) return;
+
+    const oldStatus = current.status;
+    const columnLabel =
+      COLUMNS.find((c) => c.id === newStatus)?.label ?? newStatus;
+
+    optimisticUpdate(orderId, newStatus);
+
+    const { error } = await supabase.functions.invoke("update-order-status", {
+      body: { order_id: orderId, new_status: newStatus },
+    });
+
+    if (error) {
+      rollback(orderId, oldStatus);
+      toast.error(error.message ?? "Échec du déplacement");
+      return;
+    }
+
+    toast.success(`Commande déplacée en "${columnLabel}"`);
+  };
+
+  return (
+    <div
+      className="min-h-dvh bg-[#FAFAFA]"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
+      {/* Header sticky */}
+      <header className="sticky top-0 z-20 bg-[#0F4C3A] text-white shadow">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-1.5 text-sm hover:opacity-80 transition-opacity"
+          >
+            <ArrowLeft size={18} />
+            <span>Retour</span>
+          </Link>
+          <h1 className="text-base sm:text-lg font-semibold tracking-tight">
+            Préparation des commandes
+          </h1>
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                "inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full text-sm font-bold tabular-nums",
+                "bg-[#D4A574] text-[#1A1A1A]",
+                toPrepareCount > 0 && "animate-pulse",
+              )}
+              aria-label={`${toPrepareCount} commande${toPrepareCount > 1 ? "s" : ""} à préparer`}
+            >
+              {toPrepareCount}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto p-4">
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            Erreur de chargement : {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="text-center py-16 text-sm text-gray-500">
+            Chargement des commandes…
+          </div>
+        ) : (
+          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            <div className="lg:grid lg:grid-cols-5 lg:gap-4 flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 lg:mx-0 lg:px-0 lg:overflow-visible">
+              {COLUMNS.map((col) => (
+                <Column
+                  key={col.id}
+                  column={col}
+                  orders={ordersByStatus.get(col.id) ?? []}
+                  onCardClick={setOpenOrder}
+                />
+              ))}
+            </div>
+          </DndContext>
+        )}
+      </main>
+
+      {/* Dialog détails commande */}
+      <Dialog open={!!openOrder} onOpenChange={(o) => !o && setOpenOrder(null)}>
+        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+          {openOrder && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-mono text-base">
+                  {shortId(openOrder.id)}
+                </DialogTitle>
+                <DialogDescription>
+                  {customerLabel(openOrder)} ·{" "}
+                  {formatSlotLabel(openOrder.pickup_slot)}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 mt-2">
+                {/* Paiement */}
+                <div className="rounded-lg border bg-card p-3 flex items-start gap-3">
+                  {openOrder.payment_method === "online" ? (
+                    <CreditCard className="text-[#0F4C3A] shrink-0 mt-0.5" size={18} />
+                  ) : (
+                    <Banknote className="text-[#0F4C3A] shrink-0 mt-0.5" size={18} />
+                  )}
+                  <div className="flex-1">
+                    <Badge
+                      className={cn(
+                        openOrder.payment_method === "online" &&
+                          openOrder.payment_status === "paid"
+                          ? "bg-[#0F4C3A] text-white hover:bg-[#0F4C3A]"
+                          : "bg-orange-500 text-white hover:bg-orange-500",
+                      )}
+                    >
+                      {openOrder.payment_method === "online" &&
+                      openOrder.payment_status === "paid"
+                        ? "Payé en ligne"
+                        : "À régler au retrait"}
+                    </Badge>
+                    <p className="mt-1 text-sm font-semibold">
+                      {formatEUR(openOrder.total_cents)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Articles */}
+                <div className="rounded-lg border bg-card p-3">
+                  <p className="text-sm font-medium mb-2">Articles</p>
+                  <ul className="space-y-1.5">
+                    {(Array.isArray(openOrder.items) ? openOrder.items : []).map(
+                      (item, idx) => (
+                        <li
+                          key={`${item.product_id}-${idx}`}
+                          className="flex justify-between text-sm"
+                        >
+                          <span>
+                            {item.quantity} × {item.name}
+                          </span>
+                          <span className="text-gray-500">
+                            {formatEUR(item.line_total_cents)}
+                          </span>
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                  <Separator className="my-2" />
+                  <div className="flex justify-between text-sm font-semibold">
+                    <span>Total</span>
+                    <span>{formatEUR(openOrder.total_cents)}</span>
+                  </div>
+                </div>
+
+                {/* Contact client */}
+                <div className="rounded-lg border bg-card p-3 space-y-2 text-sm">
+                  {openOrder.customer_email && (
+                    <div className="flex items-center gap-2">
+                      <Mail size={14} className="text-gray-400" />
+                      <span>{openOrder.customer_email}</span>
+                    </div>
+                  )}
+                  {openOrder.customer_phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone size={14} className="text-gray-400" />
+                      <a
+                        href={`tel:${openOrder.customer_phone}`}
+                        className="text-[#0F4C3A] hover:underline"
+                      >
+                        {openOrder.customer_phone}
+                      </a>
+                    </div>
+                  )}
+                  {!openOrder.customer_email && !openOrder.customer_phone && (
+                    <p className="text-xs text-gray-400 italic">
+                      Aucun contact renseigné
+                    </p>
+                  )}
+                </div>
+
+                {/* Notes */}
+                {openOrder.notes && (
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">
+                    <p className="text-xs font-medium text-amber-800 uppercase mb-1">
+                      Note client
+                    </p>
+                    <p className="text-amber-900">{openOrder.notes}</p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default EmployeeKanban;
