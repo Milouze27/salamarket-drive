@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  AlertTriangle,
   ArrowLeft,
   Bell,
+  BellRing,
   Info,
+  Smartphone,
   Store,
   Volume2,
 } from "lucide-react";
@@ -13,6 +16,14 @@ import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { BRAND } from "@/config/brand";
+import {
+  getCurrentPushSubscription,
+  getNotificationPermission,
+  isPushSupported,
+  isStandalonePWA,
+  subscribePush,
+  unsubscribePush,
+} from "@/lib/pushNotifications";
 
 const STORAGE_ENABLED = "sound_enabled";
 const STORAGE_VOLUME = "sound_volume";
@@ -43,11 +54,64 @@ const AdminSettings = () => {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(DEFAULT_VOLUME);
 
+  // Web Push state
+  const [pushSupported] = useState<boolean>(() => isPushSupported());
+  const [pushStandalone] = useState<boolean>(() => isStandalonePWA());
+  const [pushPermission, setPushPermission] = useState<NotificationPermission>(
+    () => getNotificationPermission(),
+  );
+  const [pushSubscribed, setPushSubscribed] = useState<boolean>(false);
+  const [pushBusy, setPushBusy] = useState<boolean>(false);
+
   // Charge les préférences au mount
   useEffect(() => {
     setSoundEnabled(readSoundEnabled());
     setVolume(readVolume());
   }, []);
+
+  useEffect(() => {
+    if (!pushSupported) return;
+    getCurrentPushSubscription().then((sub) => {
+      setPushSubscribed(!!sub);
+    });
+  }, [pushSupported]);
+
+  const handlePushToggle = async (next: boolean) => {
+    if (pushBusy) return;
+    setPushBusy(true);
+    try {
+      if (next) {
+        const result = await subscribePush();
+        if (result.ok) {
+          setPushSubscribed(true);
+          setPushPermission(getNotificationPermission());
+          toast.success("Notifications push activées");
+        } else {
+          setPushPermission(getNotificationPermission());
+          if (result.reason === "permission-denied") {
+            toast.error("Permission refusée", {
+              description:
+                "Autorisez les notifications dans les paramètres du navigateur.",
+            });
+          } else if (result.reason === "no-vapid-key") {
+            toast.error("Configuration manquante", {
+              description: "VITE_VAPID_PUBLIC_KEY n'est pas définie.",
+            });
+          } else if (result.reason === "no-user") {
+            toast.error("Vous devez être connecté pour activer les notifications.");
+          } else {
+            toast.error("Activation impossible. Réessayez plus tard.");
+          }
+        }
+      } else {
+        await unsubscribePush();
+        setPushSubscribed(false);
+        toast.success("Notifications push désactivées");
+      }
+    } finally {
+      setPushBusy(false);
+    }
+  };
 
   const handleSoundToggle = (next: boolean) => {
     setSoundEnabled(next);
@@ -157,6 +221,67 @@ const AdminSettings = () => {
                 <Volume2 size={16} />
                 Tester le son
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 1bis — Notifications push */}
+        <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
+              <BellRing size={20} className="text-[#0F4C3A]" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-base font-semibold text-gray-900">
+                Notifications push
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Soyez alerté à chaque commande même quand l'app est fermée
+              </p>
+
+              {!pushSupported ? (
+                <div className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                  <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+                  <p>Ce navigateur ne supporte pas les notifications push.</p>
+                </div>
+              ) : !pushStandalone ? (
+                <div className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                  <Smartphone size={18} className="shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Installation requise sur iPhone</p>
+                    <p className="mt-1 text-xs">
+                      iOS n'autorise les notifications push qu'après installation
+                      de l'app sur l'écran d'accueil. Ouvrez l'app dans Safari →
+                      Partager → Sur l'écran d'accueil.
+                    </p>
+                  </div>
+                </div>
+              ) : pushPermission === "denied" ? (
+                <div className="mt-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Notifications bloquées</p>
+                    <p className="mt-1 text-xs">
+                      Réactivez les notifications pour cette app dans les
+                      paramètres iOS (Réglages → Notifications → Salamarket).
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between mt-4 py-3 border-t border-gray-100">
+                  <span className="text-sm font-medium text-gray-900">
+                    {pushSubscribed
+                      ? "Notifications activées sur cet appareil"
+                      : "Activer sur cet appareil"}
+                  </span>
+                  <Switch
+                    checked={pushSubscribed}
+                    onCheckedChange={handlePushToggle}
+                    disabled={pushBusy}
+                    aria-label="Activer les notifications push"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
