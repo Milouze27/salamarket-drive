@@ -20,6 +20,7 @@ import Signup from "./pages/Signup.tsx";
 import Account from "./pages/Account.tsx";
 import Orders from "./pages/Orders.tsx";
 import Admin from "./pages/Admin.tsx";
+import AdminSettings from "./pages/AdminSettings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -78,6 +79,14 @@ const App = () => (
               element={
                 <RoleProtectedRoute requiredRole="admin">
                   <Admin />
+                </RoleProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/reglages"
+              element={
+                <RoleProtectedRoute requiredRole="admin">
+                  <AdminSettings />
                 </RoleProtectedRoute>
               }
             />
