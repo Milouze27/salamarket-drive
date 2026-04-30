@@ -144,59 +144,11 @@ serve(async (req) => {
     if (insertErr) throw insertErr;
     createdOrderId = order.id;
 
-    // 7b. Déclencher la notification push (admins/employees) — non bloquant.
-    // ─────────────────────────────────────────────────────────────────────
-    // Lovable Cloud n'expose pas d'UI pour créer des Database Webhooks,
-    // on appelle donc directement l'edge function notify-new-order ici.
-    //
-    // ⚠️ On utilise EdgeRuntime.waitUntil() pour que le runtime Deno ne
-    // tue pas la promise orpheline avant qu'elle ne s'exécute. Sans ça,
-    // le fetch() non-awaited part jamais en pratique.
-    {
-      const NOTIFY_URL = `${Deno.env.get("SUPABASE_URL") ?? ""}/functions/v1/notify-new-order`;
-      const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-
-      const notifyTask = fetch(NOTIFY_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
-          apikey: SERVICE_ROLE_KEY,
-        },
-        body: JSON.stringify({
-          type: "INSERT",
-          table: "orders",
-          record: order,
-        }),
-      })
-        .then(async (res) => {
-          const text = await res.text().catch(() => "");
-          console.log(
-            `[create-checkout-session] notify-new-order responded ${res.status}: ${text.slice(0, 200)}`,
-          );
-        })
-        .catch((err) => {
-          console.error("[create-checkout-session] notify-new-order failed:", err);
-        });
-
-      // @ts-ignore - EdgeRuntime est disponible sur Supabase Edge Functions
-      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) {
-        // @ts-ignore
-        EdgeRuntime.waitUntil(notifyTask);
-      } else {
-        // Fallback : await direct (rare, mais safe)
-        await notifyTask;
-      }
-    }
-
-    // 8a. Paiement magasin → confirmation directe
+    // 8a. Paiement magasin → on laisse l'order en "pending"
     if (body.payment_method === "in_store") {
-      const { error: confirmErr } = await supabaseAdmin
-        .from("orders")
-        .update({ status: "confirmed" })
-        .eq("id", order.id);
-      if (confirmErr) throw confirmErr;
-
+      // L'order reste en "pending" jusqu'à ce que le client arrive
+      // sur /commande/confirmee, qui appellera confirm-order.
+      // confirm-order fera l'UPDATE atomique et déclenchera le push.
       return json({
         order_id: order.id,
         redirect_url: `${SITE_URL}/commande/confirmee/${order.id}`,
