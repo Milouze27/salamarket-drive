@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
-type Role = "admin" | "staff" | "customer";
+type Role = "admin" | "employee" | "client";
 
 interface Props {
   children: ReactNode;
