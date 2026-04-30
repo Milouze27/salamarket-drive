@@ -47,6 +47,8 @@ const formatEUR = (cents: number) =>
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  console.log("[notify-new-order] invoked, method:", req.method);
+
   const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY");
   const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY");
   const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT");
@@ -69,8 +71,11 @@ serve(async (req) => {
     return json({ error: "Invalid JSON" }, 400);
   }
 
+  console.log("[notify-new-order] payload received:", JSON.stringify(payload).slice(0, 300));
+
   // Filtre : on ne traite que les INSERT sur orders.
   if (payload.type !== "INSERT" || payload.table !== "orders" || !payload.record) {
+    console.warn("[notify-new-order] skipped, payload type/table mismatch:", payload.type, payload.table);
     return json({ skipped: true, reason: "not an orders insert" });
   }
 
@@ -88,6 +93,7 @@ serve(async (req) => {
   }
 
   const targetUserIds = (targetProfiles ?? []).map((p: { id: string }) => p.id);
+  console.log(`[notify-new-order] found ${targetUserIds.length} admin/employee profiles`);
   if (targetUserIds.length === 0) {
     return json({ sent: 0, reason: "no admin/employee profiles" });
   }
@@ -101,6 +107,8 @@ serve(async (req) => {
     console.error("[notify-new-order] subs query error:", subsError);
     return json({ error: subsError.message }, 500);
   }
+
+  console.log(`[notify-new-order] found ${subs?.length ?? 0} push subscriptions`);
 
   if (!subs || subs.length === 0) {
     return json({ sent: 0, reason: "no subscriptions" });
@@ -143,5 +151,6 @@ serve(async (req) => {
   }
 
   const sent = results.filter((r) => r.status === "fulfilled").length;
+  console.log(`[notify-new-order] done: sent=${sent}, expired=${expired.length}, total=${subs.length}`);
   return json({ sent, expired: expired.length, total: subs.length });
 });

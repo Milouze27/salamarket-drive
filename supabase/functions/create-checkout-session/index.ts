@@ -147,35 +147,46 @@ serve(async (req) => {
     // 7b. Déclencher la notification push (admins/employees) — non bloquant.
     // ─────────────────────────────────────────────────────────────────────
     // Lovable Cloud n'expose pas d'UI pour créer des Database Webhooks,
-    // on appelle donc directement l'edge function notify-new-order ici,
-    // juste après l'INSERT de la commande.
+    // on appelle donc directement l'edge function notify-new-order ici.
     //
-    // ⚠️ Ce fetch est volontairement NON awaited :
-    //   - on n'attend pas la réponse pour répondre à l'utilisateur ;
-    //   - si la notif échoue, la commande reste créée (rien à rollback).
-    //
-    // Le payload mime exactement le format d'un Database Webhook
-    // Supabase ({ type, table, record }) attendu par notify-new-order.
-    try {
+    // ⚠️ On utilise EdgeRuntime.waitUntil() pour que le runtime Deno ne
+    // tue pas la promise orpheline avant qu'elle ne s'exécute. Sans ça,
+    // le fetch() non-awaited part jamais en pratique.
+    {
       const NOTIFY_URL = `${Deno.env.get("SUPABASE_URL") ?? ""}/functions/v1/notify-new-order`;
       const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-      fetch(NOTIFY_URL, {
+      const notifyTask = fetch(NOTIFY_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+          apikey: SERVICE_ROLE_KEY,
         },
         body: JSON.stringify({
           type: "INSERT",
           table: "orders",
           record: order,
         }),
-      }).catch((err) => {
-        console.error("[create-checkout-session] notify-new-order failed:", err);
-      });
-    } catch (err) {
-      console.error("[create-checkout-session] notify trigger error:", err);
+      })
+        .then(async (res) => {
+          const text = await res.text().catch(() => "");
+          console.log(
+            `[create-checkout-session] notify-new-order responded ${res.status}: ${text.slice(0, 200)}`,
+          );
+        })
+        .catch((err) => {
+          console.error("[create-checkout-session] notify-new-order failed:", err);
+        });
+
+      // @ts-ignore - EdgeRuntime est disponible sur Supabase Edge Functions
+      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) {
+        // @ts-ignore
+        EdgeRuntime.waitUntil(notifyTask);
+      } else {
+        // Fallback : await direct (rare, mais safe)
+        await notifyTask;
+      }
     }
 
     // 8a. Paiement magasin → confirmation directe
