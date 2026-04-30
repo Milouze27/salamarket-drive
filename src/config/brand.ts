@@ -2,7 +2,7 @@ export const BRAND = {
   name: "Salamarket Drive",
   tagline: "Votre supermarché halal en click & collect",
   store: {
-    name: "Salamarket Larrieu-Thibaud",
+    name: "Salamarket Toulouse",
     city: "Toulouse",
     pickupOnly: true,
   },

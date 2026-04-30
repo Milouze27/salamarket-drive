@@ -295,7 +295,7 @@ const OrderConfirmation = () => {
 
         {/* Infos retrait */}
         <div className="text-sm text-muted-foreground p-4 space-y-1">
-          <p>📍 Retrait à Salamarket Larrieu-Thibaud</p>
+          <p>📍 Retrait à Salamarket Toulouse</p>
           <p>Présentez votre numéro de commande à l'arrivée</p>
           {order.notes && (
             <p className="pt-2">
