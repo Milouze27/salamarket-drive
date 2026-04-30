@@ -1,6 +1,17 @@
 import { supabase } from "@/integrations/supabase/client";
 
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined;
+// Clé publique VAPID — safe à hardcoder car publique par design.
+// Voir RFC 8292 (Voluntary Application Server Identification).
+// La clé PRIVÉE correspondante reste côté serveur dans Lovable Cloud
+// → Secrets (VAPID_PRIVATE_KEY) et n'est jamais exposée au frontend.
+//
+// Pourquoi en dur et pas via import.meta.env.VITE_* ?
+// Lovable Cloud n'a pas de section "Project Variables" frontend
+// distincte des Edge Function Secrets : il n'existe qu'une seule
+// liste "Secrets" (côté backend). Hardcoder est la solution
+// recommandée pour les valeurs publiques par nature.
+const VAPID_PUBLIC_KEY: string =
+  "BENpSE5bey9U9BoCbSm6yv_NvpGtK-RiLoBcRze3AWNoKUUWwrnMmWjidZMDpTs_Tmt17rh9x8LO7AORrgxrbpE";
 
 export const isPushSupported = (): boolean => {
   if (typeof window === "undefined") return false;
