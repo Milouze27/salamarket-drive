@@ -28,9 +28,8 @@ const SLIDES: Slide[] = [
       "Viandes halal certifiées, sélectionnées avec soin par votre boucher de quartier",
     ctaLabel: "Découvrir",
     ctaLink: "/?category=boucherie",
-    image:
-      "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=1920&q=80",
-    imageAlt: "Boucher en train de préparer une pièce de viande",
+    image: "/hero/slide-1-boucherie.jpg",
+    imageAlt: "Pièces de viande halal de qualité boucher",
   },
   {
     kicker: "Saveurs maison",
@@ -39,9 +38,8 @@ const SLIDES: Slide[] = [
       "Préparée chaque jour en magasin, dans le respect des traditions",
     ctaLabel: "Voir tout",
     ctaLink: "/?category=charcuterie",
-    image:
-      "https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=1920&q=80",
-    imageAlt: "Étal coloré d'épices et de produits secs",
+    image: "/hero/slide-2-charcuterie.jpg",
+    imageAlt: "Charcuterie maison traditionnelle",
   },
   {
     kicker: "Au quotidien",
@@ -50,9 +48,8 @@ const SLIDES: Slide[] = [
       "Tout ce qu'il faut pour vos repas, livré en click & collect",
     ctaLabel: "Parcourir",
     ctaLink: "/",
-    image:
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1920&q=80",
-    imageAlt: "Étal de fruits et légumes frais sur un marché",
+    image: "/hero/slide-3-essentiels.jpg",
+    imageAlt: "Sélection de produits essentiels halal du quotidien",
   },
 ];
 
@@ -92,6 +89,7 @@ export const HeroSlider = () => {
                   src={slide.image}
                   alt={slide.imageAlt}
                   loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
