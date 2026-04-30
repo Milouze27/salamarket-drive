@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   ArrowLeft,
+  ArrowRight,
   Bell,
   BellRing,
+  ClipboardList,
   Info,
   Smartphone,
   Store,
@@ -285,6 +287,28 @@ const AdminSettings = () => {
             </div>
           </div>
         </section>
+
+        {/* Lien Vue préparation */}
+        <Link
+          to="/employe"
+          className="block bg-white rounded-xl shadow-sm p-4 mb-4 hover:bg-gray-50 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
+              <ClipboardList size={20} className="text-[#0F4C3A]" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-900">Vue préparation</p>
+              <p className="text-xs text-gray-500">
+                Kanban de gestion des commandes en cours
+              </p>
+            </div>
+            <ArrowRight
+              size={18}
+              className="text-gray-400 group-hover:text-[#0F4C3A] transition-colors"
+            />
+          </div>
+        </Link>
 
         {/* Section 2 — Informations magasin */}
         <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
