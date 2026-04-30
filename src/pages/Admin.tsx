@@ -11,11 +11,15 @@ import {
 } from "recharts";
 import {
   AlertCircle,
+  CheckCircle2,
   Minus,
+  Receipt,
   Settings,
+  ShoppingBag,
   TrendingDown,
   TrendingUp,
   Volume2,
+  type LucideIcon,
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -128,19 +132,22 @@ const TooltipChart = ({
   label?: string;
 }) => {
   if (!active || !payload?.length) return null;
+  // Affiche current en haut (plus important), previous en sous-titre.
+  const current = payload.find((p) => p.name === "current");
+  const previous = payload.find((p) => p.name === "previous");
   return (
-    <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-xs shadow-md">
-      <p className="font-semibold text-gray-700">{label}</p>
-      {payload.map((entry) => (
-        <p key={entry.name} className="mt-0.5 text-gray-600">
-          <span
-            className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle"
-            style={{ backgroundColor: entry.color ?? PRIMARY }}
-          />
-          {entry.name === "current" ? "Période actuelle" : "Période précédente"}{" "}
-          : {formatEUR(entry.value)}
+    <div className="pointer-events-none rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-lg">
+      <p className="text-xs text-gray-500 mb-1">{label}</p>
+      {current && (
+        <p className="text-sm font-medium text-gray-900">
+          Période actuelle : {formatEUR(current.value)}
         </p>
-      ))}
+      )}
+      {previous && (
+        <p className="text-xs text-gray-500 mt-0.5">
+          Période précédente : {formatEUR(previous.value)}
+        </p>
+      )}
     </div>
   );
 };
@@ -194,6 +201,7 @@ const Admin = () => {
   return (
     <div
       className="min-h-dvh bg-[#FAFAFA]"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
       onClickCapture={() => {
         if (!soundEnabled) enableSound();
       }}
@@ -316,7 +324,11 @@ const Admin = () => {
                     tickLine={false}
                   />
                   <YAxis hide />
-                  <Tooltip content={<TooltipChart />} cursor={{ stroke: "#e5e7eb" }} />
+                  <Tooltip
+                    content={<TooltipChart />}
+                    cursor={{ stroke: "#e5e7eb" }}
+                    wrapperStyle={{ outline: "none", pointerEvents: "none" }}
+                  />
                   <Area
                     type="monotone"
                     dataKey="previous"
@@ -354,18 +366,21 @@ const Admin = () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <KpiCard
             title="Commandes"
+            Icon={ShoppingBag}
             value={stats ? intFormatter.format(stats.orders.current) : null}
             change={stats?.orders.changePercent ?? null}
             isLoading={isLoading}
           />
           <KpiCard
             title="Panier moyen"
+            Icon={Receipt}
             value={stats ? formatEUR(stats.basket.current) : null}
             change={stats?.basket.changePercent ?? null}
             isLoading={isLoading}
           />
           <KpiCard
             title="Taux de retrait"
+            Icon={CheckCircle2}
             value={stats ? `${Math.round(stats.pickupRate.current)}%` : null}
             change={stats?.pickupRate.changePercent ?? null}
             isLoading={isLoading}
@@ -390,14 +405,18 @@ const Admin = () => {
 
 interface KpiCardProps {
   title: string;
+  Icon: LucideIcon;
   value: string | null;
   change: number | null;
   isLoading: boolean;
 }
 
-const KpiCard = ({ title, value, change, isLoading }: KpiCardProps) => (
-  <div className="bg-white rounded-xl shadow-sm p-5">
-    <p className="text-xs uppercase font-medium text-gray-500">{title}</p>
+const KpiCard = ({ title, Icon, value, change, isLoading }: KpiCardProps) => (
+  <div className="relative bg-white rounded-xl shadow-sm p-5">
+    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center">
+      <Icon size={20} className="text-[#0F4C3A]" />
+    </div>
+    <p className="text-xs uppercase font-medium text-gray-500 pr-12">{title}</p>
     {isLoading || value === null ? (
       <Skeleton className="mt-2 h-8 w-24" />
     ) : (

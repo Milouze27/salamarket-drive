@@ -40,6 +40,9 @@ export const ProductCard = ({ product }: Props) => {
           src={product.imageUrl}
           alt={product.name}
           loading="lazy"
+          decoding="async"
+          width={600}
+          height={600}
           className="w-full h-full object-cover"
         />
       </div>

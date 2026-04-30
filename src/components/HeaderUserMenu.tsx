@@ -73,7 +73,11 @@ export const HeaderUserMenu = () => {
           {initials}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="min-w-[280px] bg-white border border-gray-200 shadow-lg rounded-xl"
+      >
         <DropdownMenuLabel className="font-normal">
           <p className="text-sm text-gray-700 truncate">{user.email}</p>
         </DropdownMenuLabel>
