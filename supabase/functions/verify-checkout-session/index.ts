@@ -1,3 +1,24 @@
+// ─────────────────────────────────────────────────────────────────────
+// verify-checkout-session — READ-ONLY
+// ─────────────────────────────────────────────────────────────────────
+// Cette function est désormais READ-ONLY : elle ne fait plus aucun
+// .update() / .upsert() sur la table orders.
+//
+// Pourquoi : verify-checkout-session et confirm-order tournaient en
+// parallèle au mount de /commande/confirmee, et tous deux écrivaient
+// sur la même row. Race condition ⇒ confirm-order pouvait voir
+// status != 'pending' et sauter le push notification (~50% miss).
+//
+// Désormais : confirm-order est le seul writer. Cette function se
+// contente de fetch l'order + retourner ses infos pour affichage UI
+// (avec un Stripe.retrieve diagnostique pour les paiements online
+// pas encore confirmés en base).
+//
+// Future : quand le webhook Stripe officiel (checkout.session.completed,
+// Bloc 2.4) sera en place, lui aussi appellera confirm-order. Single
+// writer preserved.
+// ─────────────────────────────────────────────────────────────────────
+
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import Stripe from "https://esm.sh/stripe@18?target=denonext";
@@ -10,6 +31,8 @@ const corsHeaders = {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  console.log("[verify-checkout-session] invoked");
 
   const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
     apiVersion: "2024-11-20.acacia",
@@ -44,30 +67,29 @@ serve(async (req) => {
       .single();
     if (error || !order) return json({ error: "Commande introuvable" }, 404);
 
-    // Déjà payée OU paiement magasin
-    if (order.payment_status === "paid" || order.payment_method === "in_store") {
+    // Pour les paiements online encore unpaid en base : on fait un retrieve
+    // Stripe à titre informatif (diagnostic / future UI), mais on n'écrit
+    // RIEN. confirm-order s'occupe de l'UPDATE atomique.
+    if (
+      order.payment_method === "online" &&
+      order.payment_status !== "paid" &&
+      session_id &&
+      order.stripe_session_id === session_id
+    ) {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        console.log(
+          `[verify-checkout-session] returning session data, payment_status=${session.payment_status} (db=${order.payment_status})`
+        );
+      } catch (stripeErr) {
+        console.error("[verify-checkout-session] stripe retrieve failed:", stripeErr);
+      }
       return json({ order });
     }
 
-    // Paiement en ligne, encore unpaid → on vérifie auprès de Stripe
-    if (session_id && order.stripe_session_id === session_id) {
-      const session = await stripe.checkout.sessions.retrieve(session_id);
-
-      if (session.payment_status === "paid") {
-        const { data: updated } = await supabaseAdmin
-          .from("orders")
-          .update({
-            payment_status: "paid",
-            status: "confirmed",
-            stripe_payment_intent_id: session.payment_intent as string,
-          })
-          .eq("id", order_id)
-          .select("*, pickup_slot:pickup_slots(id, slot_start, slot_end)")
-          .single();
-        return json({ order: updated });
-      }
-    }
-
+    console.log(
+      `[verify-checkout-session] returning session data, payment_status=${order.payment_status}`
+    );
     return json({ order });
   } catch (err) {
     console.error("[verify-checkout-session]", err);
