@@ -109,7 +109,7 @@ export const OnboardingFlow = () => {
             return (
               <CarouselItem
                 key={index}
-                className="flex h-full flex-col items-center justify-center pl-0"
+                className="flex h-full flex-col items-center justify-center pl-0 pb-32 md:pb-40"
               >
                 <div
                   key={`slide-${index}-${current}`}
