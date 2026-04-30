@@ -224,13 +224,13 @@ const Admin = () => {
             >
               {initials}
             </button>
-            <button
-              type="button"
-              aria-label="Paramètres"
+            <Link
+              to="/admin/reglages"
+              aria-label="Réglages"
               className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors"
             >
               <Settings size={18} />
-            </button>
+            </Link>
           </div>
         </header>
 

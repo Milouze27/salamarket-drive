@@ -4,6 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 
 const SOUND_URL = "/sounds/cha-ching.mp3";
 const STORAGE_KEY = "sound_enabled";
+const VOLUME_KEY = "sound_volume";
+const DEFAULT_VOLUME = 0.7;
+
+const readVolume = (): number => {
+  try {
+    const raw = localStorage.getItem(VOLUME_KEY);
+    if (!raw) return DEFAULT_VOLUME;
+    const value = Number(raw);
+    if (!Number.isFinite(value)) return DEFAULT_VOLUME;
+    return Math.max(0, Math.min(1, value));
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+};
 
 interface UseNewOrderSoundOptions {
   onNewOrder?: () => void;
@@ -22,7 +36,7 @@ export const useNewOrderSound = ({ onNewOrder }: UseNewOrderSoundOptions = {}) =
     }
     const audio = new Audio(SOUND_URL);
     audio.preload = "auto";
-    audio.volume = 0.6;
+    audio.volume = readVolume();
     audioRef.current = audio;
     return () => {
       audioRef.current?.pause();
@@ -59,6 +73,9 @@ export const useNewOrderSound = ({ onNewOrder }: UseNewOrderSoundOptions = {}) =
         { event: "INSERT", schema: "public", table: "orders" },
         () => {
           if (soundEnabled && audioRef.current) {
+            // Relit le volume depuis localStorage à chaque play pour
+            // refléter immédiatement les changements faits sur /admin/reglages.
+            audioRef.current.volume = readVolume();
             audioRef.current.currentTime = 0;
             audioRef.current.play().catch(() => undefined);
           }
