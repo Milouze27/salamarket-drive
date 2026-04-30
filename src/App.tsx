@@ -21,6 +21,7 @@ import Account from "./pages/Account.tsx";
 import Orders from "./pages/Orders.tsx";
 import Admin from "./pages/Admin.tsx";
 import AdminSettings from "./pages/AdminSettings.tsx";
+import EmployeeKanban from "./pages/EmployeeKanban.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -87,6 +88,14 @@ const App = () => (
               element={
                 <RoleProtectedRoute requiredRole="admin">
                   <AdminSettings />
+                </RoleProtectedRoute>
+              }
+            />
+            <Route
+              path="/employe"
+              element={
+                <RoleProtectedRoute requiredRoles={["admin", "employee"]}>
+                  <EmployeeKanban />
                 </RoleProtectedRoute>
               }
             />
