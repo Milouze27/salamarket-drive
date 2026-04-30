@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   AlertCircle,
@@ -84,6 +84,34 @@ const OrderConfirmation = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
+
+  // Appelle confirm-order au mount (idempotent côté serveur).
+  // Garde via useRef contre le double-call de React StrictMode.
+  // Sur succès, met à jour le state local de l'order ; sur erreur, on log
+  // mais on ne bloque pas l'affichage (le verify-checkout-session ci-dessous
+  // a déjà chargé l'order depuis la base).
+  const confirmCalledRef = useRef(false);
+  useEffect(() => {
+    if (confirmCalledRef.current) return;
+    confirmCalledRef.current = true;
+    if (!orderId) return;
+
+    const sessionId = searchParams.get("session_id");
+
+    supabase.functions
+      .invoke("confirm-order", {
+        body: { order_id: orderId, session_id: sessionId },
+      })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[confirm-order] failed:", error);
+          return;
+        }
+        if (data?.order) {
+          setOrder(data.order as Order);
+        }
+      });
+  }, [orderId, searchParams]);
 
   useEffect(() => {
     let cancelled = false;
