@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { buildLoginUrl } from "@/lib/redirect";
 
 const FullScreenLoader = () => (
   <div className="min-h-dvh flex flex-col items-center justify-center gap-3 bg-bg">
@@ -21,7 +22,12 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   }
 
   if (!user) {
-    return <Navigate to="/connexion" replace state={{ from: location.pathname }} />;
+    return (
+      <Navigate
+        to={buildLoginUrl(location.pathname + location.search)}
+        replace
+      />
+    );
   }
 
   return <>{children}</>;

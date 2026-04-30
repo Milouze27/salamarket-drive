@@ -3,12 +3,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppHeader } from "@/components/AppHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { translateAuthError } from "@/lib/authErrors";
+import { getRedirectFromSearch } from "@/lib/redirect";
 
 export default function Login() {
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? "/panier";
+  const redirectTo = getRedirectFromSearch(location.search);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +22,7 @@ export default function Login() {
     setLoading(true);
     try {
       await signIn({ email: email.trim(), password });
-      navigate(from, { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(translateAuthError(err));
     } finally {
@@ -79,8 +80,7 @@ export default function Login() {
           </button>
 
           <Link
-            to="/inscription"
-            state={{ from }}
+            to={`/inscription${location.search}`}
             className="text-center text-sm text-primary underline underline-offset-4"
           >
             Pas de compte ? Créer un compte
