@@ -58,7 +58,8 @@ export default function Checkout() {
 
   const items = useCartStore((s) => s.items);
   const totalCents = useCartStore((s) => s.getTotalCents());
-  const clearCart = useCartStore((s) => s.clear);
+  // Note : pas de clearCart ici — OrderConfirmation s'en charge à
+  // la réception d'une order paid OR in_store.
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
 
   const [paymentMethod, setPaymentMethod] = useState<"online" | "in_store">(
@@ -169,12 +170,16 @@ export default function Checkout() {
       }
 
       if (data.checkout_url) {
+        // Stripe : redirection externe vers la page de paiement.
         window.location.href = data.checkout_url;
         return;
       }
-      if (data.redirect_url) {
-        clearCart();
-        navigate(data.redirect_url);
+      if (data.order_id) {
+        // Mode magasin : navigate direct vers la confirmation.
+        // On NE clear PAS le panier ici : OrderConfirmation s'en charge à
+        // la réception de l'order (paid OR in_store). Si on clearCart avant,
+        // le useEffect garde-fou "panier vide → /panier" écrase le navigate.
+        navigate(`/commande/confirmee/${data.order_id}`, { replace: true });
         return;
       }
 
