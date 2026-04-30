@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { LayoutDashboard, LogOut, Package, User } from "lucide-react";
 import {
@@ -45,13 +45,13 @@ export const HeaderUserMenu = () => {
 
   if (!user) {
     return (
-      <button
-        type="button"
-        onClick={() => navigate("/connexion")}
-        className="text-white text-sm font-medium underline-offset-4 hover:underline focus:outline-none px-2"
+      <Link
+        to="/connexion"
+        aria-label="Se connecter"
+        className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
       >
-        Se connecter
-      </button>
+        <User size={22} />
+      </Link>
     );
   }
 
