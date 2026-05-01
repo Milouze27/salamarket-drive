@@ -28,3 +28,15 @@ export const BRAND = {
 } as const;
 
 export type Category = (typeof BRAND.categories)[number];
+
+// Affiche "Salamarket Toulouse" plutôt que "Salamarket Toulouse · Toulouse"
+// quand le nom du magasin contient déjà la ville.
+export const formatStoreLocation = (store: {
+  name: string;
+  city: string;
+}): string => {
+  const nameContainsCity = store.name
+    .toLowerCase()
+    .includes(store.city.toLowerCase());
+  return nameContainsCity ? store.name : `${store.name} · ${store.city}`;
+};

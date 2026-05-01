@@ -7,7 +7,7 @@ import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
-import { BRAND } from "@/config/brand";
+import { BRAND, formatStoreLocation } from "@/config/brand";
 import { normalizeSearch } from "@/lib/search";
 
 const Index = () => {
@@ -102,7 +102,7 @@ const Index = () => {
       </main>
 
       <footer className="py-6 px-4 text-center text-xs text-gray-500 border-t border-gray-200 mt-8">
-        Retrait magasin uniquement · {BRAND.store.name} · {BRAND.store.city}
+        Retrait magasin uniquement · {formatStoreLocation(BRAND.store)}
       </footer>
     </div>
   );

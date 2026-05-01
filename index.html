@@ -11,7 +11,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
-      html, body { background-color: #0F4C3A; }
+      /* Le bg vert sapin doit couvrir 100% de la viewport y compris la
+         safe-area iPhone (home indicator) — sans `min-height: 100dvh`,
+         on voit du blanc sous le content quand l'overlay n'est pas
+         encore monté. */
+      html, body {
+        background-color: #0F4C3A;
+        min-height: 100vh;
+        min-height: 100dvh;
+        margin: 0;
+      }
 
       /* Splash overlay shown immediately, hidden when React mounts */
       #app-splash {
@@ -25,6 +34,8 @@
         justify-content: center;
         gap: 24px;
         transition: opacity 0.4s ease-out;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
       }
 
       #app-splash.hidden {
