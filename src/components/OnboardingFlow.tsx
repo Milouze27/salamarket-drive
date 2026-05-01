@@ -119,11 +119,10 @@ export const OnboardingFlow = () => {
           {SLIDES.map(({ Icon, title, subtitle }, index) => {
             const shouldAnimate =
               index === current && !visitedRef.current.has(index);
-            const isLastIndex = index === SLIDES.length - 1;
             return (
               <CarouselItem
                 key={index}
-                className="flex h-full flex-col items-center justify-center pl-0 pb-32 md:pb-40 lg:flex-row lg:gap-12 lg:px-12 lg:pb-0 xl:gap-20 xl:px-24"
+                className="flex h-full flex-col items-center justify-center pl-0 pb-32 md:pb-40 lg:flex-row lg:px-12 lg:pb-0 xl:px-24"
               >
                 <div
                   key={`slide-${index}-${current}`}
@@ -184,35 +183,6 @@ export const OnboardingFlow = () => {
                     >
                       {subtitle}
                     </p>
-
-                    {/* Dots + CTA — desktop only, sous le texte dans la
-                        colonne droite. Mobile garde sa version absolute
-                        en bas (cf. plus bas). */}
-                    <div className="hidden lg:flex lg:mt-10 lg:items-center lg:gap-2">
-                      {SLIDES.map((_, dotIndex) => (
-                        <span
-                          key={dotIndex}
-                          className={cn(
-                            "h-2 rounded-full transition-all duration-300",
-                            dotIndex === current
-                              ? "w-8 bg-[#D4A93C]"
-                              : "w-2 bg-white/30",
-                          )}
-                        />
-                      ))}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={
-                        isLastIndex
-                          ? handleComplete
-                          : () => api?.scrollNext()
-                      }
-                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-xl lg:bg-[#D4A93C] lg:font-bold lg:text-[#0F4C3A] lg:shadow-lg lg:shadow-[#D4A93C]/25 lg:transition-all lg:hover:bg-[#E0B940] lg:active:scale-[0.98]"
-                    >
-                      {isLastIndex ? "Découvrir le catalogue" : "Suivant"}
-                    </button>
                   </div>
                 </div>
               </CarouselItem>
@@ -232,6 +202,43 @@ export const OnboardingFlow = () => {
             )}
           />
         ))}
+      </div>
+
+      {/* Desktop dots + CTA — hoisted hors du Carousel pour éviter que
+          les boutons des slides inactives (rendus off-screen par embla)
+          restent dans le tab order et qu'un user clavier puisse Tab
+          puis Enter sur un bouton invisible. Positionné en miroir de
+          la grille des slides : colonne droite (50%), bottom 16. */}
+      <div className="pointer-events-none absolute inset-0 z-10 hidden lg:block">
+        <div className="mx-auto flex h-full max-w-6xl items-end px-12 pb-16 xl:px-24">
+          <div className="flex w-full gap-16 xl:gap-24">
+            <div className="w-1/2" aria-hidden="true" />
+            <div className="pointer-events-auto flex w-1/2 flex-col items-start gap-8">
+              <div className="flex items-center gap-2" aria-label="Progression de l'onboarding">
+                {SLIDES.map((_, dotIndex) => (
+                  <span
+                    key={dotIndex}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      dotIndex === current
+                        ? "w-8 bg-[#D4A93C]"
+                        : "w-2 bg-white/30",
+                    )}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={
+                  isLastSlide ? handleComplete : () => api?.scrollNext()
+                }
+                className="inline-flex h-14 items-center justify-center rounded-xl bg-[#D4A93C] px-10 font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98]"
+              >
+                {isLastSlide ? "Découvrir le catalogue" : "Suivant"}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Bouton final mobile/tablet — slide 3 uniquement */}
