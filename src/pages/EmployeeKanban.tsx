@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
 import { ArrowLeft, Banknote, Clock, CreditCard, Phone, Mail, GripVertical } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -123,38 +125,26 @@ function shortId(id: string) {
   return `#${id.slice(0, 6).toUpperCase()}`;
 }
 
-interface DraggableCardProps {
+type DragWiring = Pick<ReturnType<typeof useDraggable>, "attributes" | "listeners">;
+
+interface CardContentProps {
   order: EmployeeOrder;
-  onClick: () => void;
+  dragHandle?: DragWiring;
+  isOverlay?: boolean;
 }
 
-const DraggableCard = ({ order, onClick }: DraggableCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({ id: order.id });
-
-  const style: React.CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : 1,
-  };
-
+// Pur visuel — pas de useDraggable. Réutilisé dans le wrapper Draggable
+// et dans <DragOverlay> pour rendre une "version fantôme" de la card.
+const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps) => {
   const items: OrderItem[] = Array.isArray(order.items) ? order.items : [];
   const itemCount = items.reduce((acc, it) => acc + (it.quantity ?? 0), 0);
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
       className={cn(
-        "group bg-white rounded-lg border border-gray-200 p-3 shadow-sm",
-        "hover:shadow-md transition-shadow cursor-pointer touch-none",
+        "group bg-white rounded-lg border border-gray-200 p-3 shadow-sm touch-none",
+        !isOverlay && "hover:shadow-md transition-shadow cursor-pointer",
       )}
-      onClick={(e) => {
-        if (isDragging) return;
-        // ne pas ouvrir le dialog si le clic vient du handle de drag
-        const target = e.target as HTMLElement;
-        if (target.closest("[data-drag-handle]")) return;
-        onClick();
-      }}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
@@ -165,8 +155,8 @@ const DraggableCard = ({ order, onClick }: DraggableCardProps) => {
         </div>
         <button
           data-drag-handle
-          {...attributes}
-          {...listeners}
+          {...(dragHandle?.attributes ?? {})}
+          {...(dragHandle?.listeners ?? {})}
           className="shrink-0 p-1 -m-1 rounded text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing"
           aria-label="Déplacer la carte"
           onClick={(e) => e.stopPropagation()}
@@ -197,6 +187,40 @@ const DraggableCard = ({ order, onClick }: DraggableCardProps) => {
           {formatEUR(order.total_cents)}
         </p>
       </div>
+    </div>
+  );
+};
+
+interface DraggableCardProps {
+  order: EmployeeOrder;
+  onClick: () => void;
+}
+
+const DraggableCard = ({ order, onClick }: DraggableCardProps) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: order.id,
+  });
+
+  // Pas de transform ici — DragOverlay s'occupe du visuel pendant le drag.
+  // La card source devient semi-transparente pour indiquer son emplacement
+  // d'origine.
+  const style: React.CSSProperties = {
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      onClick={(e) => {
+        if (isDragging) return;
+        // ne pas ouvrir le dialog si le clic vient du handle de drag
+        const target = e.target as HTMLElement;
+        if (target.closest("[data-drag-handle]")) return;
+        onClick();
+      }}
+    >
+      <CardContent order={order} dragHandle={{ attributes, listeners }} />
     </div>
   );
 };
@@ -267,10 +291,17 @@ const EmployeeKanban = () => {
   useNewOrderDing();
 
   const [openOrder, setOpenOrder] = useState<EmployeeOrder | null>(null);
+  const [activeOrder, setActiveOrder] = useState<EmployeeOrder | null>(null);
 
+  // PointerSensor (desktop) : 8px avant drag (évite les drags accidentels au click)
+  // TouchSensor (mobile)    : long-press 200ms avec tolerance 5px (évite les
+  //                           conflits avec le scroll vertical de la colonne)
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { distance: 6 },
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
     }),
   );
 
@@ -286,7 +317,17 @@ const EmployeeKanban = () => {
 
   const toPrepareCount = ordersByStatus.get("confirmed")?.length ?? 0;
 
+  const handleDragStart = (event: DragStartEvent) => {
+    const order = orders.find((o) => o.id === String(event.active.id));
+    setActiveOrder(order ?? null);
+  };
+
+  const handleDragCancel = () => {
+    setActiveOrder(null);
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveOrder(null);
     const { active, over } = event;
     if (!over) return;
     const orderId = String(active.id);
@@ -360,7 +401,12 @@ const EmployeeKanban = () => {
             Chargement des commandes…
           </div>
         ) : (
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
+          >
             <div className="lg:grid lg:grid-cols-5 lg:gap-4 flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 lg:mx-0 lg:px-0 lg:overflow-visible">
               {COLUMNS.map((col) => (
                 <Column
@@ -371,6 +417,24 @@ const EmployeeKanban = () => {
                 />
               ))}
             </div>
+            <DragOverlay
+              dropAnimation={{
+                duration: 250,
+                easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+              }}
+            >
+              {activeOrder ? (
+                <div
+                  style={{
+                    transform: "rotate(3deg)",
+                    boxShadow: "0 16px 32px -8px rgba(0,0,0,0.25)",
+                    cursor: "grabbing",
+                  }}
+                >
+                  <CardContent order={activeOrder} isOverlay />
+                </div>
+              ) : null}
+            </DragOverlay>
           </DndContext>
         )}
       </main>
