@@ -33,10 +33,13 @@ const SLIDES: Slide[] = [
   },
 ];
 
+const EXIT_DURATION_MS = 300;
+
 export const OnboardingFlow = () => {
   const navigate = useNavigate();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
   // Slides déjà arrivés en position active dans cette session.
   // Ref (pas state) pour ne pas déclencher de re-render qui interromprait
   // l'animation CSS en cours.
@@ -73,19 +76,29 @@ export const OnboardingFlow = () => {
   }, []);
 
   const handleComplete = () => {
+    if (isExiting) return;
     try {
       localStorage.setItem("onboarding_completed", "true");
     } catch {
       // ignore
     }
-    window.dispatchEvent(new CustomEvent("onboarding:completed"));
-    navigate("/", { replace: true });
+    setIsExiting(true);
+    window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("onboarding:completed"));
+      navigate("/", { replace: true });
+    }, EXIT_DURATION_MS);
   };
 
   const isLastSlide = current === SLIDES.length - 1;
 
   return (
-    <div className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-gradient-to-br from-[#0F4C3A] via-[#0A3A2C] to-[#073025]">
+    <div
+      className={cn(
+        "fixed inset-0 z-[60] min-h-dvh overflow-hidden bg-gradient-to-br from-[#0F4C3A] via-[#0A3A2C] to-[#073025]",
+        "transition-opacity duration-300 ease-out",
+        isExiting && "opacity-0",
+      )}
+    >
       {!isLastSlide && (
         <button
           type="button"
@@ -106,38 +119,48 @@ export const OnboardingFlow = () => {
           {SLIDES.map(({ Icon, title, subtitle }, index) => {
             const shouldAnimate =
               index === current && !visitedRef.current.has(index);
+            const isLastIndex = index === SLIDES.length - 1;
             return (
               <CarouselItem
                 key={index}
-                className="flex h-full flex-col items-center justify-center pl-0 pb-32 md:pb-40"
+                className="flex h-full flex-col items-center justify-center pl-0 pb-32 md:pb-40 lg:flex-row lg:gap-12 lg:px-12 lg:pb-0 xl:gap-20 xl:px-24"
               >
                 <div
                   key={`slide-${index}-${current}`}
-                  className="flex flex-col items-center"
+                  className="flex flex-col items-center lg:flex-row lg:gap-16 lg:max-w-6xl lg:w-full lg:items-center xl:gap-24"
                 >
                   {/* Cercle doré + halo radial + icône */}
-                  <div
-                    className={cn(
-                      "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#D4A93C]/20",
-                      // Halo radial circulaire (évite le bug iOS Safari du
-                      // filter:blur qui produit un halo carré).
-                      "before:absolute before:-inset-6 before:rounded-full before:content-['']",
-                      "before:bg-[radial-gradient(circle,rgba(212,169,60,0.35)_0%,transparent_70%)]",
-                      shouldAnimate &&
-                        "animate-in fade-in zoom-in-95 duration-500 [animation-fill-mode:backwards]",
-                    )}
-                  >
-                    <Icon
-                      className="relative z-10 text-[#D4A93C]"
-                      size={120}
-                      strokeWidth={1.5}
-                    />
+                  <div className="lg:flex lg:w-1/2 lg:justify-center lg:flex-shrink-0">
+                    <div
+                      className={cn(
+                        "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#D4A93C]/20",
+                        "lg:h-80 lg:w-80",
+                        // Halo radial circulaire (évite le bug iOS Safari du
+                        // filter:blur qui produit un halo carré).
+                        "before:absolute before:-inset-6 before:rounded-full before:content-['']",
+                        "before:bg-[radial-gradient(circle,rgba(212,169,60,0.35)_0%,transparent_70%)]",
+                        shouldAnimate &&
+                          "animate-in fade-in zoom-in-95 duration-500 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      <Icon
+                        className="relative z-10 text-[#D4A93C] lg:hidden"
+                        size={120}
+                        strokeWidth={1.5}
+                      />
+                      <Icon
+                        className="relative z-10 hidden text-[#D4A93C] lg:block"
+                        size={160}
+                        strokeWidth={1.5}
+                      />
+                    </div>
                   </div>
 
-                  <div className="mt-10 flex flex-col items-center">
+                  <div className="mt-10 flex flex-col items-center lg:mt-0 lg:w-1/2 lg:items-start">
                     <h2
                       className={cn(
                         "text-3xl md:text-4xl font-bold tracking-tight text-white text-center px-6",
+                        "lg:text-5xl lg:text-left lg:px-0",
                         shouldAnimate &&
                           "animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150 [animation-fill-mode:backwards]",
                       )}
@@ -146,7 +169,7 @@ export const OnboardingFlow = () => {
                     </h2>
                     <div
                       className={cn(
-                        "my-5 mx-auto h-0.5 w-16 bg-[#D4A93C]",
+                        "my-5 mx-auto h-0.5 w-16 bg-[#D4A93C] lg:mx-0",
                         shouldAnimate &&
                           "animate-in fade-in duration-500 delay-200 [animation-fill-mode:backwards]",
                       )}
@@ -154,12 +177,42 @@ export const OnboardingFlow = () => {
                     <p
                       className={cn(
                         "max-w-sm px-6 text-center text-lg leading-relaxed text-white/80",
+                        "lg:max-w-md lg:px-0 lg:text-left lg:text-xl",
                         shouldAnimate &&
                           "animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 [animation-fill-mode:backwards]",
                       )}
                     >
                       {subtitle}
                     </p>
+
+                    {/* Dots + CTA — desktop only, sous le texte dans la
+                        colonne droite. Mobile garde sa version absolute
+                        en bas (cf. plus bas). */}
+                    <div className="hidden lg:flex lg:mt-10 lg:items-center lg:gap-2">
+                      {SLIDES.map((_, dotIndex) => (
+                        <span
+                          key={dotIndex}
+                          className={cn(
+                            "h-2 rounded-full transition-all duration-300",
+                            dotIndex === current
+                              ? "w-8 bg-[#D4A93C]"
+                              : "w-2 bg-white/30",
+                          )}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={
+                        isLastIndex
+                          ? handleComplete
+                          : () => api?.scrollNext()
+                      }
+                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-xl lg:bg-[#D4A93C] lg:font-bold lg:text-[#0F4C3A] lg:shadow-lg lg:shadow-[#D4A93C]/25 lg:transition-all lg:hover:bg-[#E0B940] lg:active:scale-[0.98]"
+                    >
+                      {isLastIndex ? "Découvrir le catalogue" : "Suivant"}
+                    </button>
                   </div>
                 </div>
               </CarouselItem>
@@ -168,8 +221,8 @@ export const OnboardingFlow = () => {
         </CarouselContent>
       </Carousel>
 
-      {/* Indicateurs dots */}
-      <div className="absolute bottom-24 left-0 right-0 z-10 flex items-center justify-center gap-2">
+      {/* Indicateurs dots — mobile/tablet uniquement */}
+      <div className="absolute bottom-24 left-0 right-0 z-10 flex items-center justify-center gap-2 lg:hidden">
         {SLIDES.map((_, index) => (
           <span
             key={index}
@@ -181,12 +234,12 @@ export const OnboardingFlow = () => {
         ))}
       </div>
 
-      {/* Bouton final — slide 3 uniquement */}
+      {/* Bouton final mobile/tablet — slide 3 uniquement */}
       {isLastSlide && (
         <button
           type="button"
           onClick={handleComplete}
-          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-xl bg-[#D4A93C] font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98]"
+          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-xl bg-[#D4A93C] font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98] lg:hidden"
           style={{ bottom: "calc(env(safe-area-inset-bottom) + 2rem)" }}
         >
           Découvrir le catalogue
