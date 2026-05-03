@@ -11,14 +11,26 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
-      /* Bg sapin sur html/body pour éviter tout flash blanc entre la fin
-         du splash natif iOS (apple-touch-startup-image) et le mount de
-         React. min-height: 100dvh couvre la zone home indicator. */
+      /* Bg sapin pour la transition splash natif iOS → mount React.
+         Sans ça, il y a un flash blanc d'~1s : entre l'instant où le
+         bundle Tailwind charge (qui applique `bg-bg` = #FAFAF7 sur
+         html/body) et l'instant où React injecte enfin du contenu
+         dans #root.
+
+         Le sélecteur #root:empty est la clé : il garantit que tant que
+         React n'a rien rendu, on voit du sapin. Dès que React mount,
+         #root n'est plus :empty → la règle se désactive et l'app
+         reprend la main avec son propre bg. */
       html, body {
         background-color: #0F4C3A;
         min-height: 100vh;
         min-height: 100dvh;
         margin: 0;
+      }
+      #root:empty {
+        position: fixed;
+        inset: 0;
+        background-color: #0F4C3A;
       }
     </style>
     <meta name="apple-mobile-web-app-title" content="Salamarket" />
