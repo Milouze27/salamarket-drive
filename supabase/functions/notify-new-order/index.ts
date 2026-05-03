@@ -47,6 +47,32 @@ const formatEUR = (cents: number) =>
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // ─────────────────────────────────────────────────────────────────
+  // SECURITY — ERROR #3 (Lovable Security Scan 2026-05-02)
+  //
+  // Cette function est appelée EXCLUSIVEMENT en service-to-service
+  // depuis confirm-order (cf. confirm-order/index.ts L138). Elle ne
+  // doit JAMAIS être invoquée depuis le frontend client : sans ce
+  // check, n'importe qui pouvait POSTer un payload arbitraire pour
+  // déclencher un push à tous les admins/employees (spam de notifs,
+  // social engineering possible).
+  //
+  // On compare directement le Bearer au SERVICE_ROLE_KEY au lieu
+  // d'utiliser supabase.auth.getUser() : la function n'est pas
+  // appelée par un user humain, donc pas de session JWT à valider.
+  // ─────────────────────────────────────────────────────────────────
+  const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const expectedAuth = SERVICE_ROLE_KEY ? `Bearer ${SERVICE_ROLE_KEY}` : null;
+  const authHeader = req.headers.get("Authorization");
+
+  if (!expectedAuth || !authHeader || authHeader !== expectedAuth) {
+    console.warn("[notify-new-order] unauthorized call attempt", {
+      hasAuth: !!authHeader,
+      method: req.method,
+    });
+    return json({ error: "Unauthorized — service role required" }, 401);
+  }
+
   console.log("[notify-new-order] invoked, method:", req.method);
 
   const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY");
