@@ -103,12 +103,39 @@ All colors MUST be HSL.
      inline dans index.html persister. Sinon il y a un flash blanc cassé
      dans la zone home indicator iOS pendant la fraction de seconde où
      l'app monte mais où la page n'est pas encore peinte. Les pages
-     définissent leur propre bg explicite (ex. bg-[#FAFAFA] sur l'Index). */
+     définissent leur propre bg explicite (ex. bg-[#FAFAFA] sur l'Index).
+
+     user-select: none + -webkit-touch-callout: none désactivent la
+     sélection de texte iOS au long-press. Donne le feel d'une app
+     native (pas un site web), et évite que le press-and-hold sur une
+     card Kanban déclenche la sélection plutôt que le drag DnD. */
   html, body {
     @apply text-text;
     font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Permet la sélection sur les inputs et zones d'édition (le user doit
+     pouvoir copier-coller son email, son adresse, son code Stripe, etc.). */
+  input,
+  textarea,
+  [contenteditable="true"],
+  [contenteditable=""] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
+
+  /* Classe utilitaire pour ré-autoriser la sélection sur des éléments
+     précis (ex. numéro de commande qu'on peut vouloir copier). */
+  .select-allow {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
   }
 }
 
