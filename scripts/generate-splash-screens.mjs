@@ -35,7 +35,7 @@ const SIZES = [
 ];
 
 // #0F4C3A — vert sapin Salamarket. Doit matcher manifest.background_color
-// et le bg appliqué sur html/body + #app-splash dans index.html.
+// et le bg appliqué sur html/body dans index.html.
 const BG = { r: 0x0f, g: 0x4c, b: 0x3a, alpha: 1 };
 
 // Logo source : version "light" (couleurs claires sur fond sombre) avec
