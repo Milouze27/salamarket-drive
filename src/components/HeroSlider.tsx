@@ -25,7 +25,7 @@ const SLIDES: Slide[] = [
     kicker: "Sélection premium",
     title: "Boucherie d'exception",
     subtitle:
-      "Viandes halal certifiées, sélectionnées avec soin par votre boucher de quartier",
+      "Viandes halal certifiées, sélectionnées avec soin par notre boucher",
     ctaLabel: "Découvrir",
     ctaLink: "/?category=boucherie",
     image: "/hero/slide-1-boucherie.jpg",

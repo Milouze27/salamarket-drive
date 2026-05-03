@@ -85,7 +85,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
         <p className="text-base text-muted mt-1">
           {user
             ? "Que voulez-vous commander ?"
-            : "Bienvenue sur votre épicerie halal de quartier"}
+            : "Bienvenue sur votre supermarché halal"}
         </p>
 
         {/* Search bar large — premium avec border doré subtle */}

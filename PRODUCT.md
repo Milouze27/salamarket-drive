@@ -12,7 +12,7 @@ Le contexte d'usage est mobile-first et fragmenté : entre deux activités, debo
 
 ## Product Purpose
 
-Un drive halal de quartier en click & collect. La promesse : commander en 3 minutes, récupérer en 5. Pas de livraison, pas de stock illimité, pas de comparateur de prix. C'est un commerce de proximité numérisé, pas un Carrefour Drive.
+Un drive halal en click & collect adossé à un supermarché halal indépendant à Toulouse. La promesse : commander en 3 minutes, récupérer en 5. Pas de livraison, pas de stock illimité, pas de comparateur de prix. C'est un supermarché halal indépendant numérisé, pas un Carrefour Drive.
 
 Le succès se mesure à : nombre de commandes par semaine, taux de conversion panier → commande confirmée, NPS sur la fluidité du retrait magasin.
 
@@ -34,7 +34,7 @@ Voix : tutoiement informel mais respectueux ("Votre panier"), jamais commercial 
 
 ## Design Principles
 
-1. **Le commerce de quartier, pas la chaîne** — chaque écran doit évoquer la confiance d'un commerçant qu'on connaît, pas l'efficacité froide d'un supermarché. Le doré du logo et la chaleur du sapin sont les deux ancres émotionnelles.
+1. **Le supermarché indépendant, pas la chaîne** — Salamarket est un supermarché halal local et indépendant, pas un Carrefour ni un Auchan. Chaque écran doit évoquer la confiance d'une enseigne qu'on connaît et qu'on a choisie, pas l'efficacité froide d'une grande surface anonyme. Le doré du logo et la chaleur du sapin sont les deux ancres émotionnelles.
 
 2. **Mobile-first standalone iOS** — la PWA installée doit être indistinguable d'une app native. Safe-area, bottom nav, touch 44pt+, haptic-like animations. Aucun élément qui rappelle qu'on est dans Safari.
 
