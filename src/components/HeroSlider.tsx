@@ -28,7 +28,7 @@ const SLIDES: Slide[] = [
       "Viandes halal certifiées, sélectionnées avec soin par notre boucher",
     ctaLabel: "Découvrir",
     ctaLink: "/?category=boucherie",
-    image: "/hero/slide-1-boucherie.jpg",
+    image: "/hero/slide-1-boucherie.webp",
     imageAlt: "Pièces de viande halal de qualité boucher",
   },
   {
@@ -38,7 +38,7 @@ const SLIDES: Slide[] = [
       "Préparée chaque jour en magasin, dans le respect des traditions",
     ctaLabel: "Voir tout",
     ctaLink: "/?category=charcuterie",
-    image: "/hero/slide-2-charcuterie.jpg",
+    image: "/hero/slide-2-charcuterie.webp",
     imageAlt: "Charcuterie maison traditionnelle",
   },
   {
@@ -48,7 +48,7 @@ const SLIDES: Slide[] = [
       "Tout ce qu'il faut pour vos repas, livré en click & collect",
     ctaLabel: "Parcourir",
     ctaLink: "/",
-    image: "/hero/slide-3-essentiels.jpg",
+    image: "/hero/slide-3-essentiels.webp",
     imageAlt: "Sélection de produits essentiels halal du quotidien",
   },
 ];
