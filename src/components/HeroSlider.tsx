@@ -145,7 +145,7 @@ export const HeroSlider = () => {
                       key={`cta-${index}-${current}`}
                       to={slide.ctaLink}
                       className={cn(
-                        "group/cta relative inline-flex items-center gap-2 overflow-hidden bg-[#D4A93C] text-[#0F4C3A] font-bold px-6 py-3 rounded-xl shadow-lg shadow-[#D4A93C]/30 hover:bg-[#E0B940] hover:shadow-xl hover:shadow-[#D4A93C]/40 active:scale-[0.98] transition-all w-fit",
+                        "group/cta relative inline-flex items-center gap-2 overflow-hidden bg-[#D4A93C] text-[#0F4C3A] font-bold px-6 py-3 rounded-full shadow-lg shadow-[#D4A93C]/30 hover:bg-[#E0B940] hover:shadow-xl hover:shadow-[#D4A93C]/40 active:scale-[0.98] transition-all w-fit",
                         isActive &&
                           "animate-in fade-in zoom-in-95 duration-500 delay-300 [animation-fill-mode:backwards]",
                       )}

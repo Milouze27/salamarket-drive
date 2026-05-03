@@ -151,7 +151,7 @@ const ProductDetail = () => {
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="w-full h-12 rounded-full bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-semibold text-base shadow-lg shadow-[#0F4C3A]/25 hover:shadow-xl hover:shadow-[#0F4C3A]/30 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
             >
               {product.inStock ? "Ajouter au panier" : "Indisponible"}
             </button>

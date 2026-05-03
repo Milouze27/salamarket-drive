@@ -209,7 +209,7 @@ export const OnboardingFlow = () => {
                           ? handleComplete
                           : () => api?.scrollNext()
                       }
-                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-xl lg:bg-[#D4A93C] lg:font-bold lg:text-[#0F4C3A] lg:shadow-lg lg:shadow-[#D4A93C]/25 lg:transition-all lg:hover:bg-[#E0B940] lg:active:scale-[0.98]"
+                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-2xl lg:bg-[#D4A93C] lg:font-bold lg:text-[#0F4C3A] lg:shadow-lg lg:shadow-[#D4A93C]/25 lg:transition-all lg:hover:bg-[#E0B940] lg:active:scale-[0.98]"
                     >
                       {isLastIndex ? "Découvrir le catalogue" : "Suivant"}
                     </button>
@@ -239,7 +239,7 @@ export const OnboardingFlow = () => {
         <button
           type="button"
           onClick={handleComplete}
-          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-xl bg-[#D4A93C] font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98] lg:hidden"
+          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-2xl bg-[#D4A93C] font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98] lg:hidden"
           style={{ bottom: "calc(env(safe-area-inset-bottom) + 2rem)" }}
         >
           Découvrir le catalogue
