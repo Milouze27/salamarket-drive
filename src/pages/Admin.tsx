@@ -136,7 +136,7 @@ const TooltipChart = ({
   const current = payload.find((p) => p.name === "current");
   const previous = payload.find((p) => p.name === "previous");
   return (
-    <div className="pointer-events-none rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-lg">
+    <div className="pointer-events-none rounded-xl border border-border bg-white px-3 py-2 shadow-lg">
       <p className="text-xs text-gray-500 mb-1">{label}</p>
       {current && (
         <p className="text-sm font-medium text-gray-900">
@@ -200,7 +200,7 @@ const Admin = () => {
 
   return (
     <div
-      className="min-h-dvh bg-[#FAFAFA]"
+      className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
       onClickCapture={() => {
         if (!soundEnabled) enableSound();
@@ -210,33 +210,36 @@ const Admin = () => {
         {/* Header */}
         <header className="flex items-start justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Tableau de bord</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Salamarket Toulouse
+            <p className="text-xs uppercase tracking-wider text-[#D4A93C] font-bold mb-1">
+              Espace admin
             </p>
+            <h1 className="text-3xl font-bold text-text tracking-tight">
+              Tableau de bord
+            </h1>
+            <p className="text-sm text-muted mt-1">Salamarket Toulouse</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
+            <Link
+              to="/admin/reglages"
+              aria-label="Réglages admin"
+              className="w-10 h-10 rounded-full bg-white border border-border text-muted hover:text-[#0F4C3A] hover:border-[#0F4C3A]/30 active:scale-95 transition-all flex items-center justify-center shadow-sm"
+            >
+              <Settings size={18} aria-hidden />
+            </Link>
             <button
               type="button"
               aria-label="Mon compte"
               onClick={() => navigate("/compte")}
-              className="w-10 h-10 rounded-full bg-[#0F4C3A] text-white text-sm font-bold flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white active:scale-95 transition-all"
             >
               {initials}
             </button>
-            <Link
-              to="/admin/reglages"
-              aria-label="Réglages"
-              className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors"
-            >
-              <Settings size={18} />
-            </Link>
           </div>
         </header>
 
         {/* Banner activation son */}
         {!soundEnabled && (
-          <div className="mb-4 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div className="mb-4 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <Volume2 size={18} className="shrink-0" />
             <p>
               Cliquez n'importe où pour activer les notifications sonores des
@@ -251,12 +254,12 @@ const Admin = () => {
           onValueChange={(v) => setPeriod(v as Period)}
           className="mb-6"
         >
-          <TabsList className="bg-white shadow-sm rounded-lg p-1 h-auto">
+          <TabsList className="bg-white shadow-sm rounded-full p-1 h-auto border border-border">
             {(Object.keys(PERIOD_LABEL) as Period[]).map((p) => (
               <TabsTrigger
                 key={p}
                 value={p}
-                className="data-[state=active]:bg-[#0F4C3A] data-[state=active]:text-white px-4 py-2 text-sm font-medium rounded-md"
+                className="data-[state=active]:bg-[#0F4C3A] data-[state=active]:text-white px-4 py-2 text-sm font-medium rounded-full transition-all"
               >
                 {PERIOD_LABEL[p]}
               </TabsTrigger>
@@ -266,7 +269,7 @@ const Admin = () => {
 
         {/* Erreur globale */}
         {isError && (
-          <div className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             <AlertCircle size={18} className="shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="font-medium">Impossible de charger les données</p>
@@ -304,7 +307,7 @@ const Admin = () => {
 
           <div className="mt-6 h-[200px] w-full">
             {historyQuery.isLoading ? (
-              <Skeleton className="h-full w-full rounded-lg" />
+              <Skeleton className="h-full w-full rounded-2xl" />
             ) : historyQuery.data && historyQuery.data.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
@@ -412,7 +415,7 @@ interface KpiCardProps {
 }
 
 const KpiCard = ({ title, Icon, value, change, isLoading }: KpiCardProps) => (
-  <div className="relative bg-white rounded-xl shadow-sm p-5">
+  <div className="relative bg-white rounded-2xl shadow-sm border border-border p-5">
     <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center">
       <Icon size={20} className="text-[#0F4C3A]" />
     </div>
@@ -437,7 +440,7 @@ const TopProductsCard = ({
 }) => {
   const max = Math.max(...data.map((p) => p.quantity), 1);
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
+    <div className="bg-white rounded-2xl shadow-sm border border-border p-5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-semibold text-gray-900">
           Top produits ce mois
@@ -499,7 +502,7 @@ const RecentOrdersCard = ({
   isLoading: boolean;
   data: Awaited<ReturnType<typeof getRecentOrders>>;
 }) => (
-  <div className="bg-white rounded-xl shadow-sm p-5">
+  <div className="bg-white rounded-2xl shadow-sm border border-border p-5">
     <div className="flex items-center justify-between mb-3">
       <h3 className="text-base font-semibold text-gray-900">
         Dernières commandes

@@ -142,8 +142,8 @@ const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps)
   return (
     <div
       className={cn(
-        "group bg-white rounded-lg border border-gray-200 p-3 shadow-sm touch-none",
-        !isOverlay && "hover:shadow-md transition-shadow cursor-pointer",
+        "group bg-white rounded-2xl border border-border p-3 shadow-sm touch-none",
+        !isOverlay && "hover:shadow-md hover:border-[#0F4C3A]/30 transition-all cursor-pointer",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -171,13 +171,18 @@ const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps)
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-2">
-        <Badge
-          variant="secondary"
-          className="text-[10px] font-medium px-1.5 py-0.5"
-        >
-          {order.payment_method === "online" ? "💳 En ligne" : "🏪 Magasin"}
-        </Badge>
-        <span className="text-xs text-gray-500">
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0F4C3A]/8 text-[#0F4C3A]">
+          {order.payment_method === "online" ? (
+            <>
+              <CreditCard size={10} aria-hidden /> En ligne
+            </>
+          ) : (
+            <>
+              <Banknote size={10} aria-hidden /> Magasin
+            </>
+          )}
+        </span>
+        <span className="text-xs text-muted">
           {itemCount} article{itemCount > 1 ? "s" : ""}
         </span>
       </div>
@@ -247,7 +252,7 @@ const Column = ({ column, orders, onCardClick }: ColumnProps) => {
   return (
     <div
       className={cn(
-        "flex flex-col rounded-lg border min-w-[280px] lg:min-w-0",
+        "flex flex-col rounded-2xl border min-w-[280px] lg:min-w-0",
         column.bg,
         column.border,
         isOver && "ring-2 ring-[#0F4C3A]/40",
@@ -358,27 +363,34 @@ const EmployeeKanban = () => {
 
   return (
     <div
-      className="min-h-dvh bg-[#FAFAFA]"
+      className="min-h-dvh bg-[#FAFAF7]"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      {/* Header sticky */}
-      <header className="sticky top-0 z-20 bg-[#0F4C3A] text-white shadow">
+      {/* Header sticky — gradient sapin pattern app pro */}
+      <header className="sticky top-0 z-20 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Link
-            to="/admin"
-            className="inline-flex items-center gap-1.5 text-sm hover:opacity-80 transition-opacity"
+            to="/"
+            aria-label="Retour à l'accueil"
+            className="w-10 h-10 -ml-2 rounded-full hover:bg-white/10 flex items-center justify-center text-white active:scale-95 transition-all"
           >
-            <ArrowLeft size={18} />
-            <span>Retour</span>
+            <ArrowLeft size={20} aria-hidden />
           </Link>
-          <h1 className="text-base sm:text-lg font-semibold tracking-tight">
-            Préparation des commandes
-          </h1>
-          <div className="flex items-center gap-2">
+          <div className="text-center">
+            <p className="text-[10px] uppercase tracking-wider text-[#D4A93C] font-bold">
+              Espace pro
+            </p>
+            <h1 className="text-base sm:text-lg font-bold tracking-tight">
+              Préparation
+            </h1>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <span
               className={cn(
-                "inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-full text-sm font-bold tabular-nums",
-                "bg-[#D4A574] text-[#1A1A1A]",
+                "inline-flex items-center justify-center min-w-[2.25rem] h-9 px-2.5 rounded-full text-sm font-bold tabular-nums",
+                toPrepareCount > 0
+                  ? "bg-[#D4A93C] text-[#0F4C3A] shadow-md ring-2 ring-white/20"
+                  : "bg-white/10 text-white/70",
                 toPrepareCount > 0 && "animate-pulse",
               )}
               aria-label={`${toPrepareCount} commande${toPrepareCount > 1 ? "s" : ""} à préparer`}
@@ -391,7 +403,7 @@ const EmployeeKanban = () => {
 
       <main className="max-w-7xl mx-auto p-4">
         {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             Erreur de chargement : {error}
           </div>
         )}
@@ -456,7 +468,7 @@ const EmployeeKanban = () => {
 
               <div className="space-y-4 mt-2">
                 {/* Paiement */}
-                <div className="rounded-lg border bg-card p-3 flex items-start gap-3">
+                <div className="rounded-2xl border bg-card p-3 flex items-start gap-3">
                   {openOrder.payment_method === "online" ? (
                     <CreditCard className="text-[#0F4C3A] shrink-0 mt-0.5" size={18} />
                   ) : (
@@ -483,7 +495,7 @@ const EmployeeKanban = () => {
                 </div>
 
                 {/* Articles */}
-                <div className="rounded-lg border bg-card p-3">
+                <div className="rounded-2xl border bg-card p-3">
                   <p className="text-sm font-medium mb-2">Articles</p>
                   <ul className="space-y-1.5">
                     {(Array.isArray(openOrder.items) ? openOrder.items : []).map(
@@ -510,7 +522,7 @@ const EmployeeKanban = () => {
                 </div>
 
                 {/* Contact client */}
-                <div className="rounded-lg border bg-card p-3 space-y-2 text-sm">
+                <div className="rounded-2xl border bg-card p-3 space-y-2 text-sm">
                   {openOrder.customer_email && (
                     <div className="flex items-center gap-2">
                       <Mail size={14} className="text-gray-400" />
@@ -537,7 +549,7 @@ const EmployeeKanban = () => {
 
                 {/* Notes */}
                 {openOrder.notes && (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-sm">
                     <p className="text-xs font-medium text-amber-800 uppercase mb-1">
                       Note client
                     </p>
