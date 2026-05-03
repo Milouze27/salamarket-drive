@@ -99,8 +99,13 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  /* PAS de bg sur html/body : on laisse le bg sapin (#0F4C3A) défini en
+     inline dans index.html persister. Sinon il y a un flash blanc cassé
+     dans la zone home indicator iOS pendant la fraction de seconde où
+     l'app monte mais où la page n'est pas encore peinte. Les pages
+     définissent leur propre bg explicite (ex. bg-[#FAFAFA] sur l'Index). */
   html, body {
-    @apply bg-bg text-text;
+    @apply text-text;
     font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
