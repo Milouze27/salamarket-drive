@@ -11,87 +11,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
-      /* Le bg vert sapin doit couvrir 100% de la viewport y compris la
-         safe-area iPhone (home indicator) — sans `min-height: 100dvh`,
-         on voit du blanc sous le content quand l'overlay n'est pas
-         encore monté. */
+      /* Bg sapin sur html/body pour éviter tout flash blanc entre la fin
+         du splash natif iOS (apple-touch-startup-image) et le mount de
+         React. min-height: 100dvh couvre la zone home indicator. */
       html, body {
         background-color: #0F4C3A;
         min-height: 100vh;
         min-height: 100dvh;
         margin: 0;
-      }
-
-      /* Splash overlay shown immediately, hidden when React mounts.
-         IMPORTANT : aucun padding env(safe-area-inset-*) — le splash
-         doit COUVRIR la zone home indicator (bg sapin uniforme), pas
-         s'en "protéger". height/min-height explicites en 100vh + 100dvh
-         pour fallback iOS ; le content reste centré via flex. */
-      #app-splash {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100vh;
-        height: 100dvh;
-        min-height: 100vh;
-        min-height: 100dvh;
-        margin: 0;
-        padding: 0;
-        z-index: 9999;
-        background: #0F4C3A;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 24px;
-        transition: opacity 0.4s ease-out;
-      }
-
-      #app-splash.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      #app-splash img {
-        width: 160px;
-        max-width: 60%;
-        animation: splashZoom 0.6s ease-out;
-      }
-
-      #app-splash .splash-title {
-        color: #FFFFFF;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 28px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        margin: 0;
-        animation: splashFadeIn 0.6s ease-out 0.2s both;
-      }
-
-      #app-splash .splash-tagline {
-        color: rgba(255, 255, 255, 0.7);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        margin: 0;
-        animation: splashFadeIn 0.6s ease-out 0.3s both;
-      }
-
-      @keyframes splashZoom {
-        from {
-          opacity: 0;
-          transform: scale(0.92);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      @keyframes splashFadeIn {
-        from { opacity: 0; }
-        to { opacity: 0.7; }
       }
     </style>
     <meta name="apple-mobile-web-app-title" content="Salamarket" />
@@ -145,44 +72,7 @@
 </head>
 
   <body>
-    <div id="app-splash">
-      <img src="/icons/icon-512.png" alt="Salamarket Drive" />
-      <h1 class="splash-title">Salamarket Drive</h1>
-      <p class="splash-tagline">Drive halal</p>
-    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Hide splash overlay when React has mounted
-      let splashHidden = false;
-
-      function hideSplash() {
-        if (splashHidden) return;
-        splashHidden = true;
-
-        const splash = document.getElementById('app-splash');
-        if (splash) {
-          splash.classList.add('hidden');
-          // Remove from DOM after fade-out animation
-          setTimeout(function () { splash.remove(); }, 500);
-        }
-      }
-
-      // Strategy 1: after React has rendered (root has children)
-      function checkReactReady() {
-        const root = document.getElementById('root');
-        if (root && root.children.length > 0) {
-          hideSplash();
-          return;
-        }
-        requestAnimationFrame(checkReactReady);
-      }
-
-      // Strategy 2: safety net, hide after 3s no matter what
-      setTimeout(hideSplash, 3000);
-
-      // Strategy 3: minimum splash duration of 800ms for visual effect
-      setTimeout(checkReactReady, 800);
-    </script>
   </body>
 </html>
