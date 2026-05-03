@@ -95,6 +95,10 @@ const Cart = () => {
                     <img
                       src={item.product.imageUrl}
                       alt={item.product.name}
+                      width={80}
+                      height={80}
+                      loading="lazy"
+                      decoding="async"
                       className="w-20 h-20 rounded-xl object-cover bg-bg"
                     />
                   </Link>

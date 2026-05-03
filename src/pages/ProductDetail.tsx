@@ -75,6 +75,11 @@ const ProductDetail = () => {
               <img
                 src={product.imageUrl}
                 alt={product.name}
+                width={600}
+                height={600}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
               {/* Badge halal flottant en haut à droite */}
