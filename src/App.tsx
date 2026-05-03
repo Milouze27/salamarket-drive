@@ -9,6 +9,8 @@ import { RoleProtectedRoute } from "@/components/RoleProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { OnboardingGate } from "@/components/OnboardingGate";
+import { BottomNav } from "@/components/BottomNav";
+import { StickyCartCTA } from "@/components/StickyCartCTA";
 import Index from "./pages/Index.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
 import Cart from "./pages/Cart.tsx";
@@ -102,6 +104,8 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
+            <StickyCartCTA />
+            <BottomNav />
           </AuthProvider>
         </BrowserRouter>
       </ErrorBoundary>

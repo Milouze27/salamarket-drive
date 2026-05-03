@@ -46,7 +46,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#FAFAFA]">
+    <div className="min-h-dvh bg-[#FAFAFA] pb-20 md:pb-0">
       <Header searchValue={searchInput} onSearchChange={setSearchInput} />
       <HeroSlider />
       <CategoryTabs active={category} onChange={setCategory} />
