@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Search, ShoppingCart, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useCartStore } from "@/stores/cartStore";
+import { useCartCount } from "@/hooks/useCartSummary";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +13,7 @@ interface Props {
 
 export const Header = ({ searchValue, onSearchChange }: Props) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const cartCount = useCartStore((s) =>
-    s.items.reduce((n, i) => n + i.quantity, 0),
-  );
+  const cartCount = useCartCount();
 
   // Bump le badge à chaque changement de quantité (autre que mount initial).
   // On garde l'ancien count en ref pour ne pas bumper sur le 1er render.

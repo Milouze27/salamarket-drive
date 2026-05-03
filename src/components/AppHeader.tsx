@@ -1,7 +1,7 @@
 import { ShoppingBag, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BRAND } from "@/config/brand";
-import { useCartStore } from "@/stores/cartStore";
+import { useCartCount } from "@/hooks/useCartSummary";
 import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
@@ -21,7 +21,7 @@ function getInitials(name?: string | null, email?: string | null) {
 
 export const AppHeader = ({ showBack = false, title }: Props) => {
   const navigate = useNavigate();
-  const count = useCartStore((s) => s.items.reduce((n, i) => n + i.quantity, 0));
+  const count = useCartCount();
   const { user, profile, loading } = useAuth();
 
   const initials = getInitials(profile?.full_name, user?.email);

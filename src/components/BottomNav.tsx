@@ -1,17 +1,21 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Home, Receipt, ShoppingCart, User } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
+import { useCartCount } from "@/hooks/useCartSummary";
 import { cn } from "@/lib/utils";
 
 // Routes où le bottom nav N'apparaît PAS :
-// - flows immersifs (paiement, confirmation, créneaux)
+// - flow checkout (panier, créneaux, paiement, confirmation) — convention
+//   Apple HIG / Material : on retire la nav globale pendant un checkout
+//   pour focus le user. Ça évite aussi le conflit de z-index avec les
+//   CTAs fixed bottom de ces pages.
 // - auth (connexion, inscription)
 // - dashboards opérationnels (admin, employe)
 const HIDDEN_PREFIXES = [
   "/connexion",
   "/inscription",
-  "/paiement",
+  "/panier",
   "/creneaux",
+  "/paiement",
   "/commande/confirmee",
   "/admin",
   "/employe",
@@ -26,9 +30,7 @@ const NAV_ITEMS = [
 
 export const BottomNav = () => {
   const location = useLocation();
-  const cartCount = useCartStore((s) =>
-    s.items.reduce((n, i) => n + i.quantity, 0),
-  );
+  const cartCount = useCartCount();
 
   const isHidden = HIDDEN_PREFIXES.some((prefix) =>
     location.pathname.startsWith(prefix),

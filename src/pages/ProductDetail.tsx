@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AlertCircle, ArrowRight } from "lucide-react";
+import { AlertCircle, ArrowRight, BadgeCheck, Store } from "lucide-react";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import { useProduct } from "@/hooks/useProduct";
@@ -70,34 +70,44 @@ const ProductDetail = () => {
 
         {product && (
           <>
-            <div className="aspect-square w-full max-w-[600px] mx-auto rounded-2xl overflow-hidden bg-white border border-border">
+            {/* Image — coin doré décoratif + shadow subtle */}
+            <div className="relative aspect-square w-full max-w-[600px] mx-auto rounded-2xl overflow-hidden bg-white border border-border shadow-sm animate-in fade-in zoom-in-95 duration-500">
               <img
                 src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
+              {/* Badge halal flottant en haut à droite */}
+              <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur text-[#0F4C3A] text-xs font-bold shadow-md">
+                <BadgeCheck size={14} className="text-[#D4A93C]" aria-hidden />
+                Halal certifié
+              </span>
             </div>
 
-            <div className="flex items-start justify-between gap-4 mt-2">
+            {/* Header titre + prix */}
+            <div className="flex items-start justify-between gap-4 mt-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100 [animation-fill-mode:backwards]">
               <div className="min-w-0 flex-1">
-                <h1 className="text-2xl font-bold text-text leading-tight">
+                <h1 className="text-2xl font-bold text-text leading-tight tracking-tight">
                   {product.name}
                 </h1>
                 <p className="text-sm text-muted mt-1">
                   {unitLabel(product.unit)}
                 </p>
               </div>
-              <span className="text-3xl font-bold text-primary whitespace-nowrap">
-                {formatPrice(product.priceCents)}
-              </span>
+              <div className="text-right whitespace-nowrap">
+                <span className="block text-3xl font-bold text-[#0F4C3A] tabular-nums">
+                  {formatPrice(product.priceCents)}
+                </span>
+              </div>
             </div>
 
-            <div>
+            {/* Pills statut + retrait */}
+            <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150 [animation-fill-mode:backwards]">
               <span
                 className={
                   product.inStock
-                    ? "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
-                    : "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    ? "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"
+                    : "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700"
                 }
               >
                 <span
@@ -106,36 +116,51 @@ const ProductDetail = () => {
                       ? "w-2 h-2 rounded-full bg-green-600"
                       : "w-2 h-2 rounded-full bg-red-600"
                   }
+                  aria-hidden
                 />
                 {product.inStock ? "Disponible" : "Indisponible"}
               </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#0F4C3A]/8 text-[#0F4C3A]">
+                <Store size={12} aria-hidden />
+                Retrait gratuit en magasin
+              </span>
             </div>
 
+            {/* Description avec card subtle */}
             {product.description && (
-              <p className="text-base text-text/80 leading-relaxed">
-                {product.description}
-              </p>
+              <div className="mt-2 rounded-2xl bg-white border border-border p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
+                <p className="text-xs uppercase tracking-wider text-muted font-semibold mb-2">
+                  Description
+                </p>
+                <p className="text-base text-text/85 leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
             )}
           </>
         )}
       </main>
 
       {product && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 bg-bg/95 backdrop-blur border-t border-border">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex flex-col gap-2">
+        // CTA fixed bottom — sur mobile, surélevé via arbitrary class pour
+        // passer AU-DESSUS du BottomNav (56px). Le safe-area est géré par
+        // le padding-bottom interne. Sur desktop (md+), bottom-0 car pas
+        // de BottomNav.
+        <div className="fixed left-0 right-0 z-30 bg-bg/95 backdrop-blur border-t border-border bottom-[calc(env(safe-area-inset-bottom)+56px)] md:bottom-0">
+          <div className="max-w-2xl mx-auto px-4 py-3 md:pb-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex flex-col gap-2">
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="w-full h-12 rounded-full bg-primary text-white font-semibold text-base shadow-md hover:bg-primary/90 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-12 rounded-full bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-semibold text-base shadow-lg shadow-[#0F4C3A]/25 hover:shadow-xl hover:shadow-[#0F4C3A]/30 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
             >
               {product.inStock ? "Ajouter au panier" : "Indisponible"}
             </button>
             {qtyInCart > 0 && (
               <Link
                 to="/panier"
-                className="text-sm text-muted hover:text-primary text-center inline-flex items-center justify-center gap-1"
+                className="text-sm font-medium text-[#0F4C3A] hover:underline text-center inline-flex items-center justify-center gap-1"
               >
-                {qtyInCart} dans le panier · Voir mon panier
+                {qtyInCart} déjà dans le panier · Voir
                 <ArrowRight size={14} />
               </Link>
             )}
