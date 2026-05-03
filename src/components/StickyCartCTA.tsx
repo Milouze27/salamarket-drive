@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { ShoppingCart, ArrowRight } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
+import { useCartCount, useCartTotalCents } from "@/hooks/useCartSummary";
 import { formatPrice } from "@/lib/format";
 
 // CTA panier flottant en bas — pattern Frichti / Picard / Carrefour Drive.
@@ -26,9 +26,8 @@ export const StickyCartCTA = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const items = useCartStore((s) => s.items);
-  const totalCents = useCartStore((s) => s.getTotalCents());
-  const cartCount = items.reduce((n, i) => n + i.quantity, 0);
+  const cartCount = useCartCount();
+  const totalCents = useCartTotalCents();
 
   if (cartCount === 0) return null;
   if (HIDDEN_PREFIXES.some((p) => location.pathname.startsWith(p))) return null;

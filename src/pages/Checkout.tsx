@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCartStore } from "@/stores/cartStore";
+import { useCartTotalCents } from "@/hooks/useCartSummary";
 import { useCheckoutStore } from "@/stores/checkoutStore";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -57,7 +58,7 @@ export default function Checkout() {
   const [searchParams] = useSearchParams();
 
   const items = useCartStore((s) => s.items);
-  const totalCents = useCartStore((s) => s.getTotalCents());
+  const totalCents = useCartTotalCents();
   // Note : pas de clearCart ici — OrderConfirmation s'en charge à
   // la réception d'une order paid OR in_store.
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
