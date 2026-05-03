@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import { useCartStore } from "@/stores/cartStore";
@@ -34,14 +34,29 @@ const Cart = () => {
 
       <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-4 pb-36 flex flex-col gap-3">
         {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-20 gap-4">
-            <div className="text-6xl">🛒</div>
-            <p className="text-base text-text font-medium">
-              Votre panier est vide
-            </p>
+          <div className="flex flex-col items-center justify-center text-center py-20 px-6 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {/* Cercle gradient sapin avec icône Lucide — pattern Stripe/Linear */}
+            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-[#0F4C3A]/10 to-[#D4A93C]/10 flex items-center justify-center">
+              <div className="absolute inset-3 rounded-full bg-white shadow-sm" />
+              <ShoppingBag
+                className="relative text-[#0F4C3A]"
+                size={44}
+                strokeWidth={1.5}
+                aria-hidden
+              />
+            </div>
+            <div className="space-y-1.5">
+              <h2 className="text-xl font-bold text-text">
+                Votre panier est vide
+              </h2>
+              <p className="text-sm text-muted max-w-xs">
+                Découvrez notre sélection de produits halal frais et préparés
+                avec soin.
+              </p>
+            </div>
             <button
               onClick={() => navigate("/")}
-              className="mt-2 px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold"
+              className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0F4C3A] text-white text-sm font-semibold shadow-md shadow-[#0F4C3A]/20 hover:bg-[#0A3A2C] active:scale-[0.98] transition-all"
             >
               Découvrir le catalogue
             </button>
