@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Search, Store, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
+import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -62,18 +63,8 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
           className="flex items-center justify-between mb-5"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
-          <Link
-            to="/"
-            aria-label="Salamarket Drive — accueil"
-            className="active:scale-95 transition-transform"
-          >
-            <img
-              src="/brand/logo-horizontal.png"
-              alt="Salamarket Drive"
-              width={140}
-              height={40}
-              className="h-9 w-auto"
-            />
+          <Link to="/" aria-label="Salamarket Drive — accueil">
+            <BrandLogo size="lg" />
           </Link>
           <HeaderUserMenu />
         </div>
@@ -185,18 +176,8 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
             </>
           ) : (
             <>
-              <Link
-                to="/"
-                aria-label="Salamarket Drive — accueil"
-                className="active:scale-95 transition-transform"
-              >
-                <img
-                  src="/brand/logo-horizontal.png"
-                  alt="Salamarket Drive"
-                  width={120}
-                  height={32}
-                  className="h-8 w-auto"
-                />
+              <Link to="/" aria-label="Salamarket Drive — accueil">
+                <BrandLogo size="sm" />
               </Link>
               <div className="flex-1" />
               <button
