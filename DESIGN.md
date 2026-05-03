@@ -4,7 +4,7 @@
 
 **Native-app warmth.** PWA mobile-first qui se comporte comme une app iOS native. Sapin profond + doré chaleureux sur surface blanc-cassé tinté. Pas de SaaS-cream cliché, pas de halal-décoratif (drapeaux, calligraphies). Le caractère premium vient de la précision typographique, des espaces généreux et des micro-interactions — pas d'effets décoratifs.
 
-**Theme** : light mode uniquement. Scène physique : *"Maman de famille à Toulouse, smartphone iPhone à la main, debout dans la cuisine en plein après-midi, ouvre l'app pour commander avant la fermeture du magasin"*. Lumière chaude naturelle, lisibilité directe sous soleil. Le dark mode trahirait le ton "commerce de quartier".
+**Theme** : light mode uniquement. Scène physique : *"Maman de famille à Toulouse, smartphone iPhone à la main, debout dans la cuisine en plein après-midi, ouvre l'app pour commander avant la fermeture du supermarché Salamarket"*. Lumière chaude naturelle, lisibilité directe sous soleil. Le dark mode trahirait le ton chaleureux et accessible voulu pour un supermarché halal indépendant.
 
 ## Colors (OKLCH-tinted, brand-warm)
 

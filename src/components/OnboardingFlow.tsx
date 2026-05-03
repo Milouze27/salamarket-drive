@@ -19,7 +19,7 @@ const SLIDES: Slide[] = [
   {
     Icon: ShoppingBag,
     title: "Vos produits halal de confiance",
-    subtitle: "Sélectionnés avec soin par votre épicerie de quartier",
+    subtitle: "Sélectionnés avec soin par Salamarket Toulouse",
   },
   {
     Icon: Clock,
