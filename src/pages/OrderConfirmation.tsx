@@ -268,7 +268,7 @@ const OrderConfirmation = () => {
             <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
               Numéro de commande
             </p>
-            <p className="text-2xl font-mono font-bold uppercase mt-1.5 text-[#0F4C3A]">
+            <p className="text-2xl font-mono font-bold uppercase mt-1.5 text-[#0F4C3A] select-allow">
               {orderShortId}
             </p>
           </div>
