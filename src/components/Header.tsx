@@ -45,7 +45,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               type="text"
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Rechercher un produit..."
+              placeholder="Rechercher viandes, épices, riz…"
               className="flex-1 h-10 bg-white/10 border-transparent text-white placeholder:text-white/60 focus-visible:bg-white/20 focus-visible:border-transparent focus-visible:ring-0 rounded-full pl-4 pr-4"
             />
             {searchValue && (
@@ -84,7 +84,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
                 type="text"
                 value={searchValue}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Rechercher un produit..."
+                placeholder="Rechercher viandes, épices, riz…"
                 className="h-10 bg-white/10 hover:bg-white/15 border-transparent text-white placeholder:text-white/60 focus-visible:bg-white/20 focus-visible:border-white/30 focus-visible:ring-0 rounded-full pl-10 pr-10 transition-all"
               />
               {searchValue && (

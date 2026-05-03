@@ -213,9 +213,9 @@ export default function Checkout() {
         <h1 className="text-lg font-semibold">Paiement</h1>
       </header>
 
-      <div className="space-y-4 p-4">
+      <div className="space-y-5 p-4 max-w-2xl mx-auto">
         {/* Récapitulatif */}
-        <section className="rounded-lg bg-card p-4 shadow-sm">
+        <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
             Récapitulatif de commande
           </h2>
@@ -243,7 +243,7 @@ export default function Checkout() {
         </section>
 
         {/* Créneau */}
-        <section className="rounded-lg bg-card p-4 shadow-sm">
+        <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
             Créneau de retrait
           </h2>
@@ -264,7 +264,7 @@ export default function Checkout() {
         </section>
 
         {/* Mode de paiement */}
-        <section className="rounded-lg bg-card p-4 shadow-sm">
+        <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
             Mode de paiement
           </h2>
@@ -310,7 +310,7 @@ export default function Checkout() {
         </section>
 
         {/* Notes */}
-        <section className="rounded-lg bg-card p-4 shadow-sm">
+        <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <Label
             htmlFor="notes"
             className="mb-2 block text-sm font-semibold text-muted-foreground"
@@ -333,16 +333,24 @@ export default function Checkout() {
       </div>
 
       {/* Bouton sticky bas */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background p-4">
-        <Button
-          onClick={handleSubmit}
-          disabled={loading || !slot}
-          size="lg"
-          className="w-full"
-        >
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {buttonLabel}
-        </Button>
+      <div
+        className="fixed bottom-0 left-0 right-0 border-t bg-background p-4"
+        style={{
+          boxShadow: "0 -4px 16px rgba(15, 76, 58, 0.06)",
+          paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
+        }}
+      >
+        <div className="max-w-2xl mx-auto">
+          <Button
+            onClick={handleSubmit}
+            disabled={loading || !slot}
+            size="lg"
+            className="w-full"
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {buttonLabel}
+          </Button>
+        </div>
       </div>
     </div>
   );
