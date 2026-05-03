@@ -1,0 +1,94 @@
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, ClipboardList, LayoutDashboard } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+
+type Role = "admin" | "employee" | "client";
+
+const fetchRole = async (userId: string): Promise<Role | null> => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as { role?: Role } | null)?.role ?? null;
+};
+
+// Banner d'accès rapide à l'espace pro pour les comptes staff (admin /
+// employee). Apparaît en haut de la homepage. Pour un admin, propose
+// les 2 destinations (Préparation + Tableau de bord) ; pour un employee,
+// propose juste Préparation. Permet d'éviter le chemin via le menu
+// dropdown qui demande 2 taps.
+export const StaffBanner = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const { data: role } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: () => fetchRole(user!.id),
+    enabled: !!user?.id,
+    staleTime: 5 * 60_000,
+  });
+
+  if (!user || (role !== "admin" && role !== "employee")) return null;
+  const isAdmin = role === "admin";
+
+  return (
+    <section
+      aria-label="Espace pro"
+      className="px-4 mb-4 animate-in fade-in slide-in-from-top-2 duration-500"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white p-4 shadow-lg shadow-[#0F4C3A]/20 overflow-hidden relative">
+          {/* Accent doré décoratif */}
+          <div
+            aria-hidden
+            className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#D4A93C]/10"
+          />
+          <div className="relative flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase tracking-wider font-bold text-[#D4A93C]">
+                Espace pro
+              </p>
+              <p className="text-base font-bold mt-0.5">
+                {isAdmin
+                  ? "Bonjour patron"
+                  : "Prêt à préparer les commandes ?"}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => navigate("/employe")}
+                className="group inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-sm font-bold shadow-md active:scale-95 transition-all"
+                aria-label="Aller à la préparation des commandes"
+              >
+                <ClipboardList size={16} strokeWidth={2.5} aria-hidden />
+                <span>Préparation</span>
+                <ArrowRight
+                  size={14}
+                  className="transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => navigate("/admin")}
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-white active:scale-95 transition-all"
+                  aria-label="Tableau de bord admin"
+                >
+                  <LayoutDashboard size={18} aria-hidden />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default StaffBanner;

@@ -1,6 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { LayoutDashboard, LogOut, Package, User } from "lucide-react";
+import {
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Settings,
+  User,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +39,12 @@ const getInitials = (name?: string | null, email?: string | null): string => {
   return source.slice(0, 2).toUpperCase();
 };
 
+const ROLE_LABEL: Record<Role, string> = {
+  admin: "Administrateur",
+  employee: "Employé",
+  client: "Client",
+};
+
 export const HeaderUserMenu = () => {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
@@ -43,19 +56,24 @@ export const HeaderUserMenu = () => {
     staleTime: 5 * 60_000,
   });
 
+  // Pas loggé : icône user dans cercle sapin/doré bordé pour visibilité max
+  // sur fond clair (le précédent text-white était invisible sur bg-FAFAF7).
   if (!user) {
     return (
       <Link
         to="/connexion"
         aria-label="Se connecter"
-        className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
+        className="w-10 h-10 rounded-full bg-white border-2 border-[#0F4C3A]/15 hover:border-[#0F4C3A]/40 flex items-center justify-center text-[#0F4C3A] active:scale-95 transition-all shadow-sm"
       >
-        <User size={22} />
+        <User size={20} strokeWidth={2.2} aria-hidden />
       </Link>
     );
   }
 
   const initials = getInitials(profile?.full_name, user.email);
+  const roleLabel = role ? ROLE_LABEL[role] : null;
+  const isAdmin = role === "admin";
+  const isStaff = role === "admin" || role === "employee";
 
   const handleSignOut = async () => {
     await signOut();
@@ -68,43 +86,103 @@ export const HeaderUserMenu = () => {
         <button
           type="button"
           aria-label="Mon compte"
-          className="h-10 w-10 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/30"
+          className="relative h-10 w-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white active:scale-95 transition-all hover:shadow-lg"
         >
           {initials}
+          {/* Pastille verte si staff (admin/employee) — signal visuel */}
+          {isStaff && (
+            <span
+              aria-hidden
+              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#0F4C3A] ring-2 ring-white"
+            />
+          )}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="min-w-[280px] bg-white border border-gray-200 shadow-lg rounded-xl"
+        className="min-w-[260px] bg-white border border-border shadow-xl rounded-2xl p-1.5"
       >
-        <DropdownMenuLabel className="font-normal">
-          <p className="text-sm text-gray-700 truncate">{user.email}</p>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate("/compte")} className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
+        {/* Header user info */}
+        <div className="px-3 py-2.5 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shrink-0">
+            {initials}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-text truncate">
+              {profile?.full_name || "Bienvenue"}
+            </p>
+            <p className="text-xs text-muted truncate">{user.email}</p>
+            {roleLabel && (
+              <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#0F4C3A]/8 text-[#0F4C3A] text-[10px] font-bold uppercase tracking-wider">
+                {roleLabel}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <DropdownMenuSeparator className="bg-border my-1" />
+
+        {/* Section client (toujours visible) */}
+        <DropdownMenuItem
+          onClick={() => navigate("/compte")}
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+        >
+          <User className="h-4 w-4 text-muted" aria-hidden />
           Mon compte
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate("/commandes")} className="cursor-pointer">
-          <Package className="mr-2 h-4 w-4" />
+        <DropdownMenuItem
+          onClick={() => navigate("/commandes")}
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+        >
+          <Package className="h-4 w-4 text-muted" aria-hidden />
           Mes commandes
         </DropdownMenuItem>
-        {role === "admin" && (
+
+        {/* Section staff — visible si admin OU employee */}
+        {isStaff && (
           <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer">
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Tableau de bord admin
+            <DropdownMenuSeparator className="bg-border my-1" />
+            <DropdownMenuLabel className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+              Espace pro
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigate("/employe")}
+              className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+            >
+              <ClipboardList className="h-4 w-4 text-[#0F4C3A]" aria-hidden />
+              Préparation commandes
             </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuItem
+                  onClick={() => navigate("/admin")}
+                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+                >
+                  <LayoutDashboard
+                    className="h-4 w-4 text-[#0F4C3A]"
+                    aria-hidden
+                  />
+                  Tableau de bord
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => navigate("/admin/reglages")}
+                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+                >
+                  <Settings className="h-4 w-4 text-[#0F4C3A]" aria-hidden />
+                  Réglages admin
+                </DropdownMenuItem>
+              </>
+            )}
           </>
         )}
-        <DropdownMenuSeparator />
+
+        <DropdownMenuSeparator className="bg-border my-1" />
         <DropdownMenuItem
           onClick={handleSignOut}
-          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium text-destructive focus:text-destructive hover:bg-red-50 focus:bg-red-50 gap-2.5"
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="h-4 w-4" aria-hidden />
           Se déconnecter
         </DropdownMenuItem>
       </DropdownMenuContent>

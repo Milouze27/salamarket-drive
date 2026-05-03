@@ -65,14 +65,15 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
           <Link
             to="/"
             aria-label="Salamarket Drive — accueil"
-            className="inline-flex items-baseline gap-1 active:scale-95 transition-transform"
+            className="active:scale-95 transition-transform"
           >
-            <span className="text-base font-bold text-[#0F4C3A] tracking-tight">
-              Salamarket
-            </span>
-            <span className="text-base font-light text-[#D4A93C] tracking-tight">
-              Drive
-            </span>
+            <img
+              src="/brand/logo-horizontal.png"
+              alt="Salamarket Drive"
+              width={140}
+              height={40}
+              className="h-9 w-auto"
+            />
           </Link>
           <HeaderUserMenu />
         </div>
@@ -187,14 +188,15 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               <Link
                 to="/"
                 aria-label="Salamarket Drive — accueil"
-                className="inline-flex items-baseline gap-1 active:scale-95 transition-transform"
+                className="active:scale-95 transition-transform"
               >
-                <span className="text-base font-bold text-[#0F4C3A] tracking-tight">
-                  Salamarket
-                </span>
-                <span className="text-base font-light text-[#D4A93C] tracking-tight">
-                  Drive
-                </span>
+                <img
+                  src="/brand/logo-horizontal.png"
+                  alt="Salamarket Drive"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                />
               </Link>
               <div className="flex-1" />
               <button

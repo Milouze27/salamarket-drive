@@ -4,6 +4,7 @@ import { AlertCircle, SearchX } from "lucide-react";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryTabs } from "@/components/CategoryTabs";
+import { StaffBanner } from "@/components/StaffBanner";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
@@ -29,6 +30,21 @@ const Index = () => {
     return () => clearTimeout(t);
   }, [searchInput]);
 
+  // Préload TOUTES les images du catalogue dès qu'il est chargé. Quand
+  // l'utilisateur change de catégorie, les images sont déjà dans le cache
+  // navigateur et apparaissent instantanément (pas de flash de chargement).
+  // Le coût est ~2 MB initial (12 images × ~150 KB WebP) — acceptable
+  // pour le confort UX du switch catégorie.
+  useEffect(() => {
+    if (!allProducts) return;
+    allProducts.forEach((p) => {
+      if (!p.imageUrl) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = p.imageUrl;
+    });
+  }, [allProducts]);
+
   const products = useMemo(() => {
     if (!allProducts) return [];
     const term = normalizeSearch(debouncedSearch);
@@ -48,6 +64,7 @@ const Index = () => {
   return (
     <div className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0">
       <Header searchValue={searchInput} onSearchChange={setSearchInput} />
+      <StaffBanner />
       <HeroSlider />
       <CategoryTabs active={category} onChange={setCategory} />
 
