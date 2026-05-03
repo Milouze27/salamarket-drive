@@ -4,7 +4,13 @@ export const BRAND = {
   store: {
     name: "Salamarket Toulouse",
     city: "Toulouse",
+    address: "8 avenue Larrieu-Thibaud",
+    postalCode: "31100",
     pickupOnly: true,
+    hours: [
+      { days: "Lun – Sam", time: "10h00 – 19h30" },
+      { days: "Dimanche", time: "10h00 – 18h00" },
+    ],
   },
   colors: {
     primary: "#0F4C3A",
