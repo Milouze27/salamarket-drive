@@ -78,8 +78,17 @@ const Index = () => {
           </div>
         ) : products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {products.map((p, idx) => (
+              <div
+                key={p.id}
+                className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-fill-mode:backwards]"
+                // Stagger : 8 premières cards apparaissent en cascade
+                // (~40ms delta), puis tout le reste d'un coup pour ne pas
+                // donner une attente trop longue sur les listes longues.
+                style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
+              >
+                <ProductCard product={p} />
+              </div>
             ))}
           </div>
         ) : (

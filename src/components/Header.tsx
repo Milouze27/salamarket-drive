@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Search, ShoppingCart, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useCartStore } from "@/stores/cartStore";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
+import { cn } from "@/lib/utils";
 
 interface Props {
   searchValue: string;
@@ -15,6 +16,20 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
   const cartCount = useCartStore((s) =>
     s.items.reduce((n, i) => n + i.quantity, 0),
   );
+
+  // Bump le badge à chaque changement de quantité (autre que mount initial).
+  // On garde l'ancien count en ref pour ne pas bumper sur le 1er render.
+  const prevCountRef = useRef(cartCount);
+  const [bump, setBump] = useState(false);
+  useEffect(() => {
+    if (prevCountRef.current !== cartCount && cartCount > 0) {
+      setBump(true);
+      const t = window.setTimeout(() => setBump(false), 400);
+      prevCountRef.current = cartCount;
+      return () => window.clearTimeout(t);
+    }
+    prevCountRef.current = cartCount;
+  }, [cartCount]);
 
   const cartLabel =
     cartCount > 0
@@ -122,7 +137,12 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               >
                 <ShoppingCart size={22} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border-2 border-[#0F4C3A]">
+                  <span
+                    className={cn(
+                      "absolute -top-0.5 -right-0.5 bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border-2 border-[#0F4C3A] shadow-md shadow-[#D4A93C]/40",
+                      bump && "animate-cart-bump",
+                    )}
+                  >
                     {displayedCount}
                   </span>
                 )}

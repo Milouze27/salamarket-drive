@@ -82,41 +82,90 @@ export const HeroSlider = () => {
         className="w-full"
       >
         <CarouselContent className="ml-0">
-          {SLIDES.map((slide, index) => (
-            <CarouselItem key={index} className="pl-0 basis-full">
-              <div className="relative h-72 md:h-80 w-full overflow-hidden bg-[#0F4C3A]">
-                <img
-                  src={slide.image}
-                  alt={slide.imageAlt}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C3A]/85 via-[#0F4C3A]/60 to-[#0F4C3A]/30" />
-                <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto">
-                  <span className="text-[#D4A93C] text-sm font-semibold uppercase tracking-wider mb-2">
-                    {slide.kicker}
-                  </span>
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3 max-w-md">
-                    {slide.title}
-                  </h2>
-                  <p className="text-base md:text-lg text-white/90 mb-6 max-w-md">
-                    {slide.subtitle}
-                  </p>
-                  <Link
-                    to={slide.ctaLink}
-                    className="inline-flex items-center gap-2 bg-[#D4A93C] text-[#0F4C3A] font-bold px-6 py-3 rounded-xl shadow-lg hover:bg-[#E0B940] active:scale-[0.98] transition-all w-fit"
-                  >
-                    {slide.ctaLabel}
-                    <ArrowRight size={18} />
-                  </Link>
+          {SLIDES.map((slide, index) => {
+            // Le ken-burns + le stagger d'entrée doivent rejouer à chaque
+            // changement de slide actif. La key change déclenche un remount
+            // donc l'animation CSS repart de zéro proprement.
+            const isActive = index === current;
+            return (
+              <CarouselItem key={index} className="pl-0 basis-full">
+                <div className="relative h-72 md:h-80 w-full overflow-hidden bg-[#0F4C3A]">
+                  <img
+                    key={`img-${index}-${isActive ? current : "idle"}`}
+                    src={slide.image}
+                    alt={slide.imageAlt}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                    className={cn(
+                      "absolute inset-0 w-full h-full object-cover origin-center will-change-transform",
+                      isActive && "animate-ken-burns",
+                    )}
+                  />
+                  {/* Voile sapin pour lisibilité du texte sur image. Léger
+                      gradient radial pour donner un effet "spotlight" sur
+                      la zone titre. */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C3A]/90 via-[#0F4C3A]/65 to-[#0F4C3A]/30" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(212,169,60,0.12)_0%,transparent_60%)]" />
+
+                  <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto">
+                    <span
+                      key={`kicker-${index}-${current}`}
+                      className={cn(
+                        "text-[#D4A93C] text-sm font-semibold uppercase tracking-[0.18em] mb-2",
+                        isActive &&
+                          "animate-in fade-in slide-in-from-left-3 duration-500 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {slide.kicker}
+                    </span>
+                    <h2
+                      key={`title-${index}-${current}`}
+                      className={cn(
+                        "text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3 max-w-md",
+                        isActive &&
+                          "animate-in fade-in slide-in-from-left-4 duration-500 delay-100 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {slide.title}
+                    </h2>
+                    <p
+                      key={`sub-${index}-${current}`}
+                      className={cn(
+                        "text-base md:text-lg text-white/90 mb-6 max-w-md",
+                        isActive &&
+                          "animate-in fade-in slide-in-from-left-4 duration-500 delay-200 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {slide.subtitle}
+                    </p>
+                    <Link
+                      key={`cta-${index}-${current}`}
+                      to={slide.ctaLink}
+                      className={cn(
+                        "group/cta relative inline-flex items-center gap-2 overflow-hidden bg-[#D4A93C] text-[#0F4C3A] font-bold px-6 py-3 rounded-xl shadow-lg shadow-[#D4A93C]/30 hover:bg-[#E0B940] hover:shadow-xl hover:shadow-[#D4A93C]/40 active:scale-[0.98] transition-all w-fit",
+                        isActive &&
+                          "animate-in fade-in zoom-in-95 duration-500 delay-300 [animation-fill-mode:backwards]",
+                      )}
+                    >
+                      {/* Shimmer : barre lumineuse qui sweep le bouton */}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"
+                      />
+                      <span className="relative z-10">{slide.ctaLabel}</span>
+                      <ArrowRight
+                        size={18}
+                        className="relative z-10 transition-transform group-hover/cta:translate-x-0.5"
+                      />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
 
