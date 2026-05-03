@@ -276,7 +276,7 @@ export default function Checkout() {
           >
             <label
               htmlFor="pm-online"
-              className="flex cursor-pointer items-start gap-3 rounded-md border p-3 transition-colors hover:bg-muted/50"
+              className="flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-colors hover:bg-muted/50"
             >
               <RadioGroupItem value="online" id="pm-online" className="mt-1" />
               <div className="flex-1">
@@ -291,7 +291,7 @@ export default function Checkout() {
 
             <label
               htmlFor="pm-instore"
-              className="flex cursor-pointer items-start gap-3 rounded-md border p-3 transition-colors hover:bg-muted/50"
+              className="flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-colors hover:bg-muted/50"
             >
               <RadioGroupItem
                 value="in_store"
@@ -346,7 +346,7 @@ export default function Checkout() {
             onClick={handleSubmit}
             disabled={loading || !slot}
             size="lg"
-            className="w-full"
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 hover:from-[#0F4C3A] hover:to-[#0A3A2C] active:scale-[0.99] transition-all"
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {buttonLabel}

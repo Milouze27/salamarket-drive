@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, ShoppingCart, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { useCartCount } from "@/hooks/useCartSummary";
+import { ArrowLeft, Search, Store, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { cn } from "@/lib/utils";
 
@@ -11,148 +10,207 @@ interface Props {
   onSearchChange: (value: string) => void;
 }
 
+// Extrait le prénom du full_name. Fallback null si vide.
+const firstNameOf = (full?: string | null): string | null => {
+  if (!full) return null;
+  const trimmed = full.trim();
+  if (!trimmed) return null;
+  return trimmed.split(/\s+/)[0];
+};
+
+// Salutation contextuelle selon l'heure (Europe/Paris).
+const greetingForHour = (h: number): string => {
+  if (h < 5) return "Bonsoir";
+  if (h < 18) return "Bonjour";
+  return "Bonsoir";
+};
+
 export const Header = ({ searchValue, onSearchChange }: Props) => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const cartCount = useCartCount();
+  const { profile, user } = useAuth();
+  const firstName = firstNameOf(profile?.full_name);
 
-  // Bump le badge à chaque changement de quantité (autre que mount initial).
-  // On garde l'ancien count en ref pour ne pas bumper sur le 1er render.
-  const prevCountRef = useRef(cartCount);
-  const [bump, setBump] = useState(false);
+  // iOS Large Title pattern : le hero scroll naturellement avec la page
+  // (non sticky) ; quand il sort de la viewport, un compact bar fixed
+  // top apparaît avec opacity tracked par IntersectionObserver. Cela évite
+  // le scroll-listener overhead et reste smooth sur Safari iOS.
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [showCompact, setShowCompact] = useState(false);
+  const [compactSearchOpen, setCompactSearchOpen] = useState(false);
+
   useEffect(() => {
-    if (prevCountRef.current !== cartCount && cartCount > 0) {
-      setBump(true);
-      const t = window.setTimeout(() => setBump(false), 400);
-      prevCountRef.current = cartCount;
-      return () => window.clearTimeout(t);
-    }
-    prevCountRef.current = cartCount;
-  }, [cartCount]);
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setShowCompact(!entry.isIntersecting),
+      { rootMargin: "0px", threshold: 0 },
+    );
+    obs.observe(sentinel);
+    return () => obs.disconnect();
+  }, []);
 
-  const cartLabel =
-    cartCount > 0
-      ? `Panier (${cartCount} article${cartCount > 1 ? "s" : ""})`
-      : "Panier";
-  const displayedCount = cartCount > 9 ? "9+" : String(cartCount);
+  // Calcul du greeting (recalc à chaque mount, pas reactive — c'est OK
+  // car la session est rarement assez longue pour traverser midi)
+  const hour = new Date().getHours();
+  const greet = greetingForHour(hour);
 
   return (
-    <header
-      aria-label="Navigation principale"
-      className="sticky top-0 z-50 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] border-b border-white/10"
-      style={{ paddingTop: "env(safe-area-inset-top)" }}
-    >
-      <div className="max-w-7xl mx-auto px-4 flex items-center h-16">
-        {isSearchOpen ? (
-          /* Mode recherche mobile : remplace TOUT le contenu du header */
-          <div className="flex items-center gap-3 w-full">
+    <>
+      {/* HERO — scrolls naturellement avec la page */}
+      <section className="bg-[#FAFAF7] px-4 pt-3 pb-5">
+        {/* Top row : logo wordmark + account */}
+        <div
+          className="flex items-center justify-between mb-5"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <Link
+            to="/"
+            aria-label="Salamarket Drive — accueil"
+            className="inline-flex items-baseline gap-1 active:scale-95 transition-transform"
+          >
+            <span className="text-base font-bold text-[#0F4C3A] tracking-tight">
+              Salamarket
+            </span>
+            <span className="text-base font-light text-[#D4A93C] tracking-tight">
+              Drive
+            </span>
+          </Link>
+          <HeaderUserMenu />
+        </div>
+
+        {/* Greeting hero */}
+        <h1 className="text-[28px] font-bold text-text leading-tight tracking-tight">
+          {greet}
+          {firstName ? `, ${firstName}` : ""}
+        </h1>
+        <p className="text-base text-muted mt-1">
+          {user
+            ? "Que voulez-vous commander ?"
+            : "Bienvenue sur votre épicerie halal de quartier"}
+        </p>
+
+        {/* Search bar large — premium avec border doré subtle */}
+        <div className="relative mt-5">
+          <Search
+            size={20}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F4C3A] pointer-events-none"
+            aria-hidden
+          />
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Rechercher viandes, épices, riz..."
+            aria-label="Rechercher un produit"
+            className="w-full h-14 rounded-2xl bg-white border-2 border-[#D4A93C]/25 pl-12 pr-12 text-base placeholder:text-muted/65 text-text focus:outline-none focus:border-[#0F4C3A]/60 focus:ring-4 focus:ring-[#0F4C3A]/8 transition-all shadow-sm"
+            inputMode="search"
+            enterKeyHint="search"
+          />
+          {searchValue && (
             <button
               type="button"
-              onClick={() => setIsSearchOpen(false)}
-              aria-label="Fermer la recherche"
-              className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white shrink-0 focus:outline-none focus:ring-2 focus:ring-white/30"
+              onClick={() => onSearchChange("")}
+              aria-label="Effacer la recherche"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full hover:bg-[#FAFAF7] flex items-center justify-center text-muted active:scale-90 transition-transform"
             >
-              <ArrowLeft size={22} />
+              <X size={18} aria-hidden />
             </button>
-            <Input
-              autoFocus
-              type="text"
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Rechercher viandes, épices, riz…"
-              className="flex-1 h-10 bg-white/10 border-transparent text-white placeholder:text-white/60 focus-visible:bg-white/20 focus-visible:border-transparent focus-visible:ring-0 rounded-full pl-4 pr-4"
-            />
-            {searchValue && (
-              <button
-                type="button"
-                onClick={() => onSearchChange("")}
-                aria-label="Effacer la recherche"
-                className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white/70 shrink-0"
-              >
-                <X size={20} />
-              </button>
-            )}
-          </div>
-        ) : (
-          <>
-            {/* Logo */}
-            <Link
-              to="/"
-              className="shrink-0 flex items-center"
-              aria-label="Salamarket Drive — accueil"
-            >
-              <img
-                src="/brand/logo-horizontal-light.png"
-                alt="Salamarket Drive"
-                className="h-9 md:h-10 w-auto"
-              />
-            </Link>
+          )}
+        </div>
 
-            {/* Recherche desktop */}
-            <div className="flex-1 max-w-md mx-6 hidden md:block relative">
-              <Search
-                size={18}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none"
-              />
-              <Input
-                type="text"
-                value={searchValue}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Rechercher viandes, épices, riz…"
-                className="h-10 bg-white/10 hover:bg-white/15 border-transparent text-white placeholder:text-white/60 focus-visible:bg-white/20 focus-visible:border-white/30 focus-visible:ring-0 rounded-full pl-10 pr-10 transition-all"
-              />
-              {searchValue && (
-                <button
-                  type="button"
-                  onClick={() => onSearchChange("")}
-                  aria-label="Effacer la recherche"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
+        {/* Magasin info — discret, donne le contexte */}
+        <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted">
+          <Store size={12} className="text-[#0F4C3A]" aria-hidden />
+          <span>
+            <span className="font-semibold text-text">Salamarket Toulouse</span>
+            <span className="mx-1.5 text-muted/50">·</span>
+            <span>Retrait au 8 av. Larrieu-Thibaud</span>
+          </span>
+        </div>
 
-            {/* Spacer mobile (pousse les icônes à droite) */}
-            <div className="flex-1 md:hidden" />
+        {/* Sentinel — IntersectionObserver target pour déclencher le compact */}
+        <div ref={sentinelRef} aria-hidden className="h-px" />
+      </section>
 
-            {/* Icônes droite */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              {/* Recherche mobile (ouvre l'overlay) */}
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(true)}
-                aria-label="Rechercher"
-                className="md:hidden w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
-              >
-                <Search size={22} />
-              </button>
-
-              {/* Panier */}
-              <Link
-                to="/panier"
-                aria-label={cartLabel}
-                className="relative w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
-              >
-                <ShoppingCart size={22} />
-                {cartCount > 0 && (
-                  <span
-                    className={cn(
-                      "absolute -top-0.5 -right-0.5 bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border-2 border-[#0F4C3A] shadow-md shadow-[#D4A93C]/40",
-                      bump && "animate-cart-bump",
-                    )}
-                  >
-                    {displayedCount}
-                  </span>
-                )}
-              </Link>
-
-              {/* Menu utilisateur */}
-              <HeaderUserMenu />
-            </div>
-          </>
+      {/* COMPACT — fixed top, fade-in via IntersectionObserver */}
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-border transition-opacity duration-200",
+          showCompact
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none",
         )}
-      </div>
-    </header>
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+        aria-hidden={!showCompact}
+      >
+        <div className="px-4 h-14 flex items-center gap-2">
+          {compactSearchOpen ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setCompactSearchOpen(false)}
+                aria-label="Fermer la recherche"
+                className="w-10 h-10 -ml-2 rounded-full hover:bg-white flex items-center justify-center text-text active:scale-90 transition-transform shrink-0"
+              >
+                <ArrowLeft size={20} aria-hidden />
+              </button>
+              <div className="relative flex-1">
+                <Search
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#0F4C3A] pointer-events-none"
+                  aria-hidden
+                />
+                <input
+                  autoFocus
+                  type="text"
+                  value={searchValue}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder="Rechercher..."
+                  aria-label="Rechercher un produit"
+                  className="w-full h-10 rounded-full bg-white border border-border pl-10 pr-10 text-sm placeholder:text-muted/65 text-text focus:outline-none focus:border-[#0F4C3A]/60 focus:ring-2 focus:ring-[#0F4C3A]/10 transition-all"
+                  inputMode="search"
+                  enterKeyHint="search"
+                />
+                {searchValue && (
+                  <button
+                    type="button"
+                    onClick={() => onSearchChange("")}
+                    aria-label="Effacer la recherche"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full hover:bg-bg flex items-center justify-center text-muted active:scale-90 transition-transform"
+                  >
+                    <X size={14} aria-hidden />
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/"
+                aria-label="Salamarket Drive — accueil"
+                className="inline-flex items-baseline gap-1 active:scale-95 transition-transform"
+              >
+                <span className="text-base font-bold text-[#0F4C3A] tracking-tight">
+                  Salamarket
+                </span>
+                <span className="text-base font-light text-[#D4A93C] tracking-tight">
+                  Drive
+                </span>
+              </Link>
+              <div className="flex-1" />
+              <button
+                type="button"
+                onClick={() => setCompactSearchOpen(true)}
+                aria-label="Rechercher"
+                className="w-10 h-10 rounded-full hover:bg-white flex items-center justify-center text-text active:scale-90 transition-transform shrink-0"
+              >
+                <Search size={20} aria-hidden />
+              </button>
+              <HeaderUserMenu />
+            </>
+          )}
+        </div>
+      </header>
+    </>
   );
 };
 

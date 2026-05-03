@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { BRAND } from "@/config/brand";
 import {
@@ -212,9 +213,14 @@ const Slots = () => {
             </p>
             <button
               onClick={handleContinue}
-              className="w-full h-12 rounded-full bg-primary text-white font-semibold text-base shadow-md hover:bg-primary/90 active:scale-[0.99] transition-all"
+              className="group w-full h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
             >
-              Continuer
+              <span>Continuer</span>
+              <ArrowRight
+                size={18}
+                className="transition-transform group-hover:translate-x-0.5"
+                aria-hidden
+              />
             </button>
           </div>
         </div>

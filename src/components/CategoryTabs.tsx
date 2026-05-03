@@ -11,8 +11,8 @@ const ITEMS = [{ slug: "all", name: "Tout" }, ...BRAND.categories.map(({ slug, n
 export const CategoryTabs = ({ active, onChange }: Props) => (
   <nav
     aria-label="Filtrer par catégorie"
-    className="sticky z-40 bg-[#FAFAFA] border-b border-gray-200 py-3"
-    style={{ top: "calc(env(safe-area-inset-top) + 4rem)" }}
+    className="sticky z-40 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-border py-3"
+    style={{ top: "calc(env(safe-area-inset-top) + 3.5rem)" }}
   >
     <div className="max-w-7xl mx-auto px-4">
       <div
