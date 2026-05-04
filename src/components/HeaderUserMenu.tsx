@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ClipboardList,
+  Home,
   LayoutDashboard,
   LogOut,
   Package,
@@ -123,6 +124,15 @@ export const HeaderUserMenu = () => {
         </div>
 
         <DropdownMenuSeparator className="bg-border my-1" />
+
+        {/* Accueil — accès rapide depuis n'importe quelle page */}
+        <DropdownMenuItem
+          onClick={() => navigate("/")}
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+        >
+          <Home className="h-4 w-4 text-muted" aria-hidden />
+          Accueil
+        </DropdownMenuItem>
 
         {/* Section client (toujours visible) */}
         <DropdownMenuItem

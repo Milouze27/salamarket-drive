@@ -33,26 +33,44 @@
         background-color: #0F4C3A;
       }
 
-      /* Splash HTML — sapin + arabesques + logo doré. Opacité 1 dès le
-         mount (pas de fade-in) pour bloquer la visibilité de l'app React
-         qui se monte derrière. Sans ça, on voyait briévement l'onboarding
-         apparaître pendant les 400ms du fade-in.
-         Le hide est géré par Web Animations API (CSS transitions ne sont
-         pas fiables sur iOS PWA standalone). Subtle scale au mount pour
-         garder une micro-animation premium sans risque de flash visuel. */
+      /* Splash HTML — opacité 1 dès le mount pour bloquer la visibilité
+         de l'app qui se monte derrière (sinon flash de l'onboarding).
+         Hide géré par Web Animations API (CSS transitions pas fiables
+         sur iOS PWA standalone).
+         Responsive : sur mobile portrait, image splash WOW (sapin +
+         arabesques + logo intégré). Sur desktop/tablette/landscape,
+         l'image portrait 9:19.5 serait déformée → on bascule sur sapin
+         uni + logo doré centré proportionné. */
       #app-splash {
         position: fixed;
         inset: 0;
         z-index: 9999;
         background-color: #0F4C3A;
-        background-image: url('/splash/iphone-1170x2532.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         opacity: 1;
         transform-origin: center center;
         animation: splash-mount 0.4s ease-out;
         will-change: transform;
+      }
+      #app-splash .splash-logo {
+        width: min(60%, 400px);
+        height: auto;
+        max-height: 50%;
+        object-fit: contain;
+      }
+      /* Mobile portrait : image splash WOW (logo déjà intégré au centre) */
+      @media (max-width: 767px) and (orientation: portrait) {
+        #app-splash {
+          background-image: url('/splash/iphone-1170x2532.png');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        #app-splash .splash-logo {
+          display: none;
+        }
       }
       @keyframes splash-mount {
         from { transform: scale(1.03); }
@@ -78,6 +96,7 @@
 
     <!-- Preload du splash HTML (priorité absolue, c'est le 1er truc affiché) -->
     <link rel="preload" as="image" href="/splash/iphone-1170x2532.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="/brand/logo-horizontal-transparent.png" fetchpriority="high" />
     <!-- Preload du LCP (1ère slide hero) — gain ~100-200ms sur le first paint -->
     <link rel="preload" as="image" href="/hero/slide-1-boucherie.webp" fetchpriority="high" />
 
@@ -99,7 +118,9 @@
 </head>
 
   <body>
-    <div id="app-splash" aria-hidden="true"></div>
+    <div id="app-splash" aria-hidden="true">
+      <img class="splash-logo" src="/brand/logo-horizontal-transparent.png" alt="" />
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
