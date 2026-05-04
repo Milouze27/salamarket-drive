@@ -33,15 +33,10 @@
         background-color: #0F4C3A;
       }
 
-      /* Splash HTML fallback — utilise le même design que les splash
-         iOS natifs (sapin + arabesques dorées + logo centré). Plein
-         écran cover. Garantit qu'on voit toujours un splash, même
-         quand le cache iOS pour les apple-touch-startup-image est cassé.
-
-         Transition 600ms + scale pour un fade-out perceptible (avant
-         300ms = trop court pour être perçu, donnait l'impression d'une
-         disparition brutale). Le JS utilise transitionend pour timing
-         exact + safety fallback 800ms. */
+      /* Splash HTML — sapin + arabesques + logo doré. Pas de CSS
+         transition car iOS PWA standalone ne les respecte pas toujours
+         sur position:fixed full-screen. Le hide est géré par Web
+         Animations API en JS pour une animation fiable cross-platform. */
       #app-splash {
         position: fixed;
         inset: 0;
@@ -52,16 +47,9 @@
         background-position: center;
         background-repeat: no-repeat;
         opacity: 1;
-        transform: scale(1);
-        transform-origin: center;
-        transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center center;
         animation: splash-fade-in 0.4s ease-out;
         will-change: opacity, transform;
-      }
-      #app-splash.hidden {
-        opacity: 0;
-        transform: scale(1.08);
-        pointer-events: none;
       }
       @keyframes splash-fade-in {
         from { opacity: 0; transform: scale(0.98); }
@@ -112,12 +100,10 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Hide splash avec transition smooth garantie sur iOS Safari.
-      // Pourquoi double rAF + force reflow : iOS Safari batch les style
-      // changes et peut skipper la transition si on add .hidden trop tôt.
-      // Le force reflow + double rAF garantit que le browser a peint
-      // l'état "visible" avant de transitionner vers "hidden", ce qui
-      // FORCE la transition CSS à jouer.
+      // Hide splash via Web Animations API (WAAPI). Plus fiable que les
+      // CSS transitions qui peuvent être skippées par iOS PWA standalone
+      // sur les éléments position:fixed full-screen. WAAPI est supporté
+      // partout depuis iOS Safari 13.1 (2020).
       (function () {
         var splash = document.getElementById('app-splash');
         if (!splash) return;
@@ -134,27 +120,30 @@
           if (hidden) return;
           hidden = true;
 
-          // 1. Force reflow : browser doit peindre l'état actuel AVANT
-          //    qu'on change vers hidden, sinon transition skipped.
-          void splash.offsetHeight;
+          // Web Animations API — animation JS-driven, ignore les bugs
+          // iOS de CSS transitions sur position:fixed.
+          if (typeof splash.animate === 'function') {
+            var anim = splash.animate(
+              [
+                { opacity: 1, transform: 'scale(1)' },
+                { opacity: 0, transform: 'scale(1.08)' }
+              ],
+              {
+                duration: 700,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                fill: 'forwards'
+              }
+            );
+            anim.onfinish = doRemove;
+            anim.oncancel = doRemove;
+          } else {
+            // Fallback ultra-old browsers (très rare, iOS < 13.1)
+            splash.style.transition = 'opacity 0.5s ease-out';
+            splash.style.opacity = '0';
+            setTimeout(doRemove, 500);
+          }
 
-          // 2. Double rAF : garantit 2 paint cycles entre l'état initial
-          //    et le state hidden, ce qui force la transition CSS.
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-              splash.classList.add('hidden');
-            });
-          });
-
-          // 3. transitionend filtré sur opacity (multi-properties firent
-          //    plusieurs transitionend events, on attend la fin de opacity).
-          splash.addEventListener('transitionend', function (e) {
-            if (e.propertyName === 'opacity') doRemove();
-          });
-
-          // 4. Safety fallback large (transition 600ms + double rAF ~33ms
-          //    + buffer). Si transitionend ne fire jamais (bug iOS edge
-          //    case), on remove après 1.5s.
+          // Safety net contre WAAPI qui ne fire pas onfinish
           setTimeout(doRemove, 1500);
         };
 
