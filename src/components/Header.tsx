@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, Store, X } from "lucide-react";
+import { ArrowLeft, Search, ShoppingBag, Store, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCartCount } from "@/hooks/useCartSummary";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { BrandLogo } from "@/components/BrandLogo";
 import { StaffBanner } from "@/components/StaffBanner";
@@ -33,6 +34,7 @@ const greetingForHour = (h: number): string => {
 export const Header = ({ searchValue, onSearchChange }: Props) => {
   const { profile, user } = useAuth();
   const firstName = firstNameOf(profile?.full_name);
+  const cartCount = useCartCount();
 
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [showCompact, setShowCompact] = useState(false);
@@ -65,12 +67,31 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
           className="pointer-events-none absolute -top-12 -right-12 w-56 h-56 rounded-full bg-[#D4A93C]/15 blur-2xl"
         />
 
-        {/* Top row : logo + account */}
+        {/* Top row : logo + (cart desktop/tablette only) + account */}
         <div className="relative flex items-center justify-between mb-6">
           <Link to="/" aria-label="Salamarket Drive — accueil">
             <BrandLogo size="lg" />
           </Link>
-          <HeaderUserMenu />
+          <div className="flex items-center gap-2">
+            {/* Cart icon visible md+ uniquement (mobile a le BottomNav) */}
+            <Link
+              to="/panier"
+              aria-label={
+                cartCount > 0
+                  ? `Voir le panier (${cartCount} article${cartCount > 1 ? "s" : ""})`
+                  : "Voir le panier"
+              }
+              className="hidden md:flex relative w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 items-center justify-center text-white active:scale-95 transition-all"
+            >
+              <ShoppingBag size={20} aria-hidden />
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold flex items-center justify-center border-2 border-[#0F4C3A] shadow-sm">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
+            </Link>
+            <HeaderUserMenu />
+          </div>
         </div>
 
         {/* Greeting hero — blanc sur sapin */}
@@ -192,6 +213,23 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               >
                 <Search size={20} aria-hidden />
               </button>
+              {/* Cart icon md+ dans le compact bar */}
+              <Link
+                to="/panier"
+                aria-label={
+                  cartCount > 0
+                    ? `Voir le panier (${cartCount} article${cartCount > 1 ? "s" : ""})`
+                    : "Voir le panier"
+                }
+                className="hidden md:flex relative w-10 h-10 rounded-full hover:bg-white/10 items-center justify-center text-white active:scale-95 transition-all shrink-0"
+              >
+                <ShoppingBag size={20} aria-hidden />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold flex items-center justify-center border-2 border-[#0F4C3A] shadow-sm">
+                    {cartCount > 9 ? "9+" : cartCount}
+                  </span>
+                )}
+              </Link>
               <HeaderUserMenu />
             </>
           )}
