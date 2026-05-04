@@ -36,7 +36,12 @@
       /* Splash HTML fallback — utilise le même design que les splash
          iOS natifs (sapin + arabesques dorées + logo centré). Plein
          écran cover. Garantit qu'on voit toujours un splash, même
-         quand le cache iOS pour les apple-touch-startup-image est cassé. */
+         quand le cache iOS pour les apple-touch-startup-image est cassé.
+
+         Transition 600ms + scale pour un fade-out perceptible (avant
+         300ms = trop court pour être perçu, donnait l'impression d'une
+         disparition brutale). Le JS utilise transitionend pour timing
+         exact + safety fallback 800ms. */
       #app-splash {
         position: fixed;
         inset: 0;
@@ -46,16 +51,21 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        transition: opacity 0.3s ease-out;
+        opacity: 1;
+        transform: scale(1);
+        transform-origin: center;
+        transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         animation: splash-fade-in 0.4s ease-out;
+        will-change: opacity, transform;
       }
       #app-splash.hidden {
         opacity: 0;
+        transform: scale(1.08);
         pointer-events: none;
       }
       @keyframes splash-fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
       }
     </style>
     <meta name="apple-mobile-web-app-title" content="Salamarket" />
@@ -103,14 +113,32 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       // Hide splash dès que React a injecté du contenu dans #root.
-      // Backup : timeout 5s pour pas bloquer si React fail.
+      // Utilise transitionend pour garantir que la transition CSS est
+      // complètement terminée avant de remove() le DOM (sinon le browser
+      // peut prioriser remove() et le user voit une disparition brutale).
+      // Safety : timeout 800ms (>600ms transition) + 5s pour React fail.
       (function () {
         var splash = document.getElementById('app-splash');
         if (!splash) return;
-        var hide = function () {
-          splash.classList.add('hidden');
-          setTimeout(function () { splash.remove(); }, 300);
+        var hidden = false;
+        var removed = false;
+
+        var doRemove = function () {
+          if (removed) return;
+          removed = true;
+          if (splash.parentNode) splash.parentNode.removeChild(splash);
         };
+
+        var hide = function () {
+          if (hidden) return;
+          hidden = true;
+          splash.classList.add('hidden');
+          // 1. Use transitionend (precise, fires when CSS transition done)
+          splash.addEventListener('transitionend', doRemove, { once: true });
+          // 2. Fallback safety net (transition is 600ms, give 200ms buffer)
+          setTimeout(doRemove, 800);
+        };
+
         var checkReact = function () {
           var root = document.getElementById('root');
           if (root && root.children.length > 0) {
@@ -119,8 +147,10 @@
             requestAnimationFrame(checkReact);
           }
         };
-        // Min 600ms pour laisser le splash s'afficher (sinon flash trop rapide)
-        setTimeout(checkReact, 600);
+
+        // Min 800ms avant de hide pour que le splash soit clairement
+        // perceptible (avant 600ms = trop rapide selon retour user).
+        setTimeout(checkReact, 800);
         // Safety net 5s si React ne mount jamais
         setTimeout(hide, 5000);
       })();
