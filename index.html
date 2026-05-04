@@ -33,33 +33,29 @@
         background-color: #0F4C3A;
       }
 
-      /* Splash HTML fallback — affiché en sapin pendant que React mount.
-         Garantie d'affichage car indépendant du cache iOS pour les
-         apple-touch-startup-image (qui sont capricieux et invalides en
-         cache après plusieurs mises à jour). Disparaît dès que React
-         injecte du contenu dans #root via la règle ci-dessous. */
+      /* Splash HTML fallback — utilise le même design que les splash
+         iOS natifs (sapin + arabesques dorées + logo centré). Plein
+         écran cover. Garantit qu'on voit toujours un splash, même
+         quand le cache iOS pour les apple-touch-startup-image est cassé. */
       #app-splash {
         position: fixed;
         inset: 0;
         z-index: 9999;
         background-color: #0F4C3A;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background-image: url('/splash/iphone-1170x2532.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         transition: opacity 0.3s ease-out;
+        animation: splash-fade-in 0.4s ease-out;
       }
       #app-splash.hidden {
         opacity: 0;
         pointer-events: none;
       }
-      #app-splash img {
-        width: 60%;
-        max-width: 320px;
-        animation: splash-fade-in 0.5s ease-out;
-      }
       @keyframes splash-fade-in {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
     </style>
     <meta name="apple-mobile-web-app-title" content="Salamarket" />
@@ -95,6 +91,8 @@
     <meta name="description" content="Salamarket Drive : votre supermarché halal en click &amp; collect à Toulouse. Commandez en ligne, retirez en magasin.">
     <meta name="author" content="Salamarket Drive" />
 
+    <!-- Preload du splash HTML (priorité absolue, c'est le 1er truc affiché) -->
+    <link rel="preload" as="image" href="/splash/iphone-1170x2532.png" fetchpriority="high" />
     <!-- Preload du LCP (1ère slide hero) — gain ~100-200ms sur le first paint -->
     <link rel="preload" as="image" href="/hero/slide-1-boucherie.webp" fetchpriority="high" />
 
@@ -116,9 +114,7 @@
 </head>
 
   <body>
-    <div id="app-splash" aria-hidden="true">
-      <img src="/brand/logo-horizontal-transparent.png" alt="" />
-    </div>
+    <div id="app-splash" aria-hidden="true"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
