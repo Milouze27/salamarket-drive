@@ -4,6 +4,7 @@ import { ArrowLeft, Search, Store, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { HeaderUserMenu } from "@/components/HeaderUserMenu";
 import { BrandLogo } from "@/components/BrandLogo";
+import { StaffBanner } from "@/components/StaffBanner";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -24,11 +25,10 @@ const greetingForHour = (h: number): string => {
   return "Bonsoir";
 };
 
-// Header en deux temps : HERO (gradient sapin avec logo doré + greeting
-// blanc + search bar) qui scroll naturellement, puis COMPACT (bg sapin
-// dégradé sticky top) qui apparaît au scroll via IntersectionObserver.
-// Le bg sapin met en valeur le logo doré et donne une signature brand
-// forte distincte du reste de l'app crème.
+// Pattern iOS Large Title : hero scrollable + compact sticky qui apparaît
+// au scroll. Bg crème pour que le logo couleur (sapin+doré) se fonde
+// proprement. Le StaffBanner est rendu DANS le hero (pas après) pour
+// éviter le gap blanc visible précédemment.
 export const Header = ({ searchValue, onSearchChange }: Props) => {
   const { profile, user } = useAuth();
   const firstName = firstNameOf(profile?.full_name);
@@ -53,37 +53,31 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
 
   return (
     <>
-      {/* HERO — gradient sapin sombre, logo doré pleine valeur */}
+      {/* HERO — bg crème pour que le logo color se fonde sans carré blanc */}
       <section
-        className="relative bg-gradient-to-b from-[#0F4C3A] via-[#0A3A2C] to-[#073025] text-white px-4 pb-6 overflow-hidden"
+        className="relative bg-[#FAFAF7] px-4 pb-5"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
-        {/* Halo doré subtil derrière le greeting — donne de la profondeur */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-12 -right-12 w-56 h-56 rounded-full bg-[#D4A93C]/15 blur-2xl"
-        />
-
         {/* Top row : logo + account */}
-        <div className="relative flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-5">
           <Link to="/" aria-label="Salamarket Drive — accueil">
             <BrandLogo size="lg" />
           </Link>
           <HeaderUserMenu />
         </div>
 
-        {/* Greeting hero — blanc sur sapin */}
-        <h1 className="relative text-[28px] font-bold text-white leading-tight tracking-tight">
+        {/* Greeting hero */}
+        <h1 className="text-[28px] font-bold text-text leading-tight tracking-tight">
           {greet}
           {firstName ? `, ${firstName}` : ""}
         </h1>
-        <p className="relative text-base text-white/75 mt-1">
+        <p className="text-base text-muted mt-1">
           {user
             ? "Que voulez-vous commander ?"
             : "Bienvenue sur votre supermarché halal"}
         </p>
 
-        {/* Search bar — fond blanc semi-opaque pour contraste sur sapin */}
+        {/* Search bar large */}
         <div className="relative mt-5">
           <Search
             size={20}
@@ -96,7 +90,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Rechercher viandes, épices, riz..."
             aria-label="Rechercher un produit"
-            className="w-full h-14 rounded-2xl bg-white border-2 border-white/0 pl-12 pr-12 text-base placeholder:text-muted/65 text-text focus:outline-none focus:border-[#D4A93C] focus:ring-4 focus:ring-[#D4A93C]/25 transition-all shadow-lg shadow-[#0A3A2C]/30"
+            className="w-full h-14 rounded-2xl bg-white border-2 border-[#D4A93C]/25 pl-12 pr-12 text-base placeholder:text-muted/65 text-text focus:outline-none focus:border-[#0F4C3A]/60 focus:ring-4 focus:ring-[#0F4C3A]/8 transition-all shadow-sm"
             inputMode="search"
             enterKeyHint="search"
           />
@@ -112,23 +106,27 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
           )}
         </div>
 
-        {/* Magasin info — petit texte blanc semi-transparent */}
-        <div className="relative mt-4 inline-flex items-center gap-1.5 text-xs text-white/65">
-          <Store size={12} className="text-[#D4A93C]" aria-hidden />
+        {/* Magasin info */}
+        <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted">
+          <Store size={12} className="text-[#0F4C3A]" aria-hidden />
           <span>
-            <span className="font-semibold text-white">Salamarket Toulouse</span>
-            <span className="mx-1.5 text-white/40">·</span>
+            <span className="font-semibold text-text">Salamarket Toulouse</span>
+            <span className="mx-1.5 text-muted/50">·</span>
             <span>Retrait au 8 av. Larrieu-Thibaud</span>
           </span>
         </div>
 
+        {/* StaffBanner (admin/employee uniquement) — intégré dans le hero
+            pour éviter le gap blanc qui apparaissait précédemment. */}
+        <StaffBanner />
+
         <div ref={sentinelRef} aria-hidden className="h-px" />
       </section>
 
-      {/* COMPACT — sapin dégradé sticky top, fade-in via IntersectionObserver */}
+      {/* COMPACT — bg crème cohérent avec le hero */}
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white border-b border-white/10 shadow-md transition-opacity duration-200",
+          "fixed top-0 left-0 right-0 z-50 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-border transition-opacity duration-200",
           showCompact
             ? "opacity-100"
             : "opacity-0 pointer-events-none",
@@ -143,7 +141,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
                 type="button"
                 onClick={() => setCompactSearchOpen(false)}
                 aria-label="Fermer la recherche"
-                className="w-10 h-10 -ml-2 rounded-full hover:bg-white/10 flex items-center justify-center text-white active:scale-90 transition-transform shrink-0"
+                className="w-10 h-10 -ml-2 rounded-full hover:bg-white flex items-center justify-center text-text active:scale-90 transition-transform shrink-0"
               >
                 <ArrowLeft size={20} aria-hidden />
               </button>
@@ -160,7 +158,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Rechercher..."
                   aria-label="Rechercher un produit"
-                  className="w-full h-10 rounded-full bg-white border border-transparent pl-10 pr-10 text-sm placeholder:text-muted/65 text-text focus:outline-none focus:border-[#D4A93C] focus:ring-2 focus:ring-[#D4A93C]/30 transition-all"
+                  className="w-full h-10 rounded-full bg-white border border-border pl-10 pr-10 text-sm placeholder:text-muted/65 text-text focus:outline-none focus:border-[#0F4C3A]/60 focus:ring-2 focus:ring-[#0F4C3A]/10 transition-all"
                   inputMode="search"
                   enterKeyHint="search"
                 />
@@ -186,7 +184,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
                 type="button"
                 onClick={() => setCompactSearchOpen(true)}
                 aria-label="Rechercher"
-                className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-white active:scale-90 transition-transform shrink-0"
+                className="w-10 h-10 rounded-full hover:bg-white flex items-center justify-center text-text active:scale-90 transition-transform shrink-0"
               >
                 <Search size={20} aria-hidden />
               </button>

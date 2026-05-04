@@ -70,6 +70,18 @@ export const HeroSlider = () => {
     };
   }, [api]);
 
+  // Préload TOUTES les slides dès le mount pour éliminer le flash bg
+  // sapin uni au moment du swipe vers slide 2 ou 3 (avant : slides 2/3
+  // étaient en loading="lazy" → download au moment du swipe → flash).
+  // Coût : ~400 KB (3 WebP × ~130 KB) une fois au mount, mis en cache.
+  useEffect(() => {
+    SLIDES.forEach((slide) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = slide.image;
+    });
+  }, []);
+
   return (
     <section
       aria-label="Promotions et mises en avant"
@@ -88,21 +100,27 @@ export const HeroSlider = () => {
             // donc l'animation CSS repart de zéro proprement.
             const isActive = index === current;
             return (
-              <CarouselItem key={index} className="pl-0 basis-full">
+              <CarouselItem
+                key={index}
+                className="pl-0 basis-full"
+                role="img"
+                aria-label={slide.imageAlt}
+              >
                 <div className="relative h-72 md:h-80 w-full overflow-hidden bg-[#0F4C3A]">
-                  <img
-                    key={`img-${index}-${isActive ? current : "idle"}`}
-                    src={slide.image}
-                    alt={slide.imageAlt}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
+                  {/* Image en background-image plutôt qu'<img> : permet
+                      de rejouer le ken-burns via une `key` sur ce <div>
+                      sans déclencher un remount qui causerait un flash
+                      visuel. Toutes les slides sont préloadées au mount
+                      (cf. useEffect ci-dessus) donc background-image
+                      pointe vers une ressource déjà en cache navigateur
+                      → zéro download au moment de l'affichage. */}
+                  <div
+                    key={`kb-${index}-${current}`}
                     className={cn(
-                      "absolute inset-0 w-full h-full object-cover origin-center will-change-transform",
+                      "absolute inset-0 origin-center will-change-transform bg-cover bg-center",
                       isActive && "animate-ken-burns",
                     )}
+                    style={{ backgroundImage: `url(${slide.image})` }}
                   />
                   {/* Voile sapin pour lisibilité du texte sur image. Léger
                       gradient radial pour donner un effet "spotlight" sur

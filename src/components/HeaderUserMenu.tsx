@@ -56,15 +56,14 @@ export const HeaderUserMenu = () => {
     staleTime: 5 * 60_000,
   });
 
-  // Pas loggé : icône user dans cercle blanc/95 sur le bg sapin du header.
-  // Le contraste blanc/sapin est très lisible. Border doré subtil pour
-  // signaler "action sociale / pro" cohérent avec le reste du menu.
+  // Pas loggé : icône user dans cercle blanc bordé sapin pour visibilité
+  // sur fond crème du header. Hover : bord plus marqué.
   if (!user) {
     return (
       <Link
         to="/connexion"
         aria-label="Se connecter"
-        className="w-10 h-10 rounded-full bg-white/95 border-2 border-[#D4A93C]/40 hover:border-[#D4A93C] flex items-center justify-center text-[#0F4C3A] active:scale-95 transition-all shadow-md"
+        className="w-10 h-10 rounded-full bg-white border-2 border-[#0F4C3A]/15 hover:border-[#0F4C3A]/40 flex items-center justify-center text-[#0F4C3A] active:scale-95 transition-all shadow-sm"
       >
         <User size={20} strokeWidth={2.2} aria-hidden />
       </Link>
