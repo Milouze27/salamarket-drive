@@ -42,14 +42,14 @@ const SLIDES: Slide[] = [
     imageAlt: "Charcuterie maison traditionnelle",
   },
   {
-    kicker: "Au quotidien",
-    title: "Vos essentiels halal",
+    kicker: "Frais du jour",
+    title: "Fruits & légumes",
     subtitle:
-      "Tout ce qu'il faut pour vos repas, livré en click & collect",
-    ctaLabel: "Parcourir",
-    ctaLink: "/",
+      "Sélection fraîche du marché, livrée en click & collect",
+    ctaLabel: "Voir les fruits",
+    ctaLink: "/?category=fruits-legumes",
     image: "/hero/slide-3-essentiels.webp",
-    imageAlt: "Sélection de produits essentiels halal du quotidien",
+    imageAlt: "Corbeille de fruits et légumes frais",
   },
 ];
 
