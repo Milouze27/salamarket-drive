@@ -34,9 +34,12 @@ export const StickyCartCTA = () => {
 
   // Position : juste au-dessus du BottomNav (qui mesure ~56px + safe-area).
   // On ajoute calc(env(safe-area-inset-bottom) + 56px) pour être collé.
+  // z-45 (entre nav z-40 et compact header z-50) pour passer au-dessus
+  // du CategoryTabs sticky qui est en z-40 — sinon la border-bottom des
+  // catégories peut visuellement chevaucher le CTA quand ils se touchent.
   return (
     <div
-      className="fixed left-0 right-0 z-30 px-3 pointer-events-none md:hidden"
+      className="fixed left-0 right-0 z-[45] px-3 pointer-events-none md:hidden"
       style={{ bottom: "calc(env(safe-area-inset-bottom) + 56px + 8px)" }}
     >
       <button
