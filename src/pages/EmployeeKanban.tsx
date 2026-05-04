@@ -252,17 +252,19 @@ const Column = ({ column, orders, onCardClick }: ColumnProps) => {
   return (
     <div
       className={cn(
-        "flex flex-col rounded-2xl border min-w-[280px] lg:min-w-0",
+        "flex flex-col rounded-2xl border min-w-[280px] lg:min-w-0 transition-all",
         column.bg,
         column.border,
-        isOver && "ring-2 ring-[#0F4C3A]/40",
+        isOver && "ring-4 ring-[#D4A93C]/50 scale-[1.01] shadow-lg",
       )}
     >
-      <div className="px-3 py-2.5 flex items-center justify-between border-b border-current/10">
-        <h2 className="text-sm font-semibold text-gray-900">{column.label}</h2>
+      <div className="px-3 py-3 flex items-center justify-between border-b border-current/10">
+        <h2 className="text-sm font-bold text-gray-900 tracking-tight">
+          {column.label}
+        </h2>
         <span
           className={cn(
-            "text-xs font-bold px-2 py-0.5 rounded-full tabular-nums",
+            "min-w-[1.75rem] h-7 inline-flex items-center justify-center text-xs font-bold px-2 rounded-full tabular-nums shadow-sm",
             column.badge,
           )}
         >
@@ -281,11 +283,52 @@ const Column = ({ column, orders, onCardClick }: ColumnProps) => {
           />
         ))}
         {sorted.length === 0 && (
-          <p className="text-xs text-gray-400 italic text-center py-8">
-            Aucune commande
-          </p>
+          <div className="text-center py-10 px-3">
+            <p className="text-xs text-gray-400 italic">Aucune commande</p>
+          </div>
         )}
       </div>
+    </div>
+  );
+};
+
+// Mini KPI pill inline en haut du Kanban — vue d'ensemble immédiate
+const KPI_TONE: Record<
+  "amber" | "blue" | "green",
+  { dot: string; ring: string }
+> = {
+  amber: { dot: "bg-amber-500", ring: "ring-amber-200" },
+  blue: { dot: "bg-blue-500", ring: "ring-blue-200" },
+  green: { dot: "bg-green-600", ring: "ring-green-200" },
+};
+
+const KpiPill = ({
+  label,
+  value,
+  tone,
+  highlight = false,
+}: {
+  label: string;
+  value: number;
+  tone: "amber" | "blue" | "green";
+  highlight?: boolean;
+}) => {
+  const cfg = KPI_TONE[tone];
+  return (
+    <div
+      className={cn(
+        "rounded-2xl bg-white border border-border p-3 transition-all",
+        highlight && "ring-2 ring-offset-1 shadow-md",
+        highlight && cfg.ring,
+      )}
+    >
+      <div className="flex items-center gap-1.5">
+        <span aria-hidden className={cn("w-1.5 h-1.5 rounded-full", cfg.dot)} />
+        <p className="text-[10px] uppercase tracking-wider text-muted font-bold truncate">
+          {label}
+        </p>
+      </div>
+      <p className="mt-1 text-2xl font-bold text-text tabular-nums">{value}</p>
     </div>
   );
 };
@@ -362,12 +405,15 @@ const EmployeeKanban = () => {
   };
 
   return (
-    <div
-      className="min-h-dvh bg-[#FAFAF7]"
-      style={{ paddingTop: "env(safe-area-inset-top)" }}
-    >
-      {/* Header sticky — gradient sapin pattern app pro */}
-      <header className="sticky top-0 z-20 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white shadow-md">
+    <div className="min-h-dvh bg-[#FAFAF7]">
+      {/* Header sticky — gradient sapin pattern app pro. La safe-area-top
+          est appliquée DIRECTEMENT sur le header pour qu'elle hérite du
+          bg sapin (et pas du crème du wrapper) — sinon barre blanche au
+          dessus du header en mode standalone iOS. */}
+      <header
+        className="sticky top-0 z-20 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white shadow-md"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Link
             to="/"
@@ -402,6 +448,26 @@ const EmployeeKanban = () => {
       </header>
 
       <main className="max-w-7xl mx-auto p-4">
+        {/* KPI inline — vue d'ensemble rapide en haut */}
+        <div className="grid grid-cols-3 gap-2.5 mb-4 animate-in fade-in slide-in-from-top-1 duration-300">
+          <KpiPill
+            label="À préparer"
+            value={toPrepareCount}
+            tone="amber"
+            highlight={toPrepareCount > 0}
+          />
+          <KpiPill
+            label="En préparation"
+            value={ordersByStatus.get("preparing")?.length ?? 0}
+            tone="blue"
+          />
+          <KpiPill
+            label="Prêtes"
+            value={ordersByStatus.get("ready")?.length ?? 0}
+            tone="green"
+          />
+        </div>
+
         {error && (
           <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             Erreur de chargement : {error}

@@ -201,41 +201,60 @@ const Admin = () => {
   return (
     <div
       className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0"
-      style={{ paddingTop: "env(safe-area-inset-top)" }}
       onClickCapture={() => {
         if (!soundEnabled) enableSound();
       }}
     >
+      {/* Hero header gradient sapin — pattern app pro cohérent avec /employe */}
+      <header
+        className="relative bg-gradient-to-b from-[#0F4C3A] via-[#0A3A2C] to-[#073025] text-white overflow-hidden"
+        style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
+      >
+        {/* Halos dorés décoratifs */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#D4A93C]/15 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 -left-12 w-40 h-40 rounded-full bg-[#D4A93C]/10 blur-2xl"
+        />
+
+        <div className="relative max-w-7xl mx-auto px-4 pb-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4A93C] font-bold mb-1.5">
+                Espace admin
+              </p>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Tableau de bord
+              </h1>
+              <p className="text-sm text-white/70 mt-1">
+                Salamarket Toulouse · {profile?.full_name ?? "Patron"}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/admin/reglages"
+                aria-label="Réglages admin"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-white active:scale-95 transition-all flex items-center justify-center"
+              >
+                <Settings size={18} aria-hidden />
+              </Link>
+              <button
+                type="button"
+                aria-label="Mon compte"
+                onClick={() => navigate("/compte")}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white/30 active:scale-95 transition-all"
+              >
+                {initials}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Header */}
-        <header className="flex items-start justify-between gap-3 mb-6">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-[#D4A93C] font-bold mb-1">
-              Espace admin
-            </p>
-            <h1 className="text-3xl font-bold text-text tracking-tight">
-              Tableau de bord
-            </h1>
-            <p className="text-sm text-muted mt-1">Salamarket Toulouse</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link
-              to="/admin/reglages"
-              aria-label="Réglages admin"
-              className="w-10 h-10 rounded-full bg-white border border-border text-muted hover:text-[#0F4C3A] hover:border-[#0F4C3A]/30 active:scale-95 transition-all flex items-center justify-center shadow-sm"
-            >
-              <Settings size={18} aria-hidden />
-            </Link>
-            <button
-              type="button"
-              aria-label="Mon compte"
-              onClick={() => navigate("/compte")}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white active:scale-95 transition-all"
-            >
-              {initials}
-            </button>
-          </div>
-        </header>
 
         {/* Banner activation son */}
         {!soundEnabled && (
@@ -284,19 +303,23 @@ const Admin = () => {
           </div>
         )}
 
-        {/* Big CA card */}
-        <section className="bg-white rounded-2xl shadow-sm p-6 mb-4">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
+        {/* Big CA card — premium avec gradient subtle + accent doré */}
+        <section className="relative bg-white rounded-2xl shadow-sm border border-border p-6 mb-4 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#D4A93C]/8"
+          />
+          <div className="relative flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#0F4C3A] font-bold">
                 Chiffre d'affaires
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">{PERIOD_VS[period]}</p>
-              <div className="mt-2 flex items-baseline gap-3 flex-wrap">
+              <p className="text-xs text-muted mt-1">{PERIOD_VS[period]}</p>
+              <div className="mt-3 flex items-baseline gap-3 flex-wrap">
                 {isLoading || !stats ? (
                   <Skeleton className="h-12 w-48" />
                 ) : (
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+                  <h2 className="text-4xl md:text-5xl font-bold text-[#0F4C3A] tabular-nums tracking-tight">
                     {formatEUR(stats.ca.current)}
                   </h2>
                 )}
@@ -365,41 +388,51 @@ const Admin = () => {
           </div>
         </section>
 
-        {/* 3 medium cards */}
+        {/* 3 medium cards — stagger animation */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <KpiCard
-            title="Commandes"
-            Icon={ShoppingBag}
-            value={stats ? intFormatter.format(stats.orders.current) : null}
-            change={stats?.orders.changePercent ?? null}
-            isLoading={isLoading}
-          />
-          <KpiCard
-            title="Panier moyen"
-            Icon={Receipt}
-            value={stats ? formatEUR(stats.basket.current) : null}
-            change={stats?.basket.changePercent ?? null}
-            isLoading={isLoading}
-          />
-          <KpiCard
-            title="Taux de retrait"
-            Icon={CheckCircle2}
-            value={stats ? `${Math.round(stats.pickupRate.current)}%` : null}
-            change={stats?.pickupRate.changePercent ?? null}
-            isLoading={isLoading}
-          />
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:100ms] [animation-fill-mode:backwards]">
+            <KpiCard
+              title="Commandes"
+              Icon={ShoppingBag}
+              value={stats ? intFormatter.format(stats.orders.current) : null}
+              change={stats?.orders.changePercent ?? null}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:200ms] [animation-fill-mode:backwards]">
+            <KpiCard
+              title="Panier moyen"
+              Icon={Receipt}
+              value={stats ? formatEUR(stats.basket.current) : null}
+              change={stats?.basket.changePercent ?? null}
+              isLoading={isLoading}
+            />
+          </div>
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:300ms] [animation-fill-mode:backwards]">
+            <KpiCard
+              title="Taux de retrait"
+              Icon={CheckCircle2}
+              value={stats ? `${Math.round(stats.pickupRate.current)}%` : null}
+              change={stats?.pickupRate.changePercent ?? null}
+              isLoading={isLoading}
+            />
+          </div>
         </section>
 
         {/* Top products + Recent orders */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TopProductsCard
-            isLoading={topProductsQuery.isLoading}
-            data={topProductsQuery.data ?? []}
-          />
-          <RecentOrdersCard
-            isLoading={recentOrdersQuery.isLoading}
-            data={recentOrdersQuery.data ?? []}
-          />
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:400ms] [animation-fill-mode:backwards]">
+            <TopProductsCard
+              isLoading={topProductsQuery.isLoading}
+              data={topProductsQuery.data ?? []}
+            />
+          </div>
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:500ms] [animation-fill-mode:backwards]">
+            <RecentOrdersCard
+              isLoading={recentOrdersQuery.isLoading}
+              data={recentOrdersQuery.data ?? []}
+            />
+          </div>
         </section>
       </div>
     </div>
@@ -415,15 +448,19 @@ interface KpiCardProps {
 }
 
 const KpiCard = ({ title, Icon, value, change, isLoading }: KpiCardProps) => (
-  <div className="relative bg-white rounded-2xl shadow-sm border border-border p-5">
-    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center">
-      <Icon size={20} className="text-[#0F4C3A]" />
+  <div className="relative bg-white rounded-2xl shadow-sm border border-border p-5 hover:shadow-md hover:border-[#0F4C3A]/20 transition-all">
+    <div className="absolute top-4 right-4 w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white flex items-center justify-center shadow-md shadow-[#0F4C3A]/20">
+      <Icon size={20} strokeWidth={2} aria-hidden />
     </div>
-    <p className="text-xs uppercase font-medium text-gray-500 pr-12">{title}</p>
+    <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-muted pr-14">
+      {title}
+    </p>
     {isLoading || value === null ? (
-      <Skeleton className="mt-2 h-8 w-24" />
+      <Skeleton className="mt-3 h-8 w-24" />
     ) : (
-      <p className="mt-2 text-2xl font-bold text-gray-900">{value}</p>
+      <p className="mt-3 text-2xl font-bold text-text tabular-nums tracking-tight">
+        {value}
+      </p>
     )}
     <div className="mt-2">
       <Trend value={change} />
