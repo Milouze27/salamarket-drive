@@ -17,10 +17,9 @@ const fetchRole = async (userId: string): Promise<Role | null> => {
 };
 
 // Banner d'accès rapide à l'espace pro pour les comptes staff (admin /
-// employee). Apparaît en haut de la homepage. Pour un admin, propose
-// les 2 destinations (Préparation + Tableau de bord) ; pour un employee,
-// propose juste Préparation. Permet d'éviter le chemin via le menu
-// dropdown qui demande 2 taps.
+// employee). Rendu DANS le hero du Header (pas après) pour partager le
+// bg crème — pas de gap blanc visible. Pas de wrapper section, juste un
+// margin-top adapté pour s'intégrer naturellement.
 export const StaffBanner = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -36,58 +35,52 @@ export const StaffBanner = () => {
   const isAdmin = role === "admin";
 
   return (
-    <section
+    <div
       aria-label="Espace pro"
-      className="px-4 mb-4 animate-in fade-in slide-in-from-top-2 duration-500"
+      className="mt-4 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white p-4 shadow-lg shadow-[#0F4C3A]/20 overflow-hidden relative animate-in fade-in slide-in-from-bottom-1 duration-300"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white p-4 shadow-lg shadow-[#0F4C3A]/20 overflow-hidden relative">
-          {/* Accent doré décoratif */}
-          <div
-            aria-hidden
-            className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#D4A93C]/10"
-          />
-          <div className="relative flex items-center justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-wider font-bold text-[#D4A93C]">
-                Espace pro
-              </p>
-              <p className="text-base font-bold mt-0.5">
-                {isAdmin
-                  ? "Bonjour patron"
-                  : "Prêt à préparer les commandes ?"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => navigate("/employe")}
-                className="group inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-sm font-bold shadow-md active:scale-95 transition-all"
-                aria-label="Aller à la préparation des commandes"
-              >
-                <ClipboardList size={16} strokeWidth={2.5} aria-hidden />
-                <span>Préparation</span>
-                <ArrowRight
-                  size={14}
-                  className="transition-transform group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </button>
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => navigate("/admin")}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-white active:scale-95 transition-all"
-                  aria-label="Tableau de bord admin"
-                >
-                  <LayoutDashboard size={18} aria-hidden />
-                </button>
-              )}
-            </div>
-          </div>
+      {/* Halo doré décoratif */}
+      <div
+        aria-hidden
+        className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#D4A93C]/10"
+      />
+      <div className="relative flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#D4A93C]">
+            Espace pro
+          </p>
+          <p className="text-base font-bold mt-0.5">
+            {isAdmin ? "Bonjour patron" : "Prêt à préparer les commandes ?"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => navigate("/employe")}
+            className="group inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-sm font-bold shadow-md active:scale-95 transition-all"
+            aria-label="Aller à la préparation des commandes"
+          >
+            <ClipboardList size={16} strokeWidth={2.5} aria-hidden />
+            <span>Préparation</span>
+            <ArrowRight
+              size={14}
+              className="transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate("/admin")}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/15 text-white active:scale-95 transition-all"
+              aria-label="Tableau de bord admin"
+            >
+              <LayoutDashboard size={18} aria-hidden />
+            </button>
+          )}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

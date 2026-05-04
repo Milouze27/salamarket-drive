@@ -4,7 +4,6 @@ import { AlertCircle, SearchX } from "lucide-react";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryTabs } from "@/components/CategoryTabs";
-import { StaffBanner } from "@/components/StaffBanner";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
@@ -64,7 +63,6 @@ const Index = () => {
   return (
     <div className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0">
       <Header searchValue={searchInput} onSearchChange={setSearchInput} />
-      <StaffBanner />
       <HeroSlider />
       <CategoryTabs active={category} onChange={setCategory} />
 

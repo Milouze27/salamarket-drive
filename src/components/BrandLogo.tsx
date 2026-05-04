@@ -5,10 +5,9 @@ interface Props {
   className?: string;
 }
 
-// Logo horizontal officiel Salamarket Drive (version "light" : tout doré
-// sur fond transparent). Conçu pour s'afficher sur fond sombre — utilisé
-// dans le header bg sapin. La hauteur définit la taille (le ratio largeur
-// est intrinsèque à l'image, pas de bg parasite).
+// Logo horizontal officiel Salamarket Drive (mis à jour par l'utilisateur).
+// Couleurs : sapin + doré. Conçu pour s'afficher sur fond clair (le fond
+// du PNG se fond avec le bg crème #FAFAF7 du header).
 export const BrandLogo = ({ size = "lg", className }: Props) => {
   const heightClass = size === "lg" ? "h-9" : "h-7";
 
@@ -20,11 +19,10 @@ export const BrandLogo = ({ size = "lg", className }: Props) => {
       )}
     >
       <img
-        src="/brand/logo-horizontal-light.png"
+        src="/brand/logo-horizontal.png"
         alt="Salamarket Drive"
         className={cn(heightClass, "w-auto")}
-        // Hint largeur intrinsèque pour CLS — le PNG fait ~1024×320 (ratio 3.2).
-        width={size === "lg" ? 115 : 90}
+        width={size === "lg" ? 130 : 100}
         height={size === "lg" ? 36 : 28}
       />
     </span>
