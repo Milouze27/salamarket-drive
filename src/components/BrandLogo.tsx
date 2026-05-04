@@ -19,7 +19,7 @@ export const BrandLogo = ({ size = "lg", className }: Props) => {
       )}
     >
       <img
-        src="/brand/logo-horizontal.png"
+        src="/brand/logo-horizontal.png?v=2"
         alt="Salamarket Drive"
         className={cn(heightClass, "w-auto")}
         width={size === "lg" ? 130 : 100}
