@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AlertCircle, ArrowRight, BadgeCheck, Store } from "lucide-react";
-import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import { useProduct } from "@/hooks/useProduct";
 import { useCartStore } from "@/stores/cartStore";
@@ -19,7 +18,8 @@ const ProductDetail = () => {
   const handleAdd = () => {
     if (!product) return;
     addItem(product);
-    toast.success("Ajouté au panier", { description: product.name });
+    // Pas de toast — feedback visuel via le bump du badge cart en bas
+    // et le compteur "X dans le panier" qui apparaît sous le CTA.
   };
 
   return (

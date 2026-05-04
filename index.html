@@ -32,6 +32,35 @@
         inset: 0;
         background-color: #0F4C3A;
       }
+
+      /* Splash HTML fallback — affiché en sapin pendant que React mount.
+         Garantie d'affichage car indépendant du cache iOS pour les
+         apple-touch-startup-image (qui sont capricieux et invalides en
+         cache après plusieurs mises à jour). Disparaît dès que React
+         injecte du contenu dans #root via la règle ci-dessous. */
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background-color: #0F4C3A;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease-out;
+      }
+      #app-splash.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #app-splash img {
+        width: 60%;
+        max-width: 320px;
+        animation: splash-fade-in 0.5s ease-out;
+      }
+      @keyframes splash-fade-in {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
     </style>
     <meta name="apple-mobile-web-app-title" content="Salamarket" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -87,7 +116,34 @@
 </head>
 
   <body>
+    <div id="app-splash" aria-hidden="true">
+      <img src="/brand/logo-horizontal-transparent.png" alt="" />
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Hide splash dès que React a injecté du contenu dans #root.
+      // Backup : timeout 5s pour pas bloquer si React fail.
+      (function () {
+        var splash = document.getElementById('app-splash');
+        if (!splash) return;
+        var hide = function () {
+          splash.classList.add('hidden');
+          setTimeout(function () { splash.remove(); }, 300);
+        };
+        var checkReact = function () {
+          var root = document.getElementById('root');
+          if (root && root.children.length > 0) {
+            hide();
+          } else {
+            requestAnimationFrame(checkReact);
+          }
+        };
+        // Min 600ms pour laisser le splash s'afficher (sinon flash trop rapide)
+        setTimeout(checkReact, 600);
+        // Safety net 5s si React ne mount jamais
+        setTimeout(hide, 5000);
+      })();
+    </script>
   </body>
 </html>

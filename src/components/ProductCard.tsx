@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import type { Product } from "@/types/product";
 import { formatPrice, unitLabel } from "@/lib/format";
 import { useCartStore } from "@/stores/cartStore";
-import { toast } from "sonner";
 
 interface Props {
   product: Product;
@@ -16,9 +15,8 @@ export const ProductCard = ({ product }: Props) => {
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     addItem(product);
-    toast.success("Ajouté au panier", {
-      description: product.name,
-    });
+    // Pas de toast — feedback visuel via le bump du badge cart dans le
+    // header/bottom nav et l'apparition du sticky CTA "Voir le panier".
   };
 
   const handleOpen = () => {
