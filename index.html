@@ -112,11 +112,12 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Hide splash dès que React a injecté du contenu dans #root.
-      // Utilise transitionend pour garantir que la transition CSS est
-      // complètement terminée avant de remove() le DOM (sinon le browser
-      // peut prioriser remove() et le user voit une disparition brutale).
-      // Safety : timeout 800ms (>600ms transition) + 5s pour React fail.
+      // Hide splash avec transition smooth garantie sur iOS Safari.
+      // Pourquoi double rAF + force reflow : iOS Safari batch les style
+      // changes et peut skipper la transition si on add .hidden trop tôt.
+      // Le force reflow + double rAF garantit que le browser a peint
+      // l'état "visible" avant de transitionner vers "hidden", ce qui
+      // FORCE la transition CSS à jouer.
       (function () {
         var splash = document.getElementById('app-splash');
         if (!splash) return;
@@ -132,11 +133,29 @@
         var hide = function () {
           if (hidden) return;
           hidden = true;
-          splash.classList.add('hidden');
-          // 1. Use transitionend (precise, fires when CSS transition done)
-          splash.addEventListener('transitionend', doRemove, { once: true });
-          // 2. Fallback safety net (transition is 600ms, give 200ms buffer)
-          setTimeout(doRemove, 800);
+
+          // 1. Force reflow : browser doit peindre l'état actuel AVANT
+          //    qu'on change vers hidden, sinon transition skipped.
+          void splash.offsetHeight;
+
+          // 2. Double rAF : garantit 2 paint cycles entre l'état initial
+          //    et le state hidden, ce qui force la transition CSS.
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              splash.classList.add('hidden');
+            });
+          });
+
+          // 3. transitionend filtré sur opacity (multi-properties firent
+          //    plusieurs transitionend events, on attend la fin de opacity).
+          splash.addEventListener('transitionend', function (e) {
+            if (e.propertyName === 'opacity') doRemove();
+          });
+
+          // 4. Safety fallback large (transition 600ms + double rAF ~33ms
+          //    + buffer). Si transitionend ne fire jamais (bug iOS edge
+          //    case), on remove après 1.5s.
+          setTimeout(doRemove, 1500);
         };
 
         var checkReact = function () {
@@ -148,10 +167,7 @@
           }
         };
 
-        // Min 800ms avant de hide pour que le splash soit clairement
-        // perceptible (avant 600ms = trop rapide selon retour user).
         setTimeout(checkReact, 800);
-        // Safety net 5s si React ne mount jamais
         setTimeout(hide, 5000);
       })();
     </script>
