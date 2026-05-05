@@ -21,6 +21,13 @@ export const ProductCard = ({ product }: Props) => {
     navigate(`/produit/${product.id}`);
   };
 
+  // Badge "Halal" affiché uniquement sur les produits où la certification
+  // halal est un signal d'achat (viandes/charcuterie). Les autres produits
+  // (épicerie, boissons, frais...) sont halal par défaut chez Salamarket
+  // et n'ont pas besoin d'être marqués spécifiquement.
+  const showHalalBadge =
+    product.category === "boucherie" || product.category === "charcuterie";
+
   return (
     <div
       onClick={handleOpen}
@@ -41,14 +48,16 @@ export const ProductCard = ({ product }: Props) => {
           height={600}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         />
-        {/* Badge halal subtle en haut à droite */}
-        <span
-          className="absolute top-2 right-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/95 backdrop-blur text-[#0F4C3A] text-[9px] font-bold shadow-sm"
-          aria-label="Produit halal certifié"
-        >
-          <BadgeCheck size={10} className="text-[#D4A93C]" aria-hidden />
-          Halal
-        </span>
+        {/* Badge halal — viandes/charcuterie uniquement */}
+        {showHalalBadge && (
+          <span
+            className="absolute top-2 right-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/95 backdrop-blur text-[#0F4C3A] text-[9px] font-bold shadow-sm"
+            aria-label="Produit halal certifié"
+          >
+            <BadgeCheck size={10} className="text-[#D4A93C]" aria-hidden />
+            Halal
+          </span>
+        )}
       </div>
       <div className="flex flex-col flex-1 p-3 gap-1">
         <h3 className="font-medium text-sm leading-tight text-text line-clamp-2 min-h-[2.5em]">
