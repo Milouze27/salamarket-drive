@@ -65,6 +65,11 @@ const ProductDetail = () => {
 
   const totalCents = product ? product.priceCents * qty : 0;
 
+  // Badge "Halal certifié" affiché uniquement sur les viandes/charcuterie
+  // (catégories où la certification est un signal d'achat critique).
+  const showHalalBadge =
+    product?.category === "boucherie" || product?.category === "charcuterie";
+
   // Loading state
   if (isLoading) {
     return (
@@ -121,10 +126,12 @@ const ProductDetail = () => {
         >
           <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
         </button>
-        <div className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/95 backdrop-blur-md text-[#0F4C3A] text-xs font-bold shadow-lg">
-          <BadgeCheck size={14} className="text-[#D4A93C]" aria-hidden />
-          Halal certifié
-        </div>
+        {showHalalBadge && (
+          <div className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/95 backdrop-blur-md text-[#0F4C3A] text-xs font-bold shadow-lg">
+            <BadgeCheck size={14} className="text-[#D4A93C]" aria-hidden />
+            Halal certifié
+          </div>
+        )}
       </header>
 
       {/* Image hero full-bleed */}
