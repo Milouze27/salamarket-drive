@@ -202,8 +202,13 @@ export default function Checkout() {
 
   return (
     <div className="min-h-dvh bg-background pb-24">
-      {/* Header sticky */}
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background px-4 py-3">
+      {/* Header sticky — respecte safe-area-inset-top (Dynamic Island) */}
+      <header
+        className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background px-4 pb-3"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)",
+        }}
+      >
         <button
           onClick={() => navigate("/creneaux")}
           aria-label="Retour"
