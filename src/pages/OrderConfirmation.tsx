@@ -218,7 +218,13 @@ const OrderConfirmation = () => {
 
   if (loading) {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center gap-3 bg-background p-4">
+      <div
+        className="min-h-dvh flex flex-col items-center justify-center gap-3 bg-background p-4"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 1rem)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+        }}
+      >
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
         <p className="text-sm text-muted-foreground">
           Vérification de votre commande...
@@ -229,7 +235,13 @@ const OrderConfirmation = () => {
 
   if (error || !order) {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 bg-background p-4 text-center">
+      <div
+        className="min-h-dvh flex flex-col items-center justify-center gap-4 bg-background p-4 text-center"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 1rem)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+        }}
+      >
         <AlertCircle className="w-16 h-16 text-destructive" />
         <h1 className="text-2xl font-semibold">Commande introuvable</h1>
         <p className="text-sm text-muted-foreground max-w-sm">
@@ -246,9 +258,13 @@ const OrderConfirmation = () => {
   const items = Array.isArray(order.items) ? order.items : [];
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div
+      className="min-h-dvh bg-background"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <div className="max-w-md mx-auto p-4 space-y-4">
-        {/* Header — success animé + titre staggered */}
+        {/* Header — success animé + titre staggered. pt-8 garde de l'air
+            sous la safe-zone Dynamic Island. */}
         <div className="flex flex-col items-center gap-4 pt-8 pb-2">
           <SuccessBadge />
           <div className="text-center space-y-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
