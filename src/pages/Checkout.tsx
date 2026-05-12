@@ -59,8 +59,8 @@ export default function Checkout() {
 
   const items = useCartStore((s) => s.items);
   const totalCents = useCartTotalCents();
-  // Note : pas de clearCart ici — OrderConfirmation s'en charge à
-  // la réception d'une order paid OR in_store.
+  const clearCart = useCartStore((s) => s.clear);
+  const clearSlot = useCheckoutStore((s) => s.clearSlot);
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
 
   const [paymentMethod, setPaymentMethod] = useState<"online" | "in_store">(
@@ -68,14 +68,18 @@ export default function Checkout() {
   );
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  // Flag transition vers Stripe ou page de confirmation. Désactive le
+  // garde-fou "panier vide → /panier" car on va volontairement vider
+  // le panier juste avant de rediriger ailleurs.
+  const [placingOrder, setPlacingOrder] = useState(false);
   const [slot, setSlot] = useState<SlotInfo | null>(null);
 
-  // Garde 1 : panier vide → /panier
+  // Garde 1 : panier vide → /panier (skip si on est en train de placer)
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !placingOrder) {
       navigate("/panier", { replace: true });
     }
-  }, [items.length, navigate]);
+  }, [items.length, navigate, placingOrder]);
 
   // Garde 2 : pas de créneau → /creneaux
   useEffect(() => {
@@ -170,16 +174,23 @@ export default function Checkout() {
         return;
       }
 
+      // Flag pour désactiver le garde-fou panier-vide
+      setPlacingOrder(true);
+
       if (data.checkout_url) {
-        // Stripe : redirection externe vers la page de paiement.
+        // Stripe : on vide le panier AVANT la redirection externe.
+        // window.location.href quitte React → garde-fou ne se déclenche
+        // pas. Si l'user revient via back ou autre page, panier vide.
+        clearCart();
+        clearSlot();
         window.location.href = data.checkout_url;
         return;
       }
       if (data.order_id) {
-        // Mode magasin : navigate direct vers la confirmation.
-        // On NE clear PAS le panier ici : OrderConfirmation s'en charge à
-        // la réception de l'order (paid OR in_store). Si on clearCart avant,
-        // le useEffect garde-fou "panier vide → /panier" écrase le navigate.
+        // Mode magasin : on vide le panier AVANT le navigate. Le
+        // garde-fou panier-vide est désactivé via placingOrder=true.
+        clearCart();
+        clearSlot();
         navigate(`/commande/confirmee/${data.order_id}`, { replace: true });
         return;
       }
