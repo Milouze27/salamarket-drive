@@ -8,6 +8,7 @@ import {
   Loader2,
   Minus,
   Plus,
+  ShoppingCart,
   Sparkles,
   Store,
   Truck,
@@ -331,9 +332,16 @@ const ProductDetail = () => {
           {cartQty > 0 && !justAdded && (
             <Link
               to="/panier"
-              className="mt-2 block text-center text-xs font-medium text-[#0F4C3A] hover:underline"
+              className="mt-3 h-12 w-full bg-white border-2 border-[#0F4C3A]/15 rounded-2xl flex items-center justify-center gap-2 text-[#0F4C3A] font-bold text-[14px] shadow-sm active:scale-[0.99] transition-transform"
             >
-              {cartQty} déjà dans le panier · Voir →
+              <span className="inline-flex w-7 h-7 rounded-full bg-[#0F4C3A] text-white items-center justify-center">
+                <ShoppingCart size={14} strokeWidth={2.4} />
+              </span>
+              Voir le panier
+              <span className="inline-flex min-w-[24px] h-6 rounded-full bg-[#D4A93C]/20 text-[#0F4C3A] items-center justify-center px-2 tabular-nums text-[12px] font-extrabold">
+                {cartQty}
+              </span>
+              <ArrowRight size={14} className="text-[#0F4C3A]/60" />
             </Link>
           )}
         </div>

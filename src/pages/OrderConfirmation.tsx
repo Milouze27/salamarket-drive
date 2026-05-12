@@ -402,18 +402,28 @@ const OrderConfirmation = () => {
           )}
         </div>
 
-        {/* Boutons */}
+        {/* Boutons — clearCart en safety net avant nav, au cas où le
+            useEffect n'aurait pas couvert le cas (verify-checkout-session
+            lent, payment_status pas encore 'paid' au moment du fetch, etc.) */}
         <div className="space-y-2 pt-2 pb-8">
           <Button
             className="w-full"
-            onClick={() => navigate("/commandes")}
+            onClick={() => {
+              clearCart();
+              clearSlot();
+              navigate("/commandes");
+            }}
           >
             Mes commandes
           </Button>
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              clearCart();
+              clearSlot();
+              navigate("/");
+            }}
           >
             Retour à l'accueil
           </Button>
