@@ -130,6 +130,16 @@ const OrderConfirmation = () => {
     confirmCalledRef.current = true;
     if (!orderId) return;
 
+    // VIDE le panier dès l'arrivée sur cette page (la commande est créée
+    // côté serveur, on n'a plus besoin du panier local quel que soit l'état
+    // du verify-checkout-session qui suit). Cas couverts :
+    //   - Stripe redirect → /commande/confirmee/X → panier vide instant
+    //   - Paiement magasin → idem
+    //   - User ferme la page avant de cliquer un bouton → panier vide
+    // Le state Zustand + localStorage est synchronisé via persist.
+    clearCart();
+    clearSlot();
+
     const sessionId = searchParams.get("session_id");
 
     supabase.functions
@@ -145,7 +155,7 @@ const OrderConfirmation = () => {
           setOrder(data.order as Order);
         }
       });
-  }, [orderId, searchParams]);
+  }, [orderId, searchParams, clearCart, clearSlot]);
 
   useEffect(() => {
     let cancelled = false;
