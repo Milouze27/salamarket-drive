@@ -67,14 +67,15 @@ const Cart = () => {
         ) : (
           <>
             {/* Compteur articles avec lien vider — secondary action */}
-            <div className="flex items-center justify-between text-xs text-muted px-1">
-              <span className="font-medium">
+            <div className="flex items-center justify-between gap-3 px-1">
+              <span className="text-xs font-medium text-muted">
                 {itemCount} article{itemCount > 1 ? "s" : ""}
               </span>
               <button
                 onClick={handleClear}
-                className="font-medium hover:text-destructive transition-colors"
+                className="inline-flex items-center gap-1.5 bg-destructive/10 text-destructive font-bold text-[12px] px-3 py-2 rounded-full border border-destructive/20 active:scale-95 transition-transform"
               >
+                <Trash2 size={12} strokeWidth={2.4} />
                 Vider le panier
               </button>
             </div>
