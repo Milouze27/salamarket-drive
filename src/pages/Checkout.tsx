@@ -59,8 +59,6 @@ export default function Checkout() {
 
   const items = useCartStore((s) => s.items);
   const totalCents = useCartTotalCents();
-  const clearCart = useCartStore((s) => s.clear);
-  const clearSlot = useCheckoutStore((s) => s.clearSlot);
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
 
   const [paymentMethod, setPaymentMethod] = useState<"online" | "in_store">(
@@ -68,18 +66,15 @@ export default function Checkout() {
   );
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  // Flag transition vers Stripe ou page de confirmation. Désactive le
-  // garde-fou "panier vide → /panier" car on va volontairement vider
-  // le panier juste avant de rediriger ailleurs.
-  const [placingOrder, setPlacingOrder] = useState(false);
   const [slot, setSlot] = useState<SlotInfo | null>(null);
 
-  // Garde 1 : panier vide → /panier (skip si on est en train de placer)
+  // Garde 1 : panier vide → /panier (sauf si on est en train de soumettre
+  // la commande — le clear cart se fait sur OrderConfirmation au mount)
   useEffect(() => {
-    if (items.length === 0 && !placingOrder) {
+    if (items.length === 0 && !loading) {
       navigate("/panier", { replace: true });
     }
-  }, [items.length, navigate, placingOrder]);
+  }, [items.length, navigate, loading]);
 
   // Garde 2 : pas de créneau → /creneaux
   useEffect(() => {
@@ -174,23 +169,18 @@ export default function Checkout() {
         return;
       }
 
-      // Flag pour désactiver le garde-fou panier-vide
-      setPlacingOrder(true);
-
       if (data.checkout_url) {
-        // Stripe : on vide le panier AVANT la redirection externe.
-        // window.location.href quitte React → garde-fou ne se déclenche
-        // pas. Si l'user revient via back ou autre page, panier vide.
-        clearCart();
-        clearSlot();
+        // Stripe : redirection externe immédiate, on quitte React.
+        // Pas de clearCart ici — OrderConfirmation s'en charge au mount
+        // quand Stripe redirige vers /commande/confirmee/ après paiement.
         window.location.href = data.checkout_url;
         return;
       }
       if (data.order_id) {
-        // Mode magasin : on vide le panier AVANT le navigate. Le
-        // garde-fou panier-vide est désactivé via placingOrder=true.
-        clearCart();
-        clearSlot();
+        // Paiement magasin : navigate direct vers la confirmation.
+        // setLoading(true) reste actif → le garde-fou panier-vide est
+        // muselé pendant la transition (cf useEffect ci-dessus).
+        // OrderConfirmation clear le cart au mount.
         navigate(`/commande/confirmee/${data.order_id}`, { replace: true });
         return;
       }
