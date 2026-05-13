@@ -7,7 +7,6 @@ import { toZonedTime } from "date-fns-tz";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCartStore } from "@/stores/cartStore";
@@ -61,9 +60,9 @@ export default function Checkout() {
   const totalCents = useCartTotalCents();
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
 
-  const [paymentMethod, setPaymentMethod] = useState<"online" | "in_store">(
-    "online"
-  );
+  // Paiement en ligne uniquement — paiement au retrait retiré
+  // (risque de non-retrait et abandon de commande)
+  const paymentMethod = "online" as const;
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [slot, setSlot] = useState<SlotInfo | null>(null);
@@ -196,10 +195,7 @@ export default function Checkout() {
 
   if (items.length === 0 || !selectedSlotId) return null;
 
-  const buttonLabel =
-    paymentMethod === "online"
-      ? `Payer ${totalLabel} en ligne`
-      : `Confirmer la commande (${totalLabel})`;
+  const buttonLabel = `Payer ${totalLabel} en ligne`;
 
   return (
     <div className="min-h-dvh bg-background pb-24">
@@ -270,50 +266,23 @@ export default function Checkout() {
           </div>
         </section>
 
-        {/* Mode de paiement */}
+        {/* Mode de paiement — Stripe uniquement (paiement au retrait
+            retiré : risque de non-retrait et abandon de commande) */}
         <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
-            Mode de paiement
+            Paiement sécurisé en ligne
           </h2>
-          <RadioGroup
-            value={paymentMethod}
-            onValueChange={(v) => setPaymentMethod(v as "online" | "in_store")}
-            className="space-y-3"
-          >
-            <label
-              htmlFor="pm-online"
-              className="flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-colors hover:bg-muted/50"
-            >
-              <RadioGroupItem value="online" id="pm-online" className="mt-1" />
-              <div className="flex-1">
-                <div className="text-base font-medium">
-                  Payer en ligne par carte
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Paiement sécurisé via Stripe (mode TEST)
-                </div>
+          <div className="flex items-start gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+            <div className="flex-1">
+              <div className="text-base font-semibold text-primary">
+                Carte bancaire via Stripe
               </div>
-            </label>
-
-            <label
-              htmlFor="pm-instore"
-              className="flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-colors hover:bg-muted/50"
-            >
-              <RadioGroupItem
-                value="in_store"
-                id="pm-instore"
-                className="mt-1"
-              />
-              <div className="flex-1">
-                <div className="text-base font-medium">
-                  Payer au retrait en magasin
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Espèces ou carte bancaire au retrait
-                </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Réservation immédiate de votre commande. Paiement sécurisé,
+                débité au moment de la commande.
               </div>
-            </label>
-          </RadioGroup>
+            </div>
+          </div>
         </section>
 
         {/* Notes */}
