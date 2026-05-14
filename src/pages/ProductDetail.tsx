@@ -159,33 +159,29 @@ const ProductDetail = () => {
         className="max-w-2xl mx-auto px-4 -mt-4 relative"
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 8rem)" }}
       >
-        {/* Title + price card premium */}
-        <section className="bg-white rounded-3xl border border-border p-5 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 flex-1">
-              <Link
-                to={`/?category=${product.category}`}
-                className="text-[10px] uppercase tracking-[0.18em] text-[#C9A227] font-bold hover:underline"
-              >
-                {product.category.replace("-", " & ")}
-              </Link>
-              <h1 className="mt-1.5 text-2xl font-bold text-text leading-tight tracking-tight">
-                {product.name}
-              </h1>
-              <p className="text-sm text-muted mt-1">
-                {unitLabel(product.unit)}
-              </p>
-            </div>
-            <div className="text-right whitespace-nowrap">
-              <span className="block text-3xl font-bold text-[#0E3B2E] tabular-nums tracking-tight">
-                {formatPrice(product.priceCents)}
-              </span>
-              {product.unit === "kg" && (
-                <span className="block text-[10px] uppercase tracking-wider text-muted font-bold mt-0.5">
-                  /kg
-                </span>
-              )}
-            </div>
+        {/* Title + price — bloc éditorial sans card frame, serif pour le
+            nom produit. Le titre porte la composition, le prix s'aligne
+            en baseline. */}
+        <section className="px-1 pt-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <Link
+            to={`/?category=${product.category}`}
+            className="inline-block text-[10px] uppercase tracking-[0.22em] text-[#C9A227] font-bold hover:underline underline-offset-[5px]"
+          >
+            {product.category.replace("-", " & ")}
+          </Link>
+          <h1
+            className="mt-2 font-serif text-[28px] md:text-[34px] leading-[1.1] text-[#0E3B2E] tracking-[-0.015em]"
+            style={{ fontVariationSettings: '"opsz" 72' }}
+          >
+            {product.name}
+          </h1>
+          <div className="mt-3 flex items-baseline gap-3">
+            <span className="text-2xl md:text-3xl font-semibold text-[#0E3B2E] tabular-nums tracking-tight">
+              {formatPrice(product.priceCents)}
+            </span>
+            <span className="text-sm text-[#6B7280]">
+              · {unitLabel(product.unit)}
+            </span>
           </div>
         </section>
 
@@ -214,13 +210,18 @@ const ProductDetail = () => {
           />
         </section>
 
-        {/* Description */}
+        {/* Description — bloc éditorial typographique pur, pas un card.
+            Petit serif italique en kicker pour signaler "petit traité",
+            pas une box marketing. */}
         {product.description && (
-          <section className="mt-4 bg-white rounded-3xl border border-border p-5 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:200ms] [animation-fill-mode:backwards]">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted font-bold mb-2">
-              À propos
+          <section className="mt-6 px-1 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:200ms] [animation-fill-mode:backwards]">
+            <p
+              className="font-serif italic text-[14px] text-[#C9A227] mb-3"
+              style={{ fontVariationSettings: '"opsz" 24' }}
+            >
+              Notre note —
             </p>
-            <p className="text-base text-text/85 leading-relaxed">
+            <p className="text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[60ch]">
               {product.description}
             </p>
           </section>

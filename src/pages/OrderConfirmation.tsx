@@ -13,8 +13,6 @@ import { fr } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useCartStore } from "@/stores/cartStore";
 import { useCheckoutStore } from "@/stores/checkoutStore";
@@ -269,101 +267,122 @@ const OrderConfirmation = () => {
 
   return (
     <div
-      className="min-h-dvh bg-background"
+      className="min-h-dvh bg-[#FAF7EE]"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="max-w-md mx-auto p-4 space-y-4">
-        {/* Header — success animé + titre staggered. pt-8 garde de l'air
-            sous la safe-zone Dynamic Island. */}
-        <div className="flex flex-col items-center gap-4 pt-8 pb-2">
-          <SuccessBadge />
-          <div className="text-center space-y-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
-            <h1 className="text-2xl font-bold tracking-tight">
-              Commande confirmée !
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Merci pour votre confiance
-            </p>
-          </div>
-        </div>
-
-        {/* Numéro de commande — card premium avec accent doré */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#C9A227]/30 bg-gradient-to-br from-[#FAF7EE] to-white p-5 shadow-sm animate-in fade-in slide-in-from-bottom-3 duration-500 delay-500 [animation-fill-mode:backwards]">
-          <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-[#C9A227]/10" />
-          <div className="relative">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
-              Numéro de commande
-            </p>
-            <p className="text-2xl font-mono font-bold uppercase mt-1.5 text-[#0E3B2E] select-allow">
-              {orderShortId}
-            </p>
-          </div>
-        </div>
-
-        {/* Créneau de retrait — card premium */}
-        <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-5 animate-in fade-in slide-in-from-bottom-3 duration-500 [animation-delay:600ms] [animation-fill-mode:backwards]">
-          <div className="flex items-start gap-3">
-            <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Calendar className="text-primary" size={20} />
+      <div className="max-w-xl mx-auto px-5 md:px-8 space-y-6">
+        {/* En-tête lettre — kicker doré, "Merci." serif giant, signature
+            sous-jacente. Le badge succès garde son moment d'animation mais
+            devient plus petit, ancré à gauche, comme un sceau. */}
+        <header className="pt-10 md:pt-14 pb-2">
+          <div className="flex items-center gap-4 mb-6 animate-in fade-in slide-in-from-top-2 duration-500">
+            <div className="scale-75 origin-left -ml-2">
+              <SuccessBadge />
             </div>
-            <div className="flex-1">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
-                Retrait prévu
-              </p>
-              <p className="text-base font-semibold text-foreground mt-1">
-                {order.pickup_slot
-                  ? formatSlotLabel(order.pickup_slot)
-                  : "Créneau à confirmer"}
-              </p>
-            </div>
+            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227]">
+              Commande reçue
+            </p>
           </div>
-        </div>
 
-        {/* Articles */}
-        <div className="rounded-2xl border bg-card p-5 shadow-sm animate-in fade-in slide-in-from-bottom-3 duration-500 delay-700 [animation-fill-mode:backwards]">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">
-            Articles
+          <h1
+            className="font-serif text-[44px] md:text-[60px] leading-[0.95] text-[#0E3B2E] tracking-[-0.02em] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]"
+            style={{ fontVariationSettings: '"opsz" 144' }}
+          >
+            Merci, <em className="italic font-normal text-[#C9A227]">on s'en occupe.</em>
+          </h1>
+
+          <p className="mt-5 text-[15px] md:text-base leading-relaxed text-[#0F1A14]/75 max-w-[44ch] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
+            Votre commande est transmise à l'équipe Salamarket. Nous la
+            préparons avec soin pour votre créneau de retrait.
           </p>
-          <ul className="space-y-2">
+        </header>
+
+        {/* Référence commande — typographique, pas un card avec gradient.
+            Le numéro est l'info utile, on le pose en grand sans fioriture. */}
+        <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-500 [animation-fill-mode:backwards]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-2">
+            Référence
+          </p>
+          <p className="text-3xl md:text-4xl font-mono font-semibold uppercase text-[#0E3B2E] select-allow tracking-tight">
+            {orderShortId}
+          </p>
+          <p className="mt-2 text-xs text-[#6B7280]">
+            Présentez ce numéro au comptoir lors du retrait.
+          </p>
+        </section>
+
+        {/* Créneau de retrait — bloc éditorial typographique */}
+        <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in slide-in-from-bottom-3 duration-500 [animation-delay:600ms] [animation-fill-mode:backwards]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-2 flex items-center gap-2">
+            <Calendar size={11} aria-hidden />
+            Votre créneau
+          </p>
+          <p
+            className="font-serif text-[22px] md:text-[26px] leading-[1.15] text-[#0E3B2E] tracking-[-0.01em]"
+            style={{ fontVariationSettings: '"opsz" 60' }}
+          >
+            {order.pickup_slot
+              ? formatSlotLabel(order.pickup_slot)
+              : "Créneau à confirmer"}
+          </p>
+          <p className="mt-2 text-xs text-[#6B7280]">
+            8 av. Larrieu&#8209;Thibaud · 31100 Toulouse
+          </p>
+        </section>
+
+        {/* Articles — liste éditoriale, pas tableau */}
+        <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-700 [animation-fill-mode:backwards]">
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
+            Articles ({items.length})
+          </p>
+          <ul className="space-y-2.5">
             {items.map((item, idx) => (
               <li
                 key={`${item.product_id}-${idx}`}
-                className="flex justify-between text-sm"
+                className="flex items-baseline justify-between gap-3 text-[14px]"
               >
-                <span>
-                  {item.quantity} × {item.name}
+                <span className="text-[#0F1A14]/85">
+                  <span className="text-[#C9A227] font-semibold tabular-nums mr-2">
+                    {item.quantity}×
+                  </span>
+                  {item.name}
                 </span>
-                <span className="text-muted-foreground tabular-nums">
+                <span className="text-[#6B7280] tabular-nums whitespace-nowrap">
                   {formatEUR(item.line_total_cents)}
                 </span>
               </li>
             ))}
           </ul>
-          <Separator className="my-3" />
-          <div className="flex justify-between items-baseline">
-            <span className="font-semibold">Total</span>
-            <span className="text-xl font-bold text-[#0E3B2E] tabular-nums">
+          <div className="mt-5 pt-5 border-t border-[#0E3B2E]/15 flex items-baseline justify-between">
+            <span className="text-[13px] uppercase tracking-[0.18em] font-bold text-[#0E3B2E]">
+              Total réglé
+            </span>
+            <span
+              className="font-serif text-[28px] md:text-[32px] font-semibold text-[#0E3B2E] tabular-nums tracking-tight"
+              style={{ fontVariationSettings: '"opsz" 72' }}
+            >
               {formatEUR(order.total_cents)}
             </span>
           </div>
-        </div>
+        </section>
 
-        {/* Mode de paiement */}
-        <div className="rounded-lg border bg-card p-4">
+        {/* Statut paiement — ligne discrète, plus de badge orange/primary
+            qui casse l'atmosphère "lettre". */}
+        <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in slide-in-from-bottom-3 duration-500 delay-[800ms] [animation-fill-mode:backwards]">
           {order.payment_method === "online" &&
             order.payment_status === "paid" && (
               <div className="flex items-start gap-3">
                 <CreditCard
-                  className="text-primary shrink-0 mt-0.5"
-                  size={20}
+                  className="text-[#C9A227] shrink-0 mt-0.5"
+                  size={18}
+                  aria-hidden
                 />
-                <div className="flex-1 space-y-2">
-                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+                <div className="flex-1">
+                  <p className="text-[13px] font-semibold text-[#0E3B2E]">
                     Payé en ligne
-                  </Badge>
-                  <p className="text-sm">
-                    Vous avez payé {formatEUR(order.total_cents)} par carte.
-                    Vous n'avez rien à régler au retrait.
+                  </p>
+                  <p className="text-[13px] text-[#0F1A14]/70 mt-0.5">
+                    Aucun règlement n'est à effectuer au retrait.
                   </p>
                 </div>
               </div>
@@ -371,16 +390,17 @@ const OrderConfirmation = () => {
 
           {order.payment_method === "in_store" && (
             <div className="flex items-start gap-3">
-              <Banknote className="text-primary shrink-0 mt-0.5" size={20} />
-              <div className="flex-1 space-y-2">
-                <Badge className="bg-orange-500 text-white hover:bg-orange-500">
-                  À régler au retrait
-                </Badge>
-                <p className="font-semibold">
-                  À régler au retrait : {formatEUR(order.total_cents)}
+              <Banknote
+                className="text-[#C9A227] shrink-0 mt-0.5"
+                size={18}
+                aria-hidden
+              />
+              <div className="flex-1">
+                <p className="text-[13px] font-semibold text-[#0E3B2E]">
+                  À régler au retrait — {formatEUR(order.total_cents)}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Espèces ou carte bancaire acceptés
+                <p className="text-[13px] text-[#0F1A14]/70 mt-0.5">
+                  Espèces ou carte bancaire acceptés.
                 </p>
               </div>
             </div>
@@ -389,46 +409,62 @@ const OrderConfirmation = () => {
           {order.payment_method === "online" &&
             order.payment_status === "unpaid" && (
               <div className="flex items-start gap-3">
-                <Clock className="text-muted-foreground shrink-0 mt-0.5" size={20} />
-                <div className="flex-1 space-y-2">
-                  <Badge variant="secondary">En cours de validation</Badge>
-                  <p className="text-sm">
-                    Votre paiement est en cours de validation. Vous recevrez
-                    une confirmation par email.
+                <Clock
+                  className="text-[#6B7280] shrink-0 mt-0.5"
+                  size={18}
+                  aria-hidden
+                />
+                <div className="flex-1">
+                  <p className="text-[13px] font-semibold text-[#0E3B2E]">
+                    Paiement en cours de validation
+                  </p>
+                  <p className="text-[13px] text-[#0F1A14]/70 mt-0.5">
+                    Vous recevrez un email de confirmation sous peu.
                   </p>
                 </div>
               </div>
             )}
-        </div>
 
-        {/* Infos retrait */}
-        <div className="text-sm text-muted-foreground p-4 space-y-1">
-          <p>📍 Retrait à Salamarket Toulouse</p>
-          <p>Présentez votre numéro de commande à l'arrivée</p>
           {order.notes && (
-            <p className="pt-2">
-              Note transmise au préparateur : {order.notes}
+            <p className="mt-4 pt-4 border-t border-dashed border-[#0E3B2E]/15 text-[13px] text-[#0F1A14]/70 italic">
+              <span className="text-[#C9A227] not-italic font-semibold mr-1">
+                Note transmise :
+              </span>
+              {order.notes}
             </p>
           )}
-        </div>
+        </section>
 
-        {/* Boutons — clearCart en safety net avant nav, au cas où le
-            useEffect n'aurait pas couvert le cas (verify-checkout-session
-            lent, payment_status pas encore 'paid' au moment du fetch, etc.) */}
-        <div className="space-y-2 pt-2 pb-8">
-          <Button
-            className="w-full"
+        {/* Signature — note manuscrite type "lettre du magasin" */}
+        <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in duration-700 delay-[900ms] [animation-fill-mode:backwards]">
+          <p
+            className="font-serif italic text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[44ch]"
+            style={{ fontVariationSettings: '"opsz" 24' }}
+          >
+            « Merci de faire confiance à un commerce indépendant. À très vite
+            au comptoir. »
+          </p>
+          <p className="mt-3 text-[12px] tracking-[0.05em] text-[#6B7280]">
+            — Otmane, Ahmed et l'équipe Salamarket
+          </p>
+        </section>
+
+        {/* CTAs bas — primary plein sapin, secondary souligné éditorial */}
+        <div className="pt-4 pb-10 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-1000 [animation-fill-mode:backwards]">
+          <button
+            type="button"
+            className="w-full h-12 rounded-full bg-[#0E3B2E] text-white text-[15px] font-semibold shadow-md shadow-[#0E3B2E]/20 hover:bg-[#082A20] hover:shadow-lg active:scale-[0.98] transition-all"
             onClick={() => {
               clearCart();
               clearSlot();
               navigate("/commandes");
             }}
           >
-            Mes commandes
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full"
+            Voir mes commandes
+          </button>
+          <button
+            type="button"
+            className="w-full h-11 text-[14px] font-semibold text-[#0E3B2E] underline underline-offset-[6px] decoration-[#C9A227]/60 decoration-[1.5px] hover:decoration-[#C9A227] transition-colors"
             onClick={() => {
               clearCart();
               clearSlot();
@@ -436,7 +472,7 @@ const OrderConfirmation = () => {
             }}
           >
             Retour à l'accueil
-          </Button>
+          </button>
         </div>
       </div>
     </div>
