@@ -25,6 +25,7 @@ const Slots = () => {
   const { slots, loading, error, refetch } = useSlots();
   const selectedSlotId = useCheckoutStore((s) => s.selectedSlotId);
   const setSlot = useCheckoutStore((s) => s.setSlot);
+  const clearSlot = useCheckoutStore((s) => s.clearSlot);
 
   // Tick toutes les 60s pour réévaluer isSlotSelectable
   const [now, setNow] = useState(() => new Date());
@@ -37,9 +38,18 @@ const Slots = () => {
 
   const [activeDayKey, setActiveDayKey] = useState<string | null>(null);
 
-  // Sélection par défaut : premier jour avec au moins un créneau sélectionnable
+  // Sélection par défaut + reset si le jour actif n'existe plus après
+  // un refetch des slots (sinon activeGroup devient null silencieusement
+  // et l'affichage casse).
   useEffect(() => {
-    if (activeDayKey || groups.length === 0) return;
+    if (groups.length === 0) {
+      if (activeDayKey !== null) setActiveDayKey(null);
+      return;
+    }
+    const dayStillExists =
+      activeDayKey && groups.some((g) => g.dayKey === activeDayKey);
+    if (dayStillExists) return;
+
     const firstWithSelectable = groups.find((g) =>
       g.slots.some((s) => isSlotSelectable(s, now)),
     );
@@ -65,7 +75,7 @@ const Slots = () => {
     <div className="min-h-dvh bg-bg text-text flex flex-col">
       <AppHeader showBack title="Choisir mon créneau" />
 
-      <main className="flex-1 max-w-2xl w-full mx-auto px-4 pt-3 pb-36 flex flex-col gap-3">
+      <main className="flex-1 max-w-2xl w-full mx-auto px-6 pt-4 pb-36 flex flex-col gap-3">
         <p className="text-sm text-muted">
           Retrait à {BRAND.store.name}
         </p>
@@ -169,14 +179,22 @@ const Slots = () => {
                     key={slot.id}
                     type="button"
                     disabled={!selectable}
-                    onClick={() => setSlot(slot.id)}
+                    onClick={() => {
+                      // Toggle off si on re-clique sur le slot déjà
+                      // sélectionné — pattern UX usuel (90% des UI).
+                      if (isSelected) {
+                        clearSlot();
+                      } else {
+                        setSlot(slot.id);
+                      }
+                    }}
                     className={cn(
                       "rounded-2xl border p-3 flex flex-col items-center justify-center text-center transition-all",
                       selectable
                         ? isSelected
-                          ? "bg-primary border-primary text-white active:scale-[0.98]"
-                          : "bg-white border-border text-text active:scale-[0.98]"
-                        : "bg-bg border-border text-muted opacity-50 pointer-events-none",
+                          ? "bg-[#0E3B2E] border-[#0E3B2E] text-white active:scale-[0.98]"
+                          : "bg-white border-[#0E3B2E]/15 text-[#0E3B2E] active:scale-[0.98] hover:border-[#0E3B2E]/30"
+                        : "bg-[#FAF7EE] border-[#0E3B2E]/10 text-[#0F1A14]/40 opacity-60 pointer-events-none",
                     )}
                   >
                     <span className="text-base font-bold leading-tight">
@@ -185,7 +203,7 @@ const Slots = () => {
                     <span
                       className={cn(
                         "text-[11px] mt-1",
-                        isSelected ? "text-white/85" : "text-muted",
+                        isSelected ? "text-white/85" : "text-[#0F1A14]/55",
                       )}
                     >
                       {sub}

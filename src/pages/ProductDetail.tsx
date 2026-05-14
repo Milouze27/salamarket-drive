@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   AlertCircle,
   ArrowLeft,
@@ -25,6 +25,7 @@ const MAX_QTY = 50;
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: product, isLoading, isError, error } = useProduct(id);
   const { data: allProducts } = useProducts();
 
@@ -36,12 +37,35 @@ const ProductDetail = () => {
 
   const [qty, setQty] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+  // Timer "Ajouté !" stocké en ref pour cleanup + éviter le stacking sur
+  // clics rapides (sinon flicker).
+  const addedTimerRef = useRef<number | null>(null);
 
   // Re-init qty quand l'id change (navigation entre produits)
   useEffect(() => {
     setQty(1);
     setJustAdded(false);
   }, [id]);
+
+  // Cleanup timer "Ajouté" au unmount
+  useEffect(() => {
+    return () => {
+      if (addedTimerRef.current !== null) {
+        window.clearTimeout(addedTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Back safe : si on a un history.key (navigation interne SPA), back ;
+  // sinon (PWA installée ouverte direct sur l'URL, lien partagé, notif
+  // push), retour home. window.history.length ne suffit pas en PWA.
+  const goBack = () => {
+    if (location.key !== "default") {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
 
   // Suggestions : 4 autres produits de la même catégorie
   const suggestions = useMemo(() => {
@@ -54,14 +78,18 @@ const ProductDetail = () => {
   const handleAdd = () => {
     if (!product) return;
     if (cartQty > 0) {
-      // Déjà dans le panier : on update la quantité au qty courant
       updateQty(product.id, cartQty + qty);
     } else {
-      // Première fois : addItem N fois (le store n'a pas d'addBatch)
       for (let i = 0; i < qty; i += 1) addItem(product);
     }
     setJustAdded(true);
-    window.setTimeout(() => setJustAdded(false), 2000);
+    if (addedTimerRef.current !== null) {
+      window.clearTimeout(addedTimerRef.current);
+    }
+    addedTimerRef.current = window.setTimeout(() => {
+      setJustAdded(false);
+      addedTimerRef.current = null;
+    }, 2000);
   };
 
   const totalCents = product ? product.priceCents * qty : 0;
@@ -118,10 +146,7 @@ const ProductDetail = () => {
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
         <button
-          onClick={() => {
-            if (window.history.length > 1) window.history.back();
-            else navigate("/");
-          }}
+          onClick={goBack}
           aria-label="Retour"
           className="pointer-events-auto w-11 h-11 rounded-full bg-white/95 backdrop-blur-md text-[#0E3B2E] flex items-center justify-center shadow-lg active:scale-90 transition-transform"
         >
@@ -179,7 +204,7 @@ const ProductDetail = () => {
             {product.name}
           </h1>
           <div className="mt-3 flex items-baseline gap-3">
-            <span className="text-2xl md:text-3xl font-semibold text-[#0E3B2E] tabular-nums tracking-tight">
+            <span className="text-[26px] md:text-[32px] font-extrabold text-[#0E3B2E] tabular-nums tracking-[-0.02em]">
               {formatPrice(product.priceCents)}
             </span>
             <span className="text-sm text-[#6B7280]">
@@ -227,17 +252,18 @@ const ProductDetail = () => {
           </section>
         )}
 
-        {/* Bandeau retrait info */}
-        <section className="mt-4 flex items-start gap-3 rounded-3xl border-2 border-[#0E3B2E]/15 bg-gradient-to-br from-[#0E3B2E]/5 to-[#C9A227]/5 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:300ms] [animation-fill-mode:backwards]">
-          <div className="shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+        {/* Bandeau retrait info — fond plein crème, plus de gradient
+            décoratif (anti-pattern glassmorphism). */}
+        <section className="mt-5 flex items-start gap-3 rounded-3xl border border-[#0E3B2E]/15 bg-white p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:300ms] [animation-fill-mode:backwards]">
+          <div className="shrink-0 w-10 h-10 rounded-full bg-[#FAF7EE] flex items-center justify-center">
             <Truck size={18} className="text-[#0E3B2E]" aria-hidden />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-text">Retrait en magasin</p>
-            <p className="text-xs text-muted mt-0.5">
-              Salamarket Toulouse · 8 av. Larrieu-Thibaud
+            <p className="text-sm font-bold text-[#0E3B2E]">Retrait en magasin</p>
+            <p className="text-xs text-[#0F1A14]/60 mt-0.5">
+              Salamarket Toulouse · 8 av. Larrieu&#8209;Thibaud
             </p>
-            <p className="text-xs text-muted mt-0.5">
+            <p className="text-xs text-[#0F1A14]/60 mt-0.5">
               Choisissez votre créneau au panier
             </p>
           </div>
@@ -346,22 +372,23 @@ const ProductDetail = () => {
         style={{ bottom: 0 }}
       >
         <div
-          className="max-w-2xl mx-auto px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+          className="max-w-2xl mx-auto px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
         >
           <div className="flex items-center gap-3">
-            {/* Stepper qty */}
-            <div className="flex items-center gap-1 bg-[#FAF7EE] rounded-full p-1 border border-border shrink-0">
+            {/* Stepper qty — 44pt Apple HIG, plus de boutons 36px sous
+                la cible de tap. */}
+            <div className="flex items-center gap-1 bg-[#FAF7EE] rounded-full p-1 border border-[#0E3B2E]/12 shrink-0">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 disabled={qty <= 1}
                 aria-label="Diminuer la quantité"
-                className="w-9 h-9 rounded-full bg-white border border-border flex items-center justify-center text-text active:scale-90 transition-transform shadow-sm disabled:opacity-30 disabled:active:scale-100"
+                className="w-11 h-11 rounded-full bg-white border border-[#0E3B2E]/12 flex items-center justify-center text-[#0E3B2E] active:scale-90 transition-transform shadow-sm disabled:opacity-30 disabled:active:scale-100"
               >
-                <Minus size={14} strokeWidth={2.5} aria-hidden />
+                <Minus size={16} strokeWidth={2.5} aria-hidden />
               </button>
               <span
-                className="min-w-[2rem] text-center text-base font-bold tabular-nums text-text"
+                className="min-w-[2.25rem] text-center text-base font-bold tabular-nums text-[#0E3B2E]"
                 aria-live="polite"
               >
                 {qty}
@@ -371,9 +398,9 @@ const ProductDetail = () => {
                 onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
                 disabled={qty >= MAX_QTY}
                 aria-label="Augmenter la quantité"
-                className="w-9 h-9 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center active:scale-90 transition-transform shadow-sm disabled:opacity-40 disabled:active:scale-100"
+                className="w-11 h-11 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center active:scale-90 transition-transform shadow-sm disabled:opacity-40 disabled:active:scale-100"
               >
-                <Plus size={14} strokeWidth={2.5} aria-hidden />
+                <Plus size={16} strokeWidth={2.5} aria-hidden />
               </button>
             </div>
 

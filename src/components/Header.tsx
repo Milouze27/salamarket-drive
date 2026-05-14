@@ -58,7 +58,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
     <>
       {/* HERO — gradient sapin sombre, logo doré pleine valeur */}
       <section
-        className="relative bg-gradient-to-b from-[#0E3B2E] via-[#082A20] to-[#082A20] text-white px-4 pb-6 overflow-hidden"
+        className="relative bg-gradient-to-b from-[#0E3B2E] via-[#082A20] to-[#082A20] text-white px-6 pb-6 overflow-hidden"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
         {/* Halo doré décoratif blur */}
@@ -159,7 +159,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
         style={{ paddingTop: "env(safe-area-inset-top)" }}
         aria-hidden={!showCompact}
       >
-        <div className="px-4 h-14 flex items-center gap-2">
+        <div className="px-6 h-14 flex items-center gap-2">
           {compactSearchOpen ? (
             <>
               <button
