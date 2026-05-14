@@ -169,10 +169,7 @@ const ProductDetail = () => {
           >
             {product.category.replace("-", " & ")}
           </Link>
-          <h1
-            className="mt-2 font-serif text-[28px] md:text-[34px] leading-[1.1] text-[#0E3B2E] tracking-[-0.015em]"
-            style={{ fontVariationSettings: '"opsz" 72' }}
-          >
+          <h1 className="mt-2 text-[26px] md:text-[32px] leading-[1.15] text-[#0E3B2E] font-extrabold tracking-[-0.025em]">
             {product.name}
           </h1>
           <div className="mt-3 flex items-baseline gap-3">
@@ -215,11 +212,8 @@ const ProductDetail = () => {
             pas une box marketing. */}
         {product.description && (
           <section className="mt-6 px-1 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:200ms] [animation-fill-mode:backwards]">
-            <p
-              className="font-serif italic text-[14px] text-[#C9A227] mb-3"
-              style={{ fontVariationSettings: '"opsz" 24' }}
-            >
-              Notre note —
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[#C9A227] font-bold mb-3">
+              À propos
             </p>
             <p className="text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[60ch]">
               {product.description}

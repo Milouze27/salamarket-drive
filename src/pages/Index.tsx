@@ -30,17 +30,37 @@ const Index = () => {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  // Préload TOUTES les images du catalogue dès qu'il est chargé. Quand
-  // l'utilisateur change de catégorie, les images sont déjà dans le cache
-  // navigateur et apparaissent instantanément (pas de flash de chargement).
+  // Préload IDLE des images du catalogue après que le navigateur ait fini
+  // son first paint. Avant : tous (44+) téléchargés synchrones au mount du
+  // hook → ~6 MB en parallèle qui saturent la bande passante et retardent
+  // l'apparition des images au-dessus du fold (EditorialIntro hero +
+  // WeeklyPicks). Maintenant : requestIdleCallback déclenche le batch
+  // hors du chemin critique. Les 12 premiers (visibles au scroll initial)
+  // d'abord, le reste après.
   useEffect(() => {
-    if (!allProducts) return;
-    allProducts.forEach((p) => {
-      if (!p.imageUrl) return;
-      const img = new Image();
-      img.decoding = "async";
-      img.src = p.imageUrl;
-    });
+    if (!allProducts || allProducts.length === 0) return;
+    const list = allProducts.filter((p) => p.imageUrl);
+
+    const preloadBatch = (items: typeof list) => {
+      items.forEach((p) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = p.imageUrl as string;
+      });
+    };
+
+    // Phase 1 : 12 premiers, idle. Phase 2 : reste, idle plus tard.
+    const idle = (cb: () => void, timeout: number) => {
+      if (typeof (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback === "function") {
+        (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number })
+          .requestIdleCallback(cb, { timeout });
+      } else {
+        window.setTimeout(cb, timeout);
+      }
+    };
+
+    idle(() => preloadBatch(list.slice(0, 12)), 800);
+    idle(() => preloadBatch(list.slice(12)), 2500);
   }, [allProducts]);
 
   const products = useMemo(() => {
@@ -84,10 +104,7 @@ const Index = () => {
               <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-1.5">
                 {debouncedSearch ? "Recherche" : "Rayon"}
               </p>
-              <h1
-                className="font-serif text-[24px] md:text-[32px] leading-[1.15] text-[#0E3B2E] tracking-[-0.01em]"
-                style={{ fontVariationSettings: '"opsz" 60' }}
-              >
+              <h1 className="text-[24px] md:text-[32px] leading-[1.15] text-[#0E3B2E] font-extrabold tracking-[-0.025em]">
                 {debouncedSearch
                   ? `« ${debouncedSearch} »`
                   : BRAND.categories.find((c) => c.slug === category)?.name ?? "Tout"}
@@ -164,13 +181,11 @@ const Index = () => {
               <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
                 Le mot du magasin
               </p>
-              <p
-                className="font-serif text-[22px] md:text-[28px] leading-[1.3] text-[#FAF7EE] max-w-[40ch]"
-                style={{ fontVariationSettings: '"opsz" 72' }}
-              >
-                Salamarket, c'est <em className="italic font-normal text-[#C9A227]">
+              <p className="text-[22px] md:text-[28px] leading-[1.3] text-[#FAF7EE] max-w-[40ch] font-semibold tracking-[-0.02em]">
+                Salamarket, c'est{" "}
+                <span className="text-[#C9A227]">
                   votre supermarché halal indépendant
-                </em>{" "}
+                </span>{" "}
                 au cœur de Toulouse. On prépare chaque commande à la main, comme
                 pour la famille.
               </p>

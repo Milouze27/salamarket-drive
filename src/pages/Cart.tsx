@@ -177,10 +177,7 @@ const Cart = () => {
                 <span className="text-[13px] uppercase tracking-[0.18em] font-bold text-[#0E3B2E]">
                   Total
                 </span>
-                <span
-                  className="font-serif text-[28px] font-semibold text-[#0E3B2E] tabular-nums tracking-tight"
-                  style={{ fontVariationSettings: '"opsz" 72' }}
-                >
+                <span className="text-[28px] font-extrabold text-[#0E3B2E] tabular-nums tracking-[-0.025em]">
                   {formatPrice(subtotal)}
                 </span>
               </div>
