@@ -118,10 +118,12 @@ export const EditorialIntro = () => {
               votre choix. Aucune file, aucune surprise.
             </p>
 
-            {/* CTAs — button onClick + scrollIntoView pour clics répétés.
-                Primary "Commencer ma commande" scrolle vers la nav rayons,
-                secondary "Voir tous les rayons" pareil mais sans état. */}
-            <div className="mt-7 md:mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+            {/* CTA primary unique + process strip 3 étapes.
+                Avant : 2 CTAs vers la même cible (#nos-rayons) = redondant.
+                Maintenant : 1 action claire ("Commencer ma commande")
+                + un explicateur visuel du flow Drive en 3 temps. Sert
+                first-timers (clarification) ET returning (réassurance). */}
+            <div className="mt-7 md:mt-10">
               <button
                 type="button"
                 onClick={scrollToRayons}
@@ -134,13 +136,48 @@ export const EditorialIntro = () => {
                   aria-hidden
                 />
               </button>
-              <button
-                type="button"
-                onClick={scrollToRayons}
-                className="inline-flex items-center gap-1 text-[14px] font-semibold text-[#0E3B2E] underline underline-offset-[7px] decoration-[#C9A227] decoration-[2px] hover:decoration-[2.5px] transition-all"
+
+              {/* Process strip — 01 → 02 → 03 — explique le drive en
+                  une lecture. Pas un CTA, un value prop typographique.
+                  Compact pour tenir sur 1 ligne en 390px. */}
+              <ol
+                aria-label="Le Drive Salamarket en 3 étapes"
+                className="mt-5 md:mt-6 flex items-center gap-2 md:gap-3 text-[10px] uppercase tracking-[0.16em] font-bold text-[#0E3B2E]"
               >
-                Voir tous les rayons
-              </button>
+                <li className="flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className="inline-flex w-5 h-5 rounded-full bg-[#C9A227]/15 text-[#C9A227] items-center justify-center text-[9px] font-extrabold tabular-nums"
+                  >
+                    1
+                  </span>
+                  Je commande
+                </li>
+                <span aria-hidden className="text-[#C9A227]/55 text-xs">
+                  →
+                </span>
+                <li className="flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className="inline-flex w-5 h-5 rounded-full bg-[#C9A227]/15 text-[#C9A227] items-center justify-center text-[9px] font-extrabold tabular-nums"
+                  >
+                    2
+                  </span>
+                  Je choisis
+                </li>
+                <span aria-hidden className="text-[#C9A227]/55 text-xs">
+                  →
+                </span>
+                <li className="flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className="inline-flex w-5 h-5 rounded-full bg-[#C9A227]/15 text-[#C9A227] items-center justify-center text-[9px] font-extrabold tabular-nums"
+                  >
+                    3
+                  </span>
+                  Je retire
+                </li>
+              </ol>
             </div>
 
             {/* Microcopy avec hairline supérieure */}
