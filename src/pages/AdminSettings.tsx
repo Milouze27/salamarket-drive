@@ -168,8 +168,8 @@ const AdminSettings = () => {
         {/* Section 1 — Notifications sonores */}
         <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
-              <Bell size={20} className="text-[#0F4C3A]" />
+            <div className="w-10 h-10 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center shrink-0">
+              <Bell size={20} className="text-[#0E3B2E]" />
             </div>
             <div className="flex-1">
               <h2 className="text-base font-semibold text-gray-900">
@@ -218,7 +218,7 @@ const AdminSettings = () => {
                 type="button"
                 onClick={testSound}
                 disabled={!soundEnabled}
-                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[#0F4C3A] text-white text-sm font-medium rounded-lg hover:bg-[#0A3A2C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[#0E3B2E] text-white text-sm font-medium rounded-lg hover:bg-[#082A20] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Volume2 size={16} />
                 Tester le son
@@ -230,8 +230,8 @@ const AdminSettings = () => {
         {/* Section 1bis — Notifications push */}
         <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
-              <BellRing size={20} className="text-[#0F4C3A]" />
+            <div className="w-10 h-10 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center shrink-0">
+              <BellRing size={20} className="text-[#0E3B2E]" />
             </div>
             <div className="flex-1">
               <h2 className="text-base font-semibold text-gray-900">
@@ -294,8 +294,8 @@ const AdminSettings = () => {
           className="block bg-white rounded-xl shadow-sm p-4 mb-4 hover:bg-gray-50 transition-colors group"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
-              <ClipboardList size={20} className="text-[#0F4C3A]" />
+            <div className="w-10 h-10 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center shrink-0">
+              <ClipboardList size={20} className="text-[#0E3B2E]" />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-900">Vue préparation</p>
@@ -305,7 +305,7 @@ const AdminSettings = () => {
             </div>
             <ArrowRight
               size={18}
-              className="text-gray-400 group-hover:text-[#0F4C3A] transition-colors"
+              className="text-gray-400 group-hover:text-[#0E3B2E] transition-colors"
             />
           </div>
         </Link>
@@ -313,8 +313,8 @@ const AdminSettings = () => {
         {/* Section 2 — Informations magasin */}
         <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
-              <Store size={20} className="text-[#0F4C3A]" />
+            <div className="w-10 h-10 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center shrink-0">
+              <Store size={20} className="text-[#0E3B2E]" />
             </div>
             <div className="flex-1">
               <h2 className="text-base font-semibold text-gray-900">
@@ -372,8 +372,8 @@ const AdminSettings = () => {
         {/* Section 3 — À propos */}
         <section className="bg-white rounded-xl shadow-sm p-6 mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#0F4C3A]/10 flex items-center justify-center shrink-0">
-              <Info size={20} className="text-[#0F4C3A]" />
+            <div className="w-10 h-10 rounded-full bg-[#0E3B2E]/10 flex items-center justify-center shrink-0">
+              <Info size={20} className="text-[#0E3B2E]" />
             </div>
             <div className="flex-1">
               <h2 className="text-base font-semibold text-gray-900">

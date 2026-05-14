@@ -15,7 +15,7 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
 
   return (
     <header
-      className="sticky top-0 z-40 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-border"
+      className="sticky top-0 z-40 bg-[#FAF7EE]/95 backdrop-blur-md border-b border-border"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-2">
@@ -40,7 +40,7 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
               {title}
             </h1>
           ) : (
-            <h1 className="font-bold text-lg text-[#0F4C3A] tracking-tight truncate">
+            <h1 className="font-bold text-lg text-[#0E3B2E] tracking-tight truncate">
               {BRAND.name}
             </h1>
           )}
@@ -57,7 +57,7 @@ export const AppHeader = ({ showBack = false, title }: Props) => {
           >
             <ShoppingBag size={22} aria-hidden />
             {count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-sm">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#C9A227] text-[#0E3B2E] text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-sm">
                 {count > 9 ? "9+" : count}
               </span>
             )}

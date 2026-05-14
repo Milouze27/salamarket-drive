@@ -99,7 +99,7 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  /* PAS de bg sur html/body : on laisse le bg sapin (#0F4C3A) défini en
+  /* PAS de bg sur html/body : on laisse le bg sapin (#0E3B2E) défini en
      inline dans index.html persister. Sinon il y a un flash blanc cassé
      dans la zone home indicator iOS pendant la fraction de seconde où
      l'app monte mais où la page n'est pas encore peinte. Les pages
@@ -111,7 +111,7 @@ All colors MUST be HSL.
      card Kanban déclenche la sélection plutôt que le drag DnD. */
   html, body {
     @apply text-text;
-    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;

@@ -15,8 +15,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        manrope: ["Manrope", "system-ui", "sans-serif"],
-        sans: ["Manrope", "system-ui", "sans-serif"],
+        // Plus Jakarta Sans unifié avec Salam Stock V2.
+        // 'manrope' alias conservé pour ne pas casser les usages legacy
+        // qui pointaient sur ce nom — il pointe désormais sur la même police.
+        sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+        manrope: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
       },
       colors: {
         border: BRAND.colors.border,

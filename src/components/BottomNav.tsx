@@ -55,8 +55,8 @@ export const BottomNav = () => {
                   cn(
                     "relative flex flex-col items-center justify-center gap-0.5 min-h-[56px] py-1.5 transition-colors",
                     isActive
-                      ? "text-[#0F4C3A]"
-                      : "text-muted hover:text-[#0F4C3A]",
+                      ? "text-[#0E3B2E]"
+                      : "text-muted hover:text-[#0E3B2E]",
                   )
                 }
               >
@@ -69,7 +69,7 @@ export const BottomNav = () => {
                         aria-hidden
                       />
                       {showBadge && (
-                        <span className="absolute -top-1.5 -right-2 bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border-2 border-white">
+                        <span className="absolute -top-1.5 -right-2 bg-[#C9A227] text-[#0E3B2E] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border-2 border-white">
                           {cartCount > 9 ? "9+" : cartCount}
                         </span>
                       )}
@@ -86,7 +86,7 @@ export const BottomNav = () => {
                     {isActive && (
                       <span
                         aria-hidden
-                        className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[#D4A93C]"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[#C9A227]"
                       />
                     )}
                   </>

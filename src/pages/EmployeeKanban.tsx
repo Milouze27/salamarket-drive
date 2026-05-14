@@ -143,7 +143,7 @@ const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps)
     <div
       className={cn(
         "group bg-white rounded-2xl border border-border p-3 shadow-sm touch-none",
-        !isOverlay && "hover:shadow-md hover:border-[#0F4C3A]/30 transition-all cursor-pointer",
+        !isOverlay && "hover:shadow-md hover:border-[#0E3B2E]/30 transition-all cursor-pointer",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -171,7 +171,7 @@ const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps)
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0F4C3A]/8 text-[#0F4C3A]">
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0E3B2E]/8 text-[#0E3B2E]">
           {order.payment_method === "online" ? (
             <>
               <CreditCard size={10} aria-hidden /> En ligne
@@ -188,7 +188,7 @@ const CardContent = ({ order, dragHandle, isOverlay = false }: CardContentProps)
       </div>
 
       <div className="mt-2 pt-2 border-t border-gray-100">
-        <p className="text-base font-bold text-[#0F4C3A]">
+        <p className="text-base font-bold text-[#0E3B2E]">
           {formatEUR(order.total_cents)}
         </p>
       </div>
@@ -255,7 +255,7 @@ const Column = ({ column, orders, onCardClick }: ColumnProps) => {
         "flex flex-col rounded-2xl border min-w-[280px] lg:min-w-0 transition-all",
         column.bg,
         column.border,
-        isOver && "ring-4 ring-[#D4A93C]/50 scale-[1.01] shadow-lg",
+        isOver && "ring-4 ring-[#C9A227]/50 scale-[1.01] shadow-lg",
       )}
     >
       <div className="px-3 py-3 flex items-center justify-between border-b border-current/10">
@@ -405,13 +405,13 @@ const EmployeeKanban = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#FAFAF7]">
+    <div className="min-h-dvh bg-[#FAF7EE]">
       {/* Header sticky — gradient sapin pattern app pro. La safe-area-top
           est appliquée DIRECTEMENT sur le header pour qu'elle hérite du
           bg sapin (et pas du crème du wrapper) — sinon barre blanche au
           dessus du header en mode standalone iOS. */}
       <header
-        className="sticky top-0 z-20 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white shadow-md"
+        className="sticky top-0 z-20 bg-gradient-to-b from-[#0E3B2E] to-[#082A20] text-white shadow-md"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -423,7 +423,7 @@ const EmployeeKanban = () => {
             <ArrowLeft size={20} aria-hidden />
           </Link>
           <div className="text-center">
-            <p className="text-[10px] uppercase tracking-wider text-[#D4A93C] font-bold">
+            <p className="text-[10px] uppercase tracking-wider text-[#C9A227] font-bold">
               Espace pro
             </p>
             <h1 className="text-base sm:text-lg font-bold tracking-tight">
@@ -435,7 +435,7 @@ const EmployeeKanban = () => {
               className={cn(
                 "inline-flex items-center justify-center min-w-[2.25rem] h-9 px-2.5 rounded-full text-sm font-bold tabular-nums",
                 toPrepareCount > 0
-                  ? "bg-[#D4A93C] text-[#0F4C3A] shadow-md ring-2 ring-white/20"
+                  ? "bg-[#C9A227] text-[#0E3B2E] shadow-md ring-2 ring-white/20"
                   : "bg-white/10 text-white/70",
                 toPrepareCount > 0 && "animate-pulse",
               )}
@@ -536,16 +536,16 @@ const EmployeeKanban = () => {
                 {/* Paiement */}
                 <div className="rounded-2xl border bg-card p-3 flex items-start gap-3">
                   {openOrder.payment_method === "online" ? (
-                    <CreditCard className="text-[#0F4C3A] shrink-0 mt-0.5" size={18} />
+                    <CreditCard className="text-[#0E3B2E] shrink-0 mt-0.5" size={18} />
                   ) : (
-                    <Banknote className="text-[#0F4C3A] shrink-0 mt-0.5" size={18} />
+                    <Banknote className="text-[#0E3B2E] shrink-0 mt-0.5" size={18} />
                   )}
                   <div className="flex-1">
                     <Badge
                       className={cn(
                         openOrder.payment_method === "online" &&
                           openOrder.payment_status === "paid"
-                          ? "bg-[#0F4C3A] text-white hover:bg-[#0F4C3A]"
+                          ? "bg-[#0E3B2E] text-white hover:bg-[#0E3B2E]"
                           : "bg-orange-500 text-white hover:bg-orange-500",
                       )}
                     >
@@ -600,7 +600,7 @@ const EmployeeKanban = () => {
                       <Phone size={14} className="text-gray-400" />
                       <a
                         href={`tel:${openOrder.customer_phone}`}
-                        className="text-[#0F4C3A] hover:underline"
+                        className="text-[#0E3B2E] hover:underline"
                       >
                         {openOrder.customer_phone}
                       </a>

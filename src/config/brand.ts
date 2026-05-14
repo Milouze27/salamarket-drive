@@ -12,15 +12,24 @@ export const BRAND = {
       { days: "Dimanche", time: "10h00 – 18h00" },
     ],
   },
+  // Palette unifiée Salam Market (alignée Salam Stock V2)
   colors: {
-    primary: "#0F4C3A",
-    accent: "#D4A574",
-    bg: "#FAFAF7",
-    text: "#1A1A1A",
-    muted: "#6B6B6B",
-    border: "#E5E5E0",
+    primary: "#0E3B2E",     // Sapin profond
+    primaryDark: "#082A20", // Sapin nuit (gradients, hover)
+    accent: "#C9A227",      // Or principal
+    accentBright: "#DDB31C",
+    accentSoft: "#F4E9C4",
+    bg: "#FAF7EE",          // Cream chaud
+    surface: "#FFFFFF",
+    text: "#0F1A14",        // Quasi-noir tinté sapin
+    muted: "#6B7280",
+    border: "#E8E4D8",
+    borderMedium: "#D1CCB8",
+    success: "#2D7A4F",
+    warning: "#D97706",
+    destructive: "#E5483D",
   },
-  font: "Manrope",
+  font: "Plus Jakarta Sans",
   categories: [
     { slug: "boucherie", name: "Boucherie", emoji: "🥩" },
     { slug: "charcuterie", name: "Charcuterie", emoji: "🌭" },

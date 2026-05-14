@@ -12,25 +12,30 @@ Stratégie : **Restrained + 1 accent doré**. Le sapin domine surfaces sombres (
 
 | Token | Value | Role |
 |---|---|---|
-| `primary` | `#0F4C3A` | Sapin profond — CTAs, header, success surfaces, focus |
-| `primary-dark` | `#0A3A2C` | Sapin foncé — gradients, hover/pressed |
-| `primary-deep` | `#073025` | Sapin très foncé — gradient endpoint |
-| `accent` | `#D4A93C` | Doré — badges, indicateurs actifs, halos, signals |
-| `accent-bright` | `#E0B940` | Doré vif — hover sur boutons doré |
-| `bg` | `#FAFAF7` | Surface principale — pages, cards |
+| `primary` | `#0E3B2E` | Sapin profond Salam Market — CTAs, header, success surfaces, focus |
+| `primary-hover` | `#14523F` | Sapin hover (mobile : `active:`) |
+| `primary-dark` | `#082A20` | Sapin nuit — gradients endpoint, texte sur or |
+| `accent` | `#C9A227` | Or principal Salam Market — badges, indicateurs actifs, halos |
+| `accent-bright` | `#DDB31C` | Or brillant — capture photo, badges hover |
+| `accent-soft` | `#F4E9C4` | Or fond doux — cards traiteur, pills or |
+| `bg` | `#FAF7EE` | Cream chaud Salam Market — fond global |
 | `surface` | `#FFFFFF` | Cards, modals, sticky bars |
-| `text` | `#1A1A1A` | Texte principal |
-| `muted` | `#6B6B6B` | Texte secondaire, labels |
-| `border` | `#E5E5E0` | Bordures, séparateurs |
-| `destructive` | `hsl(0 84% 60%)` | Erreurs, suppression |
+| `text` | `#0F1A14` | Texte principal — quasi-noir tinté sapin |
+| `text-secondary` | `#6B7280` | Texte secondaire |
+| `text-tertiary` | `#9CA3AF` | Hints, captions |
+| `border` | `#E8E4D8` | Bordures, séparateurs |
+| `border-medium` | `#D1CCB8` | Bordures input focus |
+| `destructive` | `#E5483D` | Rouge tomate — erreurs, suppression |
+| `success` | `#2D7A4F` | Vert prairie — conformité, scan réussi |
+| `warning` | `#D97706` | Ambre — alertes, états partiels |
 
-**Tinted neutrals rule** : `#FAFAF7` (chroma ~0.005 vers warm) et `#1A1A1A` (chroma ~0 vers neutral) — tirés vers le brand pour cohésion.
+**Tinted neutrals rule** : `#FAF7EE` (chroma ~0.005 vers warm-sapin) et `#0F1A14` (chroma ~0 légèrement tinté sapin) — tirés vers le brand pour cohésion. Cohérent avec Salam Stock V2.
 
-**Interdits** : `#000` (utiliser `#1A1A1A`), `#FFF` (utiliser `#FAFAF7` pour surfaces, `#FFFFFF` réservé aux cards/sticky bars en contraste avec le bg).
+**Interdits** : `#000` (utiliser `#0F1A14`), `#FFF` (utiliser `#FAF7EE` pour surfaces, `#FFFFFF` réservé aux cards/sticky bars en contraste avec le bg).
 
 ## Typography
 
-**Font** : Manrope (variable, weights 400/500/600/700/800). Sans-serif moderne, généreuse, lisibilité native iOS, support tabular-nums pour les prix.
+**Font** : Plus Jakarta Sans (variable, weights 400/500/600/700/800). Sans-serif moderne, généreuse, lisibilité native iOS, support tabular-nums pour les prix. Police partagée avec Salam Stock V2 pour cohérence brand cross-app.
 
 **Type scale** (1.25 ratio, validation skill) :
 
@@ -70,10 +75,10 @@ Aujourd'hui le code mélange `rounded-full` / `rounded-2xl` / `rounded-xl` / `ro
 **Primary CTA** (action principale page) :
 - Hauteur : `h-14` (56px) sur mobile, `h-12` (48px) sur desktop
 - Radius : `rounded-2xl` (les CTAs primaires utilisent rounded-2xl pour forme premium "soft brick", pas rounded-full pill — exception au pattern pill ci-dessus pour les CTAs FULL WIDTH qui méritent une silhouette distincte)
-- Bg : `bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C]`
+- Bg : `bg-gradient-to-r from-[#0E3B2E] to-[#082A20]`
 - Text : `text-white font-bold text-base`
-- Shadow : `shadow-lg shadow-[#0F4C3A]/30`
-- Hover : `hover:shadow-xl hover:shadow-[#0F4C3A]/40`
+- Shadow : `shadow-lg shadow-[#0E3B2E]/30`
+- Hover : `hover:shadow-xl hover:shadow-[#0E3B2E]/40`
 - Active : `active:scale-[0.99]`
 - Transition : `transition-all duration-200`
 - Icon : optionnel à droite, `ArrowRight` qui translate-x-0.5 au hover
@@ -82,7 +87,7 @@ Aujourd'hui le code mélange `rounded-full` / `rounded-2xl` / `rounded-xl` / `ro
 - Hauteur : `h-12` (48px)
 - Radius : `rounded-full`
 - Bg : `bg-white border border-border`
-- Text : `text-[#0F4C3A] font-semibold text-sm`
+- Text : `text-[#0E3B2E] font-semibold text-sm`
 - Active : `active:scale-[0.98]`
 
 **Tertiary / Text button** (vider panier, "Modifier") :
@@ -143,10 +148,10 @@ Curves : `ease-out` (pas de bounce ni elastic). Spring physics réservé aux fee
 **Shadow scale** :
 - `shadow-sm` (élévation 1) : cards static, items panier
 - `shadow-md` (élévation 2) : badges, FABs, sticky bars
-- `shadow-lg shadow-[#0F4C3A]/30` (élévation 3) : CTA primaires, surfaces actives
-- `shadow-xl shadow-[#0F4C3A]/40` (élévation 4) : hover state du CTA primaire
+- `shadow-lg shadow-[#0E3B2E]/30` (élévation 3) : CTA primaires, surfaces actives
+- `shadow-xl shadow-[#0E3B2E]/40` (élévation 4) : hover state du CTA primaire
 
-**Tinted shadows** : ombres colorées sapin (`/30` opacity) sur les CTAs sapin pour cohésion visuelle. Doré (`shadow-[#D4A93C]/40`) pour les éléments accent.
+**Tinted shadows** : ombres colorées sapin (`/30` opacity) sur les CTAs sapin pour cohésion visuelle. Doré (`shadow-[#C9A227]/40`) pour les éléments accent.
 
 **Backdrop blur** : `backdrop-blur-md` réservé aux sticky bars + modals. **Jamais en décoratif** (anti-glassmorphism).
 

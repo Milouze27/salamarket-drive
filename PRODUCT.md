@@ -1,8 +1,8 @@
-# Product
+# PRODUCT.md — Salamarket Drive
 
 ## Register
 
-product
+**product** — App client-facing pour commander en click & collect. Le design SERT la confiance et la rapidité de commande, il n'est pas le produit à vendre.
 
 ## Users
 

@@ -135,7 +135,7 @@ const OrderCard = ({ order, idx }: { order: UserOrder; idx: number }) => {
   return (
     <Link
       to={`/commande/confirmee/${order.id}`}
-      className="group block rounded-2xl bg-white border border-border p-4 shadow-sm hover:shadow-md hover:border-[#0F4C3A]/30 active:scale-[0.99] transition-all animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:backwards]"
+      className="group block rounded-2xl bg-white border border-border p-4 shadow-sm hover:shadow-md hover:border-[#0E3B2E]/30 active:scale-[0.99] transition-all animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:backwards]"
       style={{ animationDelay: `${Math.min(idx, 6) * 50}ms` }}
     >
       {/* Top row : statut + date */}
@@ -148,7 +148,7 @@ const OrderCard = ({ order, idx }: { order: UserOrder; idx: number }) => {
 
       {/* Numéro de commande */}
       <div className="flex items-baseline justify-between gap-3 mb-2">
-        <p className="text-base font-bold text-[#0F4C3A] font-mono tracking-wider">
+        <p className="text-base font-bold text-[#0E3B2E] font-mono tracking-wider">
           #{shortId}
         </p>
         <p className="text-lg font-bold text-text tabular-nums">
@@ -162,7 +162,7 @@ const OrderCard = ({ order, idx }: { order: UserOrder; idx: number }) => {
           .map((item) => `${item.quantity} × ${item.name}`)
           .join(" · ")}
         {remaining > 0 && (
-          <span className="font-medium text-[#0F4C3A]"> +{remaining} autre{remaining > 1 ? "s" : ""}</span>
+          <span className="font-medium text-[#0E3B2E]"> +{remaining} autre{remaining > 1 ? "s" : ""}</span>
         )}
       </p>
 
@@ -170,14 +170,14 @@ const OrderCard = ({ order, idx }: { order: UserOrder; idx: number }) => {
       <div className="mt-3 pt-3 border-t border-border flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 text-xs text-muted min-w-0">
           <span className="inline-flex items-center gap-1 truncate">
-            <Clock size={12} className="text-[#0F4C3A] shrink-0" aria-hidden />
+            <Clock size={12} className="text-[#0E3B2E] shrink-0" aria-hidden />
             <span className="truncate">{formatSlot(order.pickup_slot)}</span>
           </span>
           <span className="inline-flex items-center gap-1 shrink-0">
             {order.payment_method === "online" ? (
-              <CreditCard size={12} className="text-[#0F4C3A]" aria-hidden />
+              <CreditCard size={12} className="text-[#0E3B2E]" aria-hidden />
             ) : (
-              <Banknote size={12} className="text-[#0F4C3A]" aria-hidden />
+              <Banknote size={12} className="text-[#0E3B2E]" aria-hidden />
             )}
             <span className="hidden sm:inline">
               {itemCount} article{itemCount > 1 ? "s" : ""}
@@ -186,7 +186,7 @@ const OrderCard = ({ order, idx }: { order: UserOrder; idx: number }) => {
         </div>
         <ArrowRight
           size={16}
-          className="text-muted group-hover:text-[#0F4C3A] group-hover:translate-x-0.5 transition-all shrink-0"
+          className="text-muted group-hover:text-[#0E3B2E] group-hover:translate-x-0.5 transition-all shrink-0"
           aria-hidden
         />
       </div>
@@ -199,7 +199,7 @@ export default function Orders() {
   const { data: orders, isLoading, isError, refetch } = useUserOrders(user?.id);
 
   return (
-    <div className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0">
+    <div className="min-h-dvh bg-[#FAF7EE] pb-20 md:pb-0">
       <AppHeader showBack title="Mes commandes" />
 
       <main className="max-w-2xl mx-auto px-4 py-4">
@@ -208,7 +208,7 @@ export default function Orders() {
             {Array.from({ length: 3 }).map((_, i) => (
               <li
                 key={i}
-                className="h-36 rounded-2xl bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer"
+                className="h-36 rounded-2xl bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer"
               />
             ))}
           </ul>
@@ -223,17 +223,17 @@ export default function Orders() {
             </p>
             <button
               onClick={() => refetch()}
-              className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0F4C3A] text-white text-sm font-semibold active:scale-[0.98] transition-all"
+              className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0E3B2E] text-white text-sm font-semibold active:scale-[0.98] transition-all"
             >
               Réessayer
             </button>
           </div>
         ) : !orders || orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center py-20 px-6 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-[#0F4C3A]/10 to-[#D4A93C]/10 flex items-center justify-center">
+            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-[#0E3B2E]/10 to-[#C9A227]/10 flex items-center justify-center">
               <div className="absolute inset-3 rounded-full bg-white shadow-sm" />
               <ShoppingBag
-                className="relative text-[#0F4C3A]"
+                className="relative text-[#0E3B2E]"
                 size={44}
                 strokeWidth={1.5}
                 aria-hidden
@@ -249,7 +249,7 @@ export default function Orders() {
             </div>
             <Link
               to="/"
-              className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0F4C3A] text-white text-sm font-semibold shadow-md shadow-[#0F4C3A]/20 hover:bg-[#0A3A2C] active:scale-[0.98] transition-all"
+              className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0E3B2E] text-white text-sm font-semibold shadow-md shadow-[#0E3B2E]/20 hover:bg-[#082A20] active:scale-[0.98] transition-all"
             >
               Découvrir le catalogue
               <ArrowRight size={16} aria-hidden />

@@ -65,7 +65,7 @@ export const HeaderUserMenu = () => {
       <Link
         to="/connexion"
         aria-label="Se connecter"
-        className="w-10 h-10 rounded-full bg-white border-2 border-[#D4A93C]/40 hover:border-[#D4A93C] flex items-center justify-center text-[#0F4C3A] active:scale-95 transition-all shadow-md"
+        className="w-10 h-10 rounded-full bg-white border-2 border-[#C9A227]/40 hover:border-[#C9A227] flex items-center justify-center text-[#0E3B2E] active:scale-95 transition-all shadow-md"
       >
         <User size={20} strokeWidth={2.2} aria-hidden />
       </Link>
@@ -88,14 +88,14 @@ export const HeaderUserMenu = () => {
         <button
           type="button"
           aria-label="Mon compte"
-          className="relative h-10 w-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white active:scale-95 transition-all hover:shadow-lg"
+          className="relative h-10 w-10 rounded-full bg-gradient-to-br from-[#C9A227] to-[#C4992C] text-[#0E3B2E] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white active:scale-95 transition-all hover:shadow-lg"
         >
           {initials}
           {/* Pastille verte si staff (admin/employee) — signal visuel */}
           {isStaff && (
             <span
               aria-hidden
-              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#0F4C3A] ring-2 ring-white"
+              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#0E3B2E] ring-2 ring-white"
             />
           )}
         </button>
@@ -107,7 +107,7 @@ export const HeaderUserMenu = () => {
       >
         {/* Header user info */}
         <div className="px-3 py-2.5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A227] to-[#C4992C] text-[#0E3B2E] text-sm font-bold flex items-center justify-center shrink-0">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
@@ -116,7 +116,7 @@ export const HeaderUserMenu = () => {
             </p>
             <p className="text-xs text-muted truncate">{user.email}</p>
             {roleLabel && (
-              <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#0F4C3A]/8 text-[#0F4C3A] text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#0E3B2E]/8 text-[#0E3B2E] text-[10px] font-bold uppercase tracking-wider">
                 {roleLabel}
               </span>
             )}
@@ -128,7 +128,7 @@ export const HeaderUserMenu = () => {
         {/* Accueil — accès rapide depuis n'importe quelle page */}
         <DropdownMenuItem
           onClick={() => navigate("/")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
         >
           <Home className="h-4 w-4 text-muted" aria-hidden />
           Accueil
@@ -137,14 +137,14 @@ export const HeaderUserMenu = () => {
         {/* Section client (toujours visible) */}
         <DropdownMenuItem
           onClick={() => navigate("/compte")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
         >
           <User className="h-4 w-4 text-muted" aria-hidden />
           Mon compte
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => navigate("/commandes")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+          className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
         >
           <Package className="h-4 w-4 text-muted" aria-hidden />
           Mes commandes
@@ -159,28 +159,28 @@ export const HeaderUserMenu = () => {
             </DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigate("/employe")}
-              className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+              className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
             >
-              <ClipboardList className="h-4 w-4 text-[#0F4C3A]" aria-hidden />
+              <ClipboardList className="h-4 w-4 text-[#0E3B2E]" aria-hidden />
               Préparation commandes
             </DropdownMenuItem>
             {isAdmin && (
               <>
                 <DropdownMenuItem
                   onClick={() => navigate("/admin")}
-                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
                 >
                   <LayoutDashboard
-                    className="h-4 w-4 text-[#0F4C3A]"
+                    className="h-4 w-4 text-[#0E3B2E]"
                     aria-hidden
                   />
                   Tableau de bord
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => navigate("/admin/reglages")}
-                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAFAF7] focus:bg-[#FAFAF7] gap-2.5"
+                  className="cursor-pointer rounded-xl px-3 py-2 text-sm font-medium hover:bg-[#FAF7EE] focus:bg-[#FAF7EE] gap-2.5"
                 >
-                  <Settings className="h-4 w-4 text-[#0F4C3A]" aria-hidden />
+                  <Settings className="h-4 w-4 text-[#0E3B2E]" aria-hidden />
                   Réglages admin
                 </DropdownMenuItem>
               </>
