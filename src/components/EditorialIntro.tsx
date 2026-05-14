@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Hero éditorial poster — typographie dominante + photo magazine
 // + pagination éditoriale "01" qui anchor la séquence du home.
@@ -16,6 +17,8 @@ import { useCallback } from "react";
 // même URL ne refire pas). Smooth scroll vers le sticky CategoryTabs
 // (id="nos-rayons").
 export const EditorialIntro = () => {
+  const navigate = useNavigate();
+
   // Scroll vers la nav rayons + offset pour passer au-dessus du sticky
   // header compact (~56-60px). Pas de useState, pas de query param qui
   // se collerait — l'utilisateur reste en mode vitrine et peut re-cliquer.
@@ -25,6 +28,14 @@ export const EditorialIntro = () => {
     const top = el.getBoundingClientRect().top + window.scrollY - 64;
     window.scrollTo({ top, behavior: "smooth" });
   }, []);
+
+  // Jump direct sur le rayon boucherie (photo signature du hero).
+  // navigate URL + scroll top — l'EditorialIntro disparaît (showVitrine
+  // = false) et le catalogue boucherie devient visible immédiatement.
+  const goToBoucherie = useCallback(() => {
+    navigate("/?category=boucherie");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [navigate]);
 
   return (
     <section
@@ -48,11 +59,23 @@ export const EditorialIntro = () => {
                 height={2000}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              {/* Voile bas pour faire chanter le sceau */}
+              {/* Voile bas renforcé pour lisibilité du titre + CTA
+                  overlay. Gradient sapin foncé du bas vers transparent,
+                  asymétrique pour préserver le contraste sur la zone
+                  texte sans assombrir la moitié haute (où vit le sceau). */}
               <div
                 aria-hidden
-                className="absolute inset-0 bg-gradient-to-t from-[#082A20]/55 via-transparent to-[#082A20]/10"
+                className="absolute inset-0 bg-gradient-to-t from-[#082A20]/85 via-[#082A20]/35 to-transparent"
               />
+
+              {/* Cartel top-left — info magasin discrète, libère le bas
+                  pour le bloc poster. */}
+              <div className="absolute top-5 left-5 md:top-7 md:left-7 flex items-center gap-2 rounded-full bg-[#FAF7EE]/95 backdrop-blur-md px-3 py-1.5 shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227]" aria-hidden />
+                <span className="text-[10px] uppercase tracking-[0.22em] font-bold text-[#0E3B2E]">
+                  Toulouse
+                </span>
+              </div>
 
               {/* Sceau Halal certifié — circulaire, signature visuelle */}
               <div className="absolute top-5 right-5 md:top-7 md:right-7 z-10">
@@ -73,12 +96,31 @@ export const EditorialIntro = () => {
                 </div>
               </div>
 
-              {/* Cartel bas-gauche — info magasin posée comme sur poster */}
-              <div className="absolute bottom-5 left-5 md:bottom-7 md:left-7 flex items-center gap-2 rounded-full bg-[#FAF7EE]/95 backdrop-blur-md px-3.5 py-1.5 shadow-md">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227]" aria-hidden />
-                <span className="text-[10px] uppercase tracking-[0.22em] font-bold text-[#0E3B2E]">
-                  Salamarket · Toulouse
-                </span>
+              {/* Bloc poster bas-gauche : kicker + titre éditorial + CTA
+                  pill. Le titre et le CTA portent sur le rayon affiché
+                  (boucherie), donnent un point d'entrée direct au catalogue
+                  filtré. */}
+              <div className="absolute bottom-5 left-5 right-5 md:bottom-8 md:left-8 md:right-8 z-10">
+                <p className="text-[10px] md:text-[11px] uppercase tracking-[0.24em] font-bold text-[#C9A227] mb-2">
+                  Notre rayon · Aujourd&apos;hui
+                </p>
+                <h3 className="text-white text-[26px] sm:text-[30px] md:text-[34px] lg:text-[40px] leading-[0.98] font-extrabold tracking-[-0.03em] max-w-[20ch]">
+                  Boucherie halal,
+                  <br />
+                  préparée chaque matin.
+                </h3>
+                <button
+                  type="button"
+                  onClick={goToBoucherie}
+                  className="group mt-4 md:mt-5 inline-flex items-center gap-2 h-11 md:h-12 px-5 md:px-6 rounded-full bg-[#FAF7EE] text-[#0E3B2E] text-[13px] md:text-[14px] font-semibold shadow-lg shadow-[#082A20]/30 hover:bg-white active:scale-[0.98] transition-all"
+                >
+                  Voir le rayon boucherie
+                  <ArrowRight
+                    size={14}
+                    className="transition-transform group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
+                </button>
               </div>
             </div>
 
