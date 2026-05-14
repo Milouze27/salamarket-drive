@@ -426,14 +426,14 @@ const OrderConfirmation = () => {
           )}
         </section>
 
-        {/* Signature — note manuscrite type "lettre du magasin" */}
+        {/* Bandeau service — pro, pas signature personnelle */}
         <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in duration-700 delay-[900ms] [animation-fill-mode:backwards]">
-          <p className="text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[44ch]">
-            « Merci de faire confiance à un commerce indépendant. À très vite
-            au comptoir. »
+          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-2">
+            Une question ?
           </p>
-          <p className="mt-3 text-[12px] tracking-[0.05em] text-[#6B7280]">
-            — Otmane, Ahmed et l'équipe Salamarket
+          <p className="text-[14px] text-[#0F1A14]/80 leading-relaxed max-w-[48ch]">
+            L'équipe Salamarket est joignable au magasin pendant les
+            horaires d'ouverture, ou via votre espace commandes.
           </p>
         </section>
 

@@ -7,21 +7,21 @@ interface Props {
   products: Product[];
 }
 
-// Sélection éditoriale en bandeau horizontal — pas un slider promo,
-// 3 produits curatés avec une note d'intention type ardoise. Photo
-// dominante 4:5, titre serif, prix discret. À la Maison Plisson :
-// "le coup de cœur de la semaine" plutôt que "TOP VENTES".
+// Sélection bandeau horizontal — pas un slider promo, 3 produits
+// curatés avec un caption par rayon ("Boucherie de la semaine"...).
+// Photo dominante 4:5, titre sobre, prix discret. Registre supermarché
+// pro, pas commerce de quartier — captions catégorie, pas anecdotiques.
 //
 // Les 3 produits sont choisis en priorité parmi des catégories
 // signature (boucherie / charcuterie / épicerie), pour que la sélection
-// reflète l'identité du magasin. Fallback : 3 premiers en stock.
+// reflète l'offre du magasin. Fallback : 3 premiers en stock.
 const PICKS: Array<{
   category: Product["category"];
   caption: string;
 }> = [
-  { category: "boucherie", caption: "Le coup de cœur du boucher" },
-  { category: "charcuterie", caption: "Préparée hier soir en cuisine" },
-  { category: "epicerie", caption: "L'essentiel qu'on garde toujours" },
+  { category: "boucherie", caption: "Boucherie de la semaine" },
+  { category: "charcuterie", caption: "Charcuterie maison" },
+  { category: "epicerie", caption: "Essentiels du quotidien" },
 ];
 
 const pickFromCatalog = (products: Product[]): Array<{ product: Product; caption: string }> => {
@@ -45,7 +45,7 @@ const pickFromCatalog = (products: Product[]): Array<{ product: Product; caption
     for (const p of inStock) {
       if (picks.length >= 3) break;
       if (!used.has(p.id)) {
-        picks.push({ product: p, caption: "Notre sélection" });
+        picks.push({ product: p, caption: "Sélection Salamarket" });
         used.add(p.id);
       }
     }

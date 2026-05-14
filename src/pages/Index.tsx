@@ -173,24 +173,21 @@ const Index = () => {
         )}
       </main>
 
-      {/* Footer éditorial — "lettre" signée, pas 3 colonnes corporate */}
+      {/* Footer pro — value prop brand sapin, plus de "signature" personnelle */}
       <footer className="mt-8 md:mt-16 bg-[#0E3B2E] text-[#FAF7EE]">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20">
           <div className="grid gap-12 md:gap-16 md:grid-cols-12 items-start">
             <div className="md:col-span-7">
               <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
-                Le mot du magasin
+                Salamarket Toulouse
               </p>
               <p className="text-[22px] md:text-[28px] leading-[1.3] text-[#FAF7EE] max-w-[40ch] font-semibold tracking-[-0.02em]">
-                Salamarket, c'est{" "}
+                Votre{" "}
                 <span className="text-[#C9A227]">
-                  votre supermarché halal indépendant
+                  supermarché halal indépendant
                 </span>{" "}
-                au cœur de Toulouse. On prépare chaque commande à la main, comme
-                pour la famille.
-              </p>
-              <p className="mt-6 text-[13px] tracking-[0.05em] text-[#FAF7EE]/65">
-                — Otmane, Ahmed et l'équipe Salamarket
+                à Toulouse. Sélection halal certifiée, retrait en magasin,
+                sans abonnement.
               </p>
             </div>
 
