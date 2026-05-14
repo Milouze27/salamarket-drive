@@ -270,25 +270,36 @@ const OrderConfirmation = () => {
       className="min-h-dvh bg-[#FAF7EE]"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="max-w-xl mx-auto px-5 md:px-8 space-y-6">
-        {/* En-tête lettre — kicker doré, "Merci." serif giant, signature
-            sous-jacente. Le badge succès garde son moment d'animation mais
-            devient plus petit, ancré à gauche, comme un sceau. */}
-        <header className="pt-10 md:pt-14 pb-2">
-          <div className="flex items-center gap-4 mb-6 animate-in fade-in slide-in-from-top-2 duration-500">
-            <div className="scale-75 origin-left -ml-2">
-              <SuccessBadge />
-            </div>
-            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227]">
+      <div className="max-w-xl mx-auto px-5 md:px-8 space-y-7">
+        {/* En-tête claque — pagination "01 / Commande reçue" + sceau
+            success ancré + titre HUGE + body. */}
+        <header className="pt-12 md:pt-20 pb-2">
+          <div className="flex items-center gap-4 mb-7 animate-in fade-in slide-in-from-top-2 duration-500">
+            <span className="text-[26px] md:text-[30px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
+              01
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-[80px] bg-[#0E3B2E]/25" />
+            <span className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#0E3B2E]">
               Commande reçue
-            </p>
+            </span>
           </div>
 
-          <h1 className="text-[40px] md:text-[56px] leading-[0.98] text-[#0E3B2E] font-extrabold tracking-[-0.035em] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
-            Merci, <span className="text-[#C9A227]">on s'en occupe.</span>
+          {/* Sceau success ancré à gauche + titre dramatique. Le scale-75
+              du sceau réduit son emprise pour laisser la typographie
+              porter le moment claque. */}
+          <div className="flex items-center gap-5 mb-6 animate-in fade-in zoom-in-95 duration-500 delay-100 [animation-fill-mode:backwards]">
+            <div className="scale-[0.8] origin-left -ml-2">
+              <SuccessBadge />
+            </div>
+          </div>
+
+          <h1 className="text-[44px] sm:text-[56px] md:text-[68px] lg:text-[80px] leading-[0.94] text-[#0E3B2E] font-extrabold tracking-[-0.04em] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
+            Merci.
+            <br />
+            <span className="text-[#C9A227]">On s'en occupe.</span>
           </h1>
 
-          <p className="mt-5 text-[15px] md:text-base leading-relaxed text-[#0F1A14]/75 max-w-[44ch] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
+          <p className="mt-7 text-[15px] md:text-[16px] leading-[1.55] text-[#0F1A14]/75 max-w-[44ch] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
             Votre commande est transmise à l'équipe Salamarket. Nous la
             préparons avec soin pour votre créneau de retrait.
           </p>

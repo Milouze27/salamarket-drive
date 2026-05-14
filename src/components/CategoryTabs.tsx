@@ -12,17 +12,15 @@ const ITEMS = [
   ...BRAND.categories.map(({ slug, name }) => ({ slug, name })),
 ];
 
-// Nav catégories éditoriale — texte tracké, souligné doré sur active.
-// Plus de pills SaaS, plus d'icônes emoji. Le sticky reste mais sur fond
-// crème (#FAF7EE) avec une fine border-bottom au lieu d'un fond contrasté.
-// Inspiration : nav départements grand magasin / sommaire éditorial.
+// Nav rayons — pagination éditoriale "03 / Nos rayons" en header, scroll
+// horizontal des chips sous-jacent. Sticky sur fond crème, hairline gold
+// sous la chip active. Registre supermarché pro (lisible, balayage
+// rapide) sans pills SaaS génériques.
 export const CategoryTabs = ({ active, onChange }: Props) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const activeBtnRef = useRef<HTMLButtonElement>(null);
 
   // Auto-scroll horizontal pour amener l'item actif dans la zone visible.
-  // Évite que sur mobile on cache l'item sélectionné en bord d'écran après
-  // un clic ou un retour catégorie via query param.
   useEffect(() => {
     const btn = activeBtnRef.current;
     const track = trackRef.current;
@@ -43,21 +41,25 @@ export const CategoryTabs = ({ active, onChange }: Props) => {
     <nav
       id="nos-rayons"
       aria-label="Filtrer par rayon"
-      className="sticky z-40 bg-[#FAF7EE]/95 backdrop-blur-md border-b border-[#E8E4D8]"
+      className="sticky z-40 bg-[#FAF7EE]/95 backdrop-blur-md border-b border-[#0E3B2E]/12"
       style={{ top: "calc(env(safe-area-inset-top) + 3.5rem)" }}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Eyebrow + titre section discret — ancre l'éditorial */}
-        <div className="hidden md:flex items-baseline gap-4 pt-6 pb-4">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227]">
+      <div className="max-w-7xl mx-auto px-5 md:px-8">
+        {/* Pagination "03" + label — visible desktop, sobre sur mobile */}
+        <div className="hidden md:flex items-end gap-4 pt-9 pb-5">
+          <span className="text-[26px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
+            03
+          </span>
+          <span aria-hidden className="h-px flex-1 max-w-[80px] bg-[#0E3B2E]/25 mb-2" />
+          <span className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#0E3B2E] mb-1.5">
             Nos rayons
-          </p>
-          <span aria-hidden className="flex-1 h-px bg-[#E8E4D8]" />
+          </span>
+          <span aria-hidden className="flex-1 h-px bg-[#0E3B2E]/12 mb-2" />
         </div>
 
         <div
           ref={trackRef}
-          className="flex items-center gap-1 md:gap-2 overflow-x-auto scrollbar-none -mx-4 md:mx-0 px-4 md:px-0 py-3"
+          className="flex items-center gap-1.5 md:gap-3 overflow-x-auto scrollbar-none -mx-5 md:mx-0 px-5 md:px-0 py-3.5"
           style={{ scrollbarWidth: "none" }}
         >
           {ITEMS.map((item) => {
@@ -70,19 +72,17 @@ export const CategoryTabs = ({ active, onChange }: Props) => {
                 onClick={() => onChange(item.slug)}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative shrink-0 px-3 md:px-3.5 py-1.5 text-[13px] md:text-sm font-medium whitespace-nowrap transition-colors rounded-md",
+                  "relative shrink-0 px-3.5 md:px-4 py-1.5 text-[13px] md:text-[14px] font-semibold whitespace-nowrap transition-colors rounded-md",
                   isActive
                     ? "text-[#0E3B2E]"
-                    : "text-[#6B7280] hover:text-[#0E3B2E]",
+                    : "text-[#0F1A14]/55 hover:text-[#0E3B2E]",
                 )}
               >
                 <span className="relative z-10">{item.name}</span>
-                {/* Soulignement doré pour l'actif — pose d'un underline
-                    éditorial, pas un fill complet de pill. */}
                 {isActive && (
                   <span
                     aria-hidden
-                    className="absolute left-3 right-3 md:left-3.5 md:right-3.5 -bottom-[1px] h-[2px] bg-[#C9A227] rounded-full"
+                    className="absolute left-3.5 right-3.5 md:left-4 md:right-4 -bottom-[1px] h-[2.5px] bg-[#C9A227] rounded-full"
                   />
                 )}
               </button>

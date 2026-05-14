@@ -19,7 +19,6 @@ const Index = () => {
   const { data: allProducts, isLoading, isError, error, refetch } = useProducts();
 
   // Pré-sélection de la catégorie via le query param (?category=...)
-  // utilisé par les CTAs du hero / EditorialIntro.
   useEffect(() => {
     const cat = searchParams.get("category");
     if (cat) setCategory(cat);
@@ -30,13 +29,8 @@ const Index = () => {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  // Préload IDLE des images du catalogue après que le navigateur ait fini
-  // son first paint. Avant : tous (44+) téléchargés synchrones au mount du
-  // hook → ~6 MB en parallèle qui saturent la bande passante et retardent
-  // l'apparition des images au-dessus du fold (EditorialIntro hero +
-  // WeeklyPicks). Maintenant : requestIdleCallback déclenche le batch
-  // hors du chemin critique. Les 12 premiers (visibles au scroll initial)
-  // d'abord, le reste après.
+  // Préload IDLE 2-phases (12 d'abord, reste plus tard) hors chemin
+  // critique — first paint reste réactif.
   useEffect(() => {
     if (!allProducts || allProducts.length === 0) return;
     const list = allProducts.filter((p) => p.imageUrl);
@@ -49,11 +43,12 @@ const Index = () => {
       });
     };
 
-    // Phase 1 : 12 premiers, idle. Phase 2 : reste, idle plus tard.
     const idle = (cb: () => void, timeout: number) => {
-      if (typeof (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback === "function") {
-        (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number })
-          .requestIdleCallback(cb, { timeout });
+      const w = window as unknown as {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      };
+      if (typeof w.requestIdleCallback === "function") {
+        w.requestIdleCallback(cb, { timeout });
       } else {
         window.setTimeout(cb, timeout);
       }
@@ -79,9 +74,9 @@ const Index = () => {
     setSearchInput("");
   };
 
-  // Affiche EditorialIntro + WeeklyPicks uniquement sur l'état "all" sans
-  // recherche : c'est le mode "vitrine" du magasin. Dès qu'on filtre ou
-  // qu'on cherche, on entre en mode catalogue pur, plus efficace.
+  // Affiche EditorialIntro + WeeklyPicks uniquement en mode "all" sans
+  // recherche : mode "vitrine". Dès qu'on filtre/cherche, on entre en
+  // mode catalogue pur, plus efficace.
   const showVitrine = category === "all" && !debouncedSearch;
 
   return (
@@ -95,55 +90,70 @@ const Index = () => {
 
       <CategoryTabs active={category} onChange={setCategory} />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-        {/* Section header éditorial — apparaît quand on est en catalogue,
-            pas en vitrine, pour rappeler le contexte. */}
+      <main className="max-w-7xl mx-auto px-5 md:px-8 pt-8 pb-14 md:pt-12 md:pb-24">
+        {/* Header catalogue mode "filtré" — quand on a une catégorie ou
+            une recherche, on ouvre par une note typographique sobre. */}
         {!showVitrine && (
-          <header className="mb-6 md:mb-8 flex items-end justify-between gap-4">
+          <header className="mb-7 md:mb-10 flex items-end justify-between gap-4">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-1.5">
+              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-2">
                 {debouncedSearch ? "Recherche" : "Rayon"}
               </p>
-              <h1 className="text-[24px] md:text-[32px] leading-[1.15] text-[#0E3B2E] font-extrabold tracking-[-0.025em]">
+              <h1 className="text-[26px] md:text-[36px] leading-[1.05] text-[#0E3B2E] font-extrabold tracking-[-0.03em]">
                 {debouncedSearch
                   ? `« ${debouncedSearch} »`
                   : BRAND.categories.find((c) => c.slug === category)?.name ?? "Tout"}
               </h1>
             </div>
             {products.length > 0 && (
-              <span className="text-xs text-[#6B7280] pb-1.5">
+              <span className="text-[12px] text-[#0F1A14]/55 pb-1.5 tabular-nums">
                 {products.length} produit{products.length > 1 ? "s" : ""}
               </span>
             )}
           </header>
         )}
 
+        {/* Pagination "04 / Catalogue" — visible en mode vitrine
+            uniquement, pour rythmer la suite du parcours. */}
+        {showVitrine && (
+          <div className="hidden md:flex items-end gap-4 mb-10">
+            <span className="text-[26px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
+              04
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-[80px] bg-[#0E3B2E]/25 mb-2" />
+            <span className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#0E3B2E] mb-1.5">
+              Catalogue
+            </span>
+            <span aria-hidden className="flex-1 h-px bg-[#0E3B2E]/12 mb-2" />
+          </div>
+        )}
+
         {isError ? (
-          <div className="flex flex-col items-center justify-center text-center py-16 px-4 gap-3">
-            <AlertCircle size={36} className="text-destructive" />
-            <h2 className="font-semibold text-gray-900">
+          <div className="flex flex-col items-center justify-center text-center py-20 px-4 gap-4">
+            <AlertCircle size={40} className="text-destructive" />
+            <h2 className="text-[18px] font-bold text-[#0E3B2E]">
               Impossible de charger le catalogue
             </h2>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-[14px] text-[#0F1A14]/60 max-w-sm">
               {error instanceof Error
                 ? error.message
                 : "Une erreur est survenue. Vérifiez votre connexion et réessayez."}
             </p>
             <button
               onClick={() => refetch()}
-              className="mt-2 px-4 py-2 rounded-full bg-[#0E3B2E] text-white text-sm font-medium hover:bg-[#082A20] transition-colors"
+              className="mt-2 px-6 h-11 rounded-full bg-[#0E3B2E] text-white text-[14px] font-semibold hover:bg-[#082A20] active:scale-[0.98] transition-all"
             >
               Réessayer
             </button>
           </div>
         ) : isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
             {Array.from({ length: 8 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
             {products.map((p, idx) => (
               <div
                 key={p.id}
@@ -155,17 +165,17 @@ const Index = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 flex flex-col items-center gap-3">
-            <SearchX size={48} className="text-gray-400" />
-            <p className="text-lg font-medium text-gray-900">
+          <div className="text-center py-20 flex flex-col items-center gap-4">
+            <SearchX size={48} className="text-[#0F1A14]/30" />
+            <p className="text-[18px] font-bold text-[#0E3B2E]">
               Aucun produit trouvé
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-[14px] text-[#0F1A14]/60">
               Essayez une autre recherche ou catégorie
             </p>
             <button
               onClick={resetFilters}
-              className="mt-2 px-4 py-2 rounded-full bg-[#0E3B2E] text-white text-sm font-medium hover:bg-[#082A20] transition-colors"
+              className="mt-2 px-6 h-11 rounded-full bg-[#0E3B2E] text-white text-[14px] font-semibold hover:bg-[#082A20] active:scale-[0.98] transition-all"
             >
               Voir tous les produits
             </button>
@@ -173,30 +183,42 @@ const Index = () => {
         )}
       </main>
 
-      {/* Footer pro — value prop brand sapin, plus de "signature" personnelle */}
-      <footer className="mt-8 md:mt-16 bg-[#0E3B2E] text-[#FAF7EE]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20">
+      {/* Footer — bandeau sapin sombre, pagination "05 / Salamarket"
+          pour clôturer le rythme catalogue raisonné. */}
+      <footer className="bg-[#0E3B2E] text-[#FAF7EE]">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 py-14 md:py-24">
+          <div className="hidden md:flex items-end gap-4 mb-12">
+            <span className="text-[26px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
+              05
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-[80px] bg-[#FAF7EE]/25 mb-2" />
+            <span className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#FAF7EE]">
+              Salamarket
+            </span>
+            <span aria-hidden className="flex-1 h-px bg-[#FAF7EE]/12 mb-2" />
+          </div>
+
           <div className="grid gap-12 md:gap-16 md:grid-cols-12 items-start">
             <div className="md:col-span-7">
-              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
+              <p className="md:hidden text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
                 Salamarket Toulouse
               </p>
-              <p className="text-[22px] md:text-[28px] leading-[1.3] text-[#FAF7EE] max-w-[40ch] font-semibold tracking-[-0.02em]">
-                Votre{" "}
-                <span className="text-[#C9A227]">
-                  supermarché halal indépendant
-                </span>{" "}
-                à Toulouse. Sélection halal certifiée, retrait en magasin,
-                sans abonnement.
+              <p className="text-[26px] sm:text-[30px] md:text-[40px] lg:text-[48px] leading-[1.05] text-[#FAF7EE] max-w-[18ch] font-extrabold tracking-[-0.035em]">
+                Le supermarché halal{" "}
+                <span className="text-[#C9A227]">indépendant</span> de Toulouse.
+              </p>
+              <p className="mt-6 text-[14px] md:text-[15px] text-[#FAF7EE]/70 leading-relaxed max-w-[44ch]">
+                Sélection halal certifiée, retrait en magasin sans abonnement,
+                créneaux du matin au soir.
               </p>
             </div>
 
-            <div className="md:col-span-5 grid grid-cols-2 gap-8 md:gap-10 text-sm">
+            <div className="md:col-span-5 grid grid-cols-2 gap-8 md:gap-10 text-[13px]">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[#C9A227] mb-3">
                   Adresse
                 </p>
-                <p className="text-[#FAF7EE]/85 leading-relaxed">
+                <p className="text-[#FAF7EE]/85 leading-[1.55]">
                   {BRAND.store.address}
                   <br />
                   {BRAND.store.postalCode} {BRAND.store.city}
@@ -206,13 +228,13 @@ const Index = () => {
                 <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-[#C9A227] mb-3">
                   Horaires
                 </p>
-                <ul className="space-y-1.5 text-[#FAF7EE]/85">
+                <ul className="space-y-2 text-[#FAF7EE]/85">
                   {BRAND.store.hours.map((h) => (
-                    <li key={h.days} className="flex flex-col">
+                    <li key={h.days} className="flex flex-col leading-[1.4]">
                       <span className="text-[11px] text-[#FAF7EE]/55">
                         {h.days}
                       </span>
-                      <span className="font-medium">{h.time}</span>
+                      <span className="font-semibold">{h.time}</span>
                     </li>
                   ))}
                 </ul>
@@ -220,12 +242,12 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Bandeau bas — copyright + service. Discret. */}
-          <div className="mt-12 md:mt-16 pt-6 border-t border-[#FAF7EE]/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[11px] text-[#FAF7EE]/55">
+          {/* Bandeau bas — copyright + service, hairline pour séparer */}
+          <div className="mt-14 md:mt-20 pt-6 border-t border-[#FAF7EE]/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[11px] text-[#FAF7EE]/55 tracking-[0.02em]">
             <p>
               © {new Date().getFullYear()} {BRAND.name} · {formatStoreLocation(BRAND.store)}
             </p>
-            <p>Click & collect uniquement · Aucune livraison</p>
+            <p>Click &amp; collect uniquement · Sans abonnement</p>
           </div>
         </div>
       </footer>
