@@ -37,12 +37,13 @@ export const EditorialIntro = () => (
             </span>
           </div>
 
-          {/* Titre poster — Plus Jakarta Sans 800, tracking ultra-serré
-              sur mobile et desktop pour la présence éditoriale.
-              break-words contrôle les line-breaks pour effet poster. */}
+          {/* Titre poster — Plus Jakarta Sans 800, tracking ultra-serré.
+              Calibré pour 4 lignes max sur iPhone 390px et 3 lignes sur
+              desktop. Le break manuel pose la 2nde phrase en gold sur
+              ligne distincte = effet "punch line" éditorial. */}
           <h2
             id="editorial-intro-title"
-            className="text-[44px] leading-[0.98] sm:text-[56px] sm:leading-[0.96] md:text-[64px] md:leading-[0.94] lg:text-[80px] lg:leading-[0.92] text-[#0E3B2E] font-extrabold tracking-[-0.04em]"
+            className="text-[36px] leading-[1] sm:text-[44px] sm:leading-[0.98] md:text-[56px] md:leading-[0.96] lg:text-[68px] lg:leading-[0.94] text-[#0E3B2E] font-extrabold tracking-[-0.035em] lg:tracking-[-0.04em]"
           >
             Votre supermarché halal,
             <br />
