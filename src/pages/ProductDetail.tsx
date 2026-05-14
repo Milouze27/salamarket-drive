@@ -135,30 +135,36 @@ const ProductDetail = () => {
         )}
       </header>
 
-      {/* Image hero full-bleed */}
-      <div className="relative aspect-square w-full max-w-2xl mx-auto bg-white overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          width={1200}
-          height={1200}
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          className="w-full h-full object-cover"
-        />
-        {/* Gradient subtle bottom pour transition vers contenu */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#FAF7EE]/80"
-        />
-      </div>
+      {/* Layout split sur desktop (photo gauche sticky / info droite),
+          vertical sur mobile. Container max-w-6xl pour aérer la fiche
+          en grand écran et éviter la photo géante centrée. */}
+      <div className="md:max-w-6xl md:mx-auto md:px-8 md:pt-24 md:grid md:grid-cols-[1.05fr_1fr] md:gap-12 lg:gap-16">
+        {/* Image hero — full-bleed mobile, sticky desktop */}
+        <div className="md:sticky md:top-24 md:self-start">
+          <div className="relative aspect-square w-full max-w-2xl mx-auto md:max-w-none bg-white overflow-hidden md:rounded-[36px] md:shadow-[0_30px_60px_-30px_rgba(8,42,32,0.35)] animate-in fade-in zoom-in-95 duration-500">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              width={1200}
+              height={1200}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="w-full h-full object-cover"
+            />
+            {/* Gradient subtle bottom pour transition vers contenu — mobile uniquement */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#FAF7EE]/80 md:hidden"
+            />
+          </div>
+        </div>
 
-      {/* Contenu principal */}
-      <div
-        className="max-w-2xl mx-auto px-4 -mt-4 relative"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 8rem)" }}
-      >
+        {/* Contenu principal */}
+        <div
+          className="max-w-2xl mx-auto px-4 -mt-4 md:mt-0 md:px-0 relative md:pb-8"
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 8rem)" }}
+        >
         {/* Title + price — bloc éditorial sans card frame, serif pour le
             nom produit. Le titre porte la composition, le prix s'aligne
             en baseline. */}
@@ -237,24 +243,106 @@ const ProductDetail = () => {
           </div>
         </section>
 
-        {/* Suggestions "Vous aimerez aussi" */}
+        {/* CTA inline desktop : stepper + Ajouter visibles direct dans la
+            colonne droite, pas de sticky bottom qui ferait double-emploi
+            avec le scroll naturel sur grand écran. */}
+        <section className="hidden md:flex flex-col gap-3 mt-7 pt-6 border-t border-[#0E3B2E]/15 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:350ms] [animation-fill-mode:backwards]">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 bg-[#FAF7EE] rounded-full p-1 border border-[#0E3B2E]/15 shrink-0">
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={qty <= 1}
+                aria-label="Diminuer la quantité"
+                className="w-10 h-10 rounded-full bg-white border border-[#0E3B2E]/12 flex items-center justify-center text-[#0E3B2E] active:scale-90 transition-transform shadow-sm disabled:opacity-30"
+              >
+                <Minus size={14} strokeWidth={2.5} aria-hidden />
+              </button>
+              <span
+                className="min-w-[2.25rem] text-center text-base font-bold tabular-nums text-[#0E3B2E]"
+                aria-live="polite"
+              >
+                {qty}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
+                disabled={qty >= MAX_QTY}
+                aria-label="Augmenter la quantité"
+                className="w-10 h-10 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center active:scale-90 transition-transform shadow-sm disabled:opacity-40"
+              >
+                <Plus size={14} strokeWidth={2.5} aria-hidden />
+              </button>
+            </div>
+            <button
+              onClick={handleAdd}
+              disabled={!product.inStock}
+              className={cn(
+                "group flex-1 h-14 rounded-2xl bg-gradient-to-r from-[#0E3B2E] to-[#082A20] text-white font-bold text-[15px] shadow-lg shadow-[#0E3B2E]/30 hover:shadow-xl hover:shadow-[#0E3B2E]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none",
+                justAdded && "animate-success-pop",
+              )}
+            >
+              {justAdded ? (
+                <>
+                  <BadgeCheck size={20} className="text-[#C9A227]" aria-hidden />
+                  <span>Ajouté !</span>
+                </>
+              ) : (
+                <>
+                  <span>{product.inStock ? "Ajouter au panier" : "Indisponible"}</span>
+                  {product.inStock && (
+                    <>
+                      <span className="opacity-50">·</span>
+                      <span className="tabular-nums">
+                        {formatPrice(totalCents)}
+                      </span>
+                      <ArrowRight
+                        size={16}
+                        className="transition-transform group-hover:translate-x-0.5"
+                        aria-hidden
+                      />
+                    </>
+                  )}
+                </>
+              )}
+            </button>
+          </div>
+          {cartQty > 0 && !justAdded && (
+            <Link
+              to="/panier"
+              className="h-12 w-full bg-white border-2 border-[#0E3B2E]/15 rounded-2xl flex items-center justify-center gap-2 text-[#0E3B2E] font-bold text-[14px] active:scale-[0.99] transition-transform"
+            >
+              <span className="inline-flex w-7 h-7 rounded-full bg-[#0E3B2E] text-white items-center justify-center">
+                <ShoppingCart size={14} strokeWidth={2.4} />
+              </span>
+              Voir le panier
+              <span className="inline-flex min-w-[24px] h-6 rounded-full bg-[#C9A227]/20 text-[#0E3B2E] items-center justify-center px-2 tabular-nums text-[12px] font-extrabold">
+                {cartQty}
+              </span>
+              <ArrowRight size={14} className="text-[#0E3B2E]/60" />
+            </Link>
+          )}
+        </section>
+
+        {/* Suggestions "Vous aimerez aussi" — col droite desktop, sous CTA */}
         {suggestions.length > 0 && (
-          <section className="mt-8 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:400ms] [animation-fill-mode:backwards]">
-            <h2 className="text-base font-bold text-text mb-3 px-1">
+          <section className="mt-8 md:mt-10 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:400ms] [animation-fill-mode:backwards]">
+            <h2 className="text-base md:text-[17px] font-bold text-[#0E3B2E] mb-3 px-1">
               Vous aimerez aussi
             </h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               {suggestions.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>
         )}
+        </div>
       </div>
 
-      {/* Sticky bottom : qty selector + CTA prix dynamique */}
+      {/* Sticky bottom MOBILE UNIQUEMENT — desktop a son CTA inline ci-dessus */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-border md:bottom-0"
+        className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-border md:hidden"
         style={{ bottom: 0 }}
       >
         <div
