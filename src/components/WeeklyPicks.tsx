@@ -1,20 +1,20 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "@/types/product";
 import { formatPrice, unitLabel } from "@/lib/format";
+import { useCartStore } from "@/stores/cartStore";
 
 interface Props {
   products: Product[];
 }
 
-// Sélection bandeau horizontal — pas un slider promo, 3 produits
-// curatés avec un caption par rayon ("Boucherie de la semaine"...).
-// Photo dominante 4:5, titre sobre, prix discret. Registre supermarché
-// pro, pas commerce de quartier — captions catégorie, pas anecdotiques.
+// Sélection bandeau horizontal — pas un slider promo, 3 produits curatés
+// avec un caption par rayon. Photo dominante 4:5, titre sobre, prix
+// aligné. Registre supermarché pro avec pagination éditoriale "02"
+// reprise de EditorialIntro pour rythme catalogue raisonné.
 //
-// Les 3 produits sont choisis en priorité parmi des catégories
-// signature (boucherie / charcuterie / épicerie), pour que la sélection
-// reflète l'offre du magasin. Fallback : 3 premiers en stock.
+// Les 3 produits sont choisis en priorité parmi des catégories signature
+// (boucherie / charcuterie / épicerie). Fallback : 3 premiers en stock.
 const PICKS: Array<{
   category: Product["category"];
   caption: string;
@@ -39,8 +39,6 @@ const pickFromCatalog = (products: Product[]): Array<{ product: Product; caption
     }
   }
 
-  // Si on n'a pas atteint 3, on complète avec les premiers en stock
-  // hors catégories déjà prises.
   if (picks.length < 3) {
     for (const p of inStock) {
       if (picks.length >= 3) break;
@@ -56,30 +54,41 @@ const pickFromCatalog = (products: Product[]): Array<{ product: Product; caption
 
 export const WeeklyPicks = ({ products }: Props) => {
   const picks = pickFromCatalog(products);
+  const addItem = useCartStore((s) => s.addItem);
   if (picks.length === 0) return null;
 
   return (
     <section
       aria-labelledby="weekly-picks-title"
-      className="relative bg-[#FAF7EE] border-y border-[#E8E4D8]"
+      className="relative bg-[#FAF7EE]"
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
-        {/* Header section : kicker + titre + lien droite */}
-        <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-2">
-              Cette semaine
-            </p>
+      {/* Hairline divider haut + bas pour cadrer la section comme un
+          encart éditorial dans le magazine. */}
+      <div aria-hidden className="border-t border-[#0E3B2E]/12" />
+
+      <div className="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-14 md:pt-20 md:pb-24">
+        {/* Header section : pagination "02" + titre + lien droite */}
+        <div className="flex items-end justify-between gap-6 mb-9 md:mb-14">
+          <div className="min-w-0">
+            <div className="flex items-center gap-4 mb-5 md:mb-6">
+              <span className="text-[26px] md:text-[30px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
+                02
+              </span>
+              <span aria-hidden className="h-px flex-1 max-w-[80px] bg-[#0E3B2E]/25" />
+              <span className="text-[10px] uppercase tracking-[0.32em] font-bold text-[#0E3B2E]">
+                Cette semaine
+              </span>
+            </div>
             <h2
               id="weekly-picks-title"
-              className="text-[26px] md:text-[36px] leading-[1.1] text-[#0E3B2E] font-extrabold tracking-[-0.03em]"
+              className="text-[30px] md:text-[44px] lg:text-[52px] leading-[0.98] text-[#0E3B2E] font-extrabold tracking-[-0.035em]"
             >
-              Notre sélection
+              Notre sélection.
             </h2>
           </div>
           <a
             href="#nos-rayons"
-            className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-[#0E3B2E] underline-offset-[6px] hover:underline decoration-[#C9A227]/60 shrink-0"
+            className="hidden md:inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0E3B2E] underline-offset-[7px] hover:underline decoration-[#C9A227] decoration-[2px] shrink-0 pb-2"
           >
             Tout le catalogue
             <ArrowRight size={14} aria-hidden />
@@ -90,7 +99,7 @@ export const WeeklyPicks = ({ products }: Props) => {
         <ul
           className="
             flex md:grid md:grid-cols-3 gap-5 md:gap-8
-            -mx-4 md:mx-0 px-4 md:px-0
+            -mx-5 md:mx-0 px-5 md:px-0
             overflow-x-auto md:overflow-visible scrollbar-none
             snap-x snap-mandatory md:snap-none
           "
@@ -98,57 +107,75 @@ export const WeeklyPicks = ({ products }: Props) => {
           {picks.map(({ product, caption }, idx) => (
             <li
               key={product.id}
-              className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start"
+              className="shrink-0 w-[82%] sm:w-[60%] md:w-auto snap-start"
             >
-              <Link
-                to={`/produit/${product.id}`}
-                className="group block"
-                aria-label={`${product.name} — ${caption}`}
-              >
-                {/* Photo dominante 4:5 portrait — pas de card frame.
-                    Eager + fetchPriority high sur les 3 picks : ils sont
-                    au-dessus du fold sur desktop, accessibles en 1
-                    swipe sur mobile. Pas la peine de lazy-load et de
-                    voir un flash. */}
-                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-white">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    loading="eager"
-                    fetchPriority={idx === 0 ? "high" : "auto"}
-                    decoding="async"
-                    width={800}
-                    height={1000}
-                    className="w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.04]"
-                  />
-                  {/* Numéro éditorial discret — pose une intention de
-                      curation, comme un cartel d'expo. */}
-                  <span
-                    aria-hidden
-                    className="absolute top-4 left-4 inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#FAF7EE]/95 backdrop-blur text-[10px] font-bold tabular-nums text-[#0E3B2E] shadow-sm"
-                  >
-                    {String(picks.indexOf(picks.find((x) => x.product.id === product.id)!) + 1).padStart(2, "0")}
-                  </span>
-                </div>
+              <article className="group">
+                <Link
+                  to={`/produit/${product.id}`}
+                  className="block"
+                  aria-label={`${product.name} — ${caption}`}
+                >
+                  {/* Photo dominante 4:5 — pas de card frame, ombre subtile */}
+                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-white shadow-[0_20px_40px_-24px_rgba(8,42,32,0.25)]">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      loading="eager"
+                      fetchPriority={idx === 0 ? "high" : "auto"}
+                      decoding="async"
+                      width={800}
+                      height={1000}
+                      className="w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
+                    />
+                    {/* Numérotation pick — pose une intention de curation,
+                        nichée bas-gauche, sous-jacent au "01/02/03" du
+                        rythme catalogue. */}
+                    <span
+                      aria-hidden
+                      className="absolute top-4 left-4 inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-full bg-[#FAF7EE]/95 backdrop-blur text-[11px] font-extrabold tabular-nums text-[#0E3B2E] shadow-sm"
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    {/* CTA ajouter rapide overlay bas-droite */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addItem(product);
+                      }}
+                      aria-label={`Ajouter ${product.name} au panier`}
+                      className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center shadow-lg shadow-[#0E3B2E]/35 hover:bg-[#082A20] hover:scale-105 active:scale-90 transition-all"
+                    >
+                      <Plus size={20} strokeWidth={2.4} aria-hidden />
+                    </button>
+                  </div>
+                </Link>
 
-                {/* Légende sous l'image — type éditorial, pas card UI */}
-                <div className="mt-4 pl-1 pr-2">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-[#C9A227] font-bold mb-1.5">
+                {/* Légende sous l'image — caption gold caps + titre +
+                    pricing aligné Chronodrive. */}
+                <div className="mt-5 px-1">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-[#C9A227] font-bold mb-2">
                     {caption}
                   </p>
-                  <h3 className="text-[17px] md:text-[19px] leading-[1.25] text-[#0E3B2E] font-bold tracking-[-0.015em]">
-                    {product.name}
+                  <h3 className="text-[17px] md:text-[19px] leading-[1.25] text-[#0E3B2E] font-bold tracking-[-0.02em]">
+                    <Link
+                      to={`/produit/${product.id}`}
+                      className="hover:underline underline-offset-4 decoration-[1.5px] decoration-[#C9A227]/40"
+                    >
+                      {product.name}
+                    </Link>
                   </h3>
-                  <div className="mt-2 flex items-baseline gap-2 text-[#0F1A14]/75">
-                    <span className="text-[15px] font-semibold tabular-nums text-[#0E3B2E]">
+                  <div className="mt-2.5 flex items-baseline gap-2">
+                    <span className="text-[16px] font-extrabold tabular-nums text-[#0E3B2E] tracking-[-0.01em]">
                       {formatPrice(product.priceCents)}
                     </span>
-                    <span className="text-[12px] text-[#6B7280]">
+                    <span className="text-[11px] text-[#0F1A14]/55">
                       · {unitLabel(product.unit)}
                     </span>
                   </div>
                 </div>
-              </Link>
+              </article>
             </li>
           ))}
         </ul>
@@ -156,12 +183,14 @@ export const WeeklyPicks = ({ products }: Props) => {
         {/* Lien tout le catalogue — version mobile sous la liste */}
         <a
           href="#nos-rayons"
-          className="md:hidden mt-6 inline-flex items-center gap-1 text-sm font-semibold text-[#0E3B2E] underline-offset-[6px] underline decoration-[#C9A227]/60"
+          className="md:hidden mt-8 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0E3B2E] underline underline-offset-[7px] decoration-[#C9A227] decoration-[2px]"
         >
           Tout le catalogue
           <ArrowRight size={14} aria-hidden />
         </a>
       </div>
+
+      <div aria-hidden className="border-b border-[#0E3B2E]/12" />
     </section>
   );
 };

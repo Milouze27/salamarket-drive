@@ -34,7 +34,7 @@ const Cart = () => {
       <AppHeader showBack title="Mon panier" />
 
       <main
-        className="flex-1 max-w-2xl w-full mx-auto px-4 pt-3 flex flex-col gap-3"
+        className="flex-1 max-w-2xl w-full mx-auto px-5 md:px-6 pt-6 flex flex-col gap-4"
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 9rem)" }}
       >
         {items.length === 0 ? (
