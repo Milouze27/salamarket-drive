@@ -18,10 +18,13 @@ const Index = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const { data: allProducts, isLoading, isError, error, refetch } = useProducts();
 
-  // Pré-sélection de la catégorie via le query param (?category=...)
+  // Pré-sélection de la catégorie via le query param (?category=...).
+  // Reset à "all" si pas de param — sans ça, navigation back depuis
+  // /?category=X vers / laissait l'état coincé sur X et masquait le
+  // mode vitrine. URL = source de vérité.
   useEffect(() => {
     const cat = searchParams.get("category");
-    if (cat) setCategory(cat);
+    setCategory(cat || "all");
   }, [searchParams]);
 
   useEffect(() => {
@@ -90,7 +93,7 @@ const Index = () => {
 
       <CategoryTabs active={category} onChange={setCategory} />
 
-      <main className="max-w-7xl mx-auto px-5 md:px-8 pt-8 pb-14 md:pt-12 md:pb-24">
+      <main className="max-w-7xl mx-auto px-6 md:px-8 pt-8 pb-14 md:pt-12 md:pb-24">
         {/* Header catalogue mode "filtré" — quand on a une catégorie ou
             une recherche, on ouvre par une note typographique sobre. */}
         {!showVitrine && (
@@ -186,7 +189,7 @@ const Index = () => {
       {/* Footer — bandeau sapin sombre, pagination "05 / Salamarket"
           pour clôturer le rythme catalogue raisonné. */}
       <footer className="bg-[#0E3B2E] text-[#FAF7EE]">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-14 md:py-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 py-14 md:py-24">
           <div className="hidden md:flex items-end gap-4 mb-12">
             <span className="text-[26px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
               05

@@ -66,7 +66,7 @@ export const WeeklyPicks = ({ products }: Props) => {
           encart éditorial dans le magazine. */}
       <div aria-hidden className="border-t border-[#0E3B2E]/12" />
 
-      <div className="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-14 md:pt-20 md:pb-24">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 pt-12 pb-14 md:pt-20 md:pb-24">
         {/* Header section : pagination "02" + titre + lien droite */}
         <div className="flex items-end justify-between gap-6 mb-9 md:mb-14">
           <div className="min-w-0">
@@ -99,7 +99,7 @@ export const WeeklyPicks = ({ products }: Props) => {
         <ul
           className="
             flex md:grid md:grid-cols-3 gap-5 md:gap-8
-            -mx-5 md:mx-0 px-5 md:px-0
+            -mx-6 md:mx-0 px-6 md:px-0
             overflow-x-auto md:overflow-visible scrollbar-none
             snap-x snap-mandatory md:snap-none
           "
