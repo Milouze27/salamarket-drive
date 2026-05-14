@@ -44,7 +44,7 @@ export const CategoryTabs = ({ active, onChange }: Props) => {
       className="sticky z-40 bg-[#FAF7EE]/95 backdrop-blur-md border-b border-[#0E3B2E]/12"
       style={{ top: "calc(env(safe-area-inset-top) + 3.5rem)" }}
     >
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
         {/* Pagination "03" + label — visible desktop, sobre sur mobile */}
         <div className="hidden md:flex items-end gap-4 pt-9 pb-5">
           <span className="text-[26px] font-extrabold text-[#C9A227] tabular-nums leading-none tracking-[-0.04em]">
@@ -59,7 +59,7 @@ export const CategoryTabs = ({ active, onChange }: Props) => {
 
         <div
           ref={trackRef}
-          className="flex items-center gap-1.5 md:gap-3 overflow-x-auto scrollbar-none -mx-5 md:mx-0 px-5 md:px-0 py-3.5"
+          className="flex items-center gap-1.5 md:gap-3 overflow-x-auto scrollbar-none -mx-6 md:mx-0 px-6 md:px-0 py-3.5"
           style={{ scrollbarWidth: "none" }}
         >
           {ITEMS.map((item) => {

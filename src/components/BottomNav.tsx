@@ -19,6 +19,12 @@ const HIDDEN_PREFIXES = [
   "/commande/confirmee",
   "/admin",
   "/employe",
+  // ProductDetail a son propre CTA sticky "Ajouter au panier" en bas
+  // d'écran. Le BottomNav par-dessus chevauchait visuellement le CTA
+  // (memory rule : "Nav bottom ne doit jamais cacher du contenu utile").
+  // Sur cette route, le user est dans une intention d'achat focus, le
+  // bottom nav général n'a pas sa place.
+  "/produit/",
 ];
 
 const NAV_ITEMS = [
