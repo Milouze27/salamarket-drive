@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 // "Wall text" éditorial à la Le Bon Marché — pas un slider promo,
 // pas un hero metric, une déclaration d'identité du magasin. Photo
-// dominante + serif Fraunces pour la phrase signature + paragraphe
-// chaleureux + un seul CTA.
+// dominante + Plus Jakarta Sans 800 tight pour la phrase signature
+// + paragraphe chaleureux + un seul CTA.
 //
 // Pourquoi pas un carousel : un slider qui alterne 3 rayons fait
 // "Carrefour Drive" (anti-référence PRODUCT.md). Une seule image
@@ -54,17 +54,15 @@ export const EditorialIntro = () => (
             Salamarket · 8 av. Larrieu&#8209;Thibaud
           </p>
 
-          {/* Titre serif éditorial — Fraunces opsz grande taille */}
+          {/* Titre display — Plus Jakarta Sans 800, tracking serré pour
+              donner du caractère sans changer de famille. L'accent gold
+              porte la signature éditoriale. */}
           <h2
             id="editorial-intro-title"
-            className="font-serif text-[34px] leading-[1.05] md:text-[52px] md:leading-[1.02] text-[#0E3B2E] tracking-[-0.015em]"
-            style={{
-              fontOpticalSizing: "auto",
-              fontVariationSettings: '"opsz" 96',
-            }}
+            className="text-[34px] leading-[1.05] md:text-[52px] md:leading-[1.02] text-[#0E3B2E] font-extrabold tracking-[-0.03em]"
           >
             Votre supermarché halal,{" "}
-            <em className="italic font-normal text-[#C9A227]">comme à la maison.</em>
+            <span className="text-[#C9A227]">comme à la maison.</span>
           </h2>
 
           <p className="mt-5 md:mt-6 text-[15px] md:text-base leading-relaxed text-[#0F1A14]/75 max-w-[44ch]">

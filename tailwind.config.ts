@@ -15,15 +15,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        // Plus Jakarta Sans unifié avec Salam Stock V2.
-        // 'manrope' alias conservé pour ne pas casser les usages legacy
-        // qui pointaient sur ce nom — il pointe désormais sur la même police.
+        // Plus Jakarta Sans unifié avec Salam Stock V2 — un seul typeface
+        // sur toute l'app, déclinaisons via poids (800) et tracking
+        // (-0.03em) pour les displays. 'manrope' alias conservé pour les
+        // usages legacy. 'serif' alias retombe sur la même famille pour
+        // ne pas casser les classes existantes (font-serif sera désactivé
+        // visuellement par les overrides explicites des composants).
         sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
         manrope: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
-        // Display éditorial pour les titres hero / sections signature.
-        // Fraunces opsz variable : à grande taille la lettre s'épanouit
-        // (axe SOFT), à petite taille elle reste lisible.
-        serif: ['"Fraunces"', 'Georgia', 'serif'],
       },
       colors: {
         border: BRAND.colors.border,

@@ -284,11 +284,8 @@ const OrderConfirmation = () => {
             </p>
           </div>
 
-          <h1
-            className="font-serif text-[44px] md:text-[60px] leading-[0.95] text-[#0E3B2E] tracking-[-0.02em] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]"
-            style={{ fontVariationSettings: '"opsz" 144' }}
-          >
-            Merci, <em className="italic font-normal text-[#C9A227]">on s'en occupe.</em>
+          <h1 className="text-[40px] md:text-[56px] leading-[0.98] text-[#0E3B2E] font-extrabold tracking-[-0.035em] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
+            Merci, <span className="text-[#C9A227]">on s'en occupe.</span>
           </h1>
 
           <p className="mt-5 text-[15px] md:text-base leading-relaxed text-[#0F1A14]/75 max-w-[44ch] animate-in fade-in slide-in-from-bottom-2 duration-500 delay-300 [animation-fill-mode:backwards]">
@@ -317,10 +314,7 @@ const OrderConfirmation = () => {
             <Calendar size={11} aria-hidden />
             Votre créneau
           </p>
-          <p
-            className="font-serif text-[22px] md:text-[26px] leading-[1.15] text-[#0E3B2E] tracking-[-0.01em]"
-            style={{ fontVariationSettings: '"opsz" 60' }}
-          >
+          <p className="text-[20px] md:text-[24px] leading-[1.15] text-[#0E3B2E] font-bold tracking-[-0.02em]">
             {order.pickup_slot
               ? formatSlotLabel(order.pickup_slot)
               : "Créneau à confirmer"}
@@ -357,10 +351,7 @@ const OrderConfirmation = () => {
             <span className="text-[13px] uppercase tracking-[0.18em] font-bold text-[#0E3B2E]">
               Total réglé
             </span>
-            <span
-              className="font-serif text-[28px] md:text-[32px] font-semibold text-[#0E3B2E] tabular-nums tracking-tight"
-              style={{ fontVariationSettings: '"opsz" 72' }}
-            >
+            <span className="text-[28px] md:text-[32px] font-extrabold text-[#0E3B2E] tabular-nums tracking-[-0.025em]">
               {formatEUR(order.total_cents)}
             </span>
           </div>
@@ -437,10 +428,7 @@ const OrderConfirmation = () => {
 
         {/* Signature — note manuscrite type "lettre du magasin" */}
         <section className="border-t border-[#0E3B2E]/15 pt-6 animate-in fade-in duration-700 delay-[900ms] [animation-fill-mode:backwards]">
-          <p
-            className="font-serif italic text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[44ch]"
-            style={{ fontVariationSettings: '"opsz" 24' }}
-          >
+          <p className="text-[15px] text-[#0F1A14]/80 leading-relaxed max-w-[44ch]">
             « Merci de faire confiance à un commerce indépendant. À très vite
             au comptoir. »
           </p>

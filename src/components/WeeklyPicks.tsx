@@ -72,8 +72,7 @@ export const WeeklyPicks = ({ products }: Props) => {
             </p>
             <h2
               id="weekly-picks-title"
-              className="font-serif text-[26px] md:text-[36px] leading-[1.1] text-[#0E3B2E] tracking-[-0.01em]"
-              style={{ fontVariationSettings: '"opsz" 72' }}
+              className="text-[26px] md:text-[36px] leading-[1.1] text-[#0E3B2E] font-extrabold tracking-[-0.03em]"
             >
               Notre sélection
             </h2>
@@ -96,7 +95,7 @@ export const WeeklyPicks = ({ products }: Props) => {
             snap-x snap-mandatory md:snap-none
           "
         >
-          {picks.map(({ product, caption }) => (
+          {picks.map(({ product, caption }, idx) => (
             <li
               key={product.id}
               className="shrink-0 w-[78%] sm:w-[60%] md:w-auto snap-start"
@@ -106,12 +105,17 @@ export const WeeklyPicks = ({ products }: Props) => {
                 className="group block"
                 aria-label={`${product.name} — ${caption}`}
               >
-                {/* Photo dominante 4:5 portrait — pas de card frame */}
+                {/* Photo dominante 4:5 portrait — pas de card frame.
+                    Eager + fetchPriority high sur les 3 picks : ils sont
+                    au-dessus du fold sur desktop, accessibles en 1
+                    swipe sur mobile. Pas la peine de lazy-load et de
+                    voir un flash. */}
                 <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-white">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    loading="lazy"
+                    loading="eager"
+                    fetchPriority={idx === 0 ? "high" : "auto"}
                     decoding="async"
                     width={800}
                     height={1000}
@@ -132,7 +136,7 @@ export const WeeklyPicks = ({ products }: Props) => {
                   <p className="text-[11px] uppercase tracking-[0.18em] text-[#C9A227] font-bold mb-1.5">
                     {caption}
                   </p>
-                  <h3 className="font-serif text-[20px] md:text-[22px] leading-[1.2] text-[#0E3B2E] tracking-[-0.01em]">
+                  <h3 className="text-[17px] md:text-[19px] leading-[1.25] text-[#0E3B2E] font-bold tracking-[-0.015em]">
                     {product.name}
                   </h3>
                   <div className="mt-2 flex items-baseline gap-2 text-[#0F1A14]/75">
