@@ -34,7 +34,7 @@ const Cart = () => {
       <AppHeader showBack title="Mon panier" />
 
       <main
-        className="flex-1 max-w-2xl w-full mx-auto px-5 md:px-6 pt-6 flex flex-col gap-4"
+        className="flex-1 max-w-2xl w-full mx-auto px-6 md:px-8 pt-6 flex flex-col gap-4"
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 9rem)" }}
       >
         {items.length === 0 ? (
@@ -189,7 +189,7 @@ const Cart = () => {
       {items.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur border-t border-border">
           <div
-            className="max-w-2xl mx-auto px-4 pt-3"
+            className="max-w-2xl mx-auto px-6 pt-3"
             style={{
               paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
             }}

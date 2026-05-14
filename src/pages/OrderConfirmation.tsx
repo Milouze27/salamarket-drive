@@ -128,15 +128,12 @@ const OrderConfirmation = () => {
     confirmCalledRef.current = true;
     if (!orderId) return;
 
-    // VIDE le panier dès l'arrivée sur cette page (la commande est créée
-    // côté serveur, on n'a plus besoin du panier local quel que soit l'état
-    // du verify-checkout-session qui suit). Cas couverts :
-    //   - Stripe redirect → /commande/confirmee/X → panier vide instant
-    //   - Paiement magasin → idem
-    //   - User ferme la page avant de cliquer un bouton → panier vide
-    // Le state Zustand + localStorage est synchronisé via persist.
-    clearCart();
-    clearSlot();
+    // NE PAS clearCart ici inconditionnellement. Si l'user re-visite
+    // cette URL depuis l'historique après avoir rempli un NOUVEAU panier,
+    // on viderait son nouveau panier (bug remonté en review). Le clear
+    // est désormais fait UNIQUEMENT dans le 2e useEffect ci-dessous, sur
+    // confirmation explicite de payment_status === "paid" (verify OK)
+    // ou payment_method === "in_store".
 
     const sessionId = searchParams.get("session_id");
 

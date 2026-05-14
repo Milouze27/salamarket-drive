@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AlertCircle, SearchX } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -8,24 +8,31 @@ import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { useProducts } from "@/hooks/useProducts";
+import { useCartCount } from "@/hooks/useCartSummary";
 import { BRAND, formatStoreLocation } from "@/config/brand";
 import { normalizeSearch } from "@/lib/search";
 
 const Index = () => {
-  const [searchParams] = useSearchParams();
-  const [category, setCategory] = useState<string>("all");
+  const [searchParams, setSearchParams] = useSearchParams();
+  // URL = source de vérité. Pas de state local pour la catégorie : on
+  // lit/écrit toujours via le query param. Évite la désync entre l'état
+  // affiché et l'URL bookmarkable / partageable.
+  const category = searchParams.get("category") || "all";
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const { data: allProducts, isLoading, isError, error, refetch } = useProducts();
 
-  // Pré-sélection de la catégorie via le query param (?category=...).
-  // Reset à "all" si pas de param — sans ça, navigation back depuis
-  // /?category=X vers / laissait l'état coincé sur X et masquait le
-  // mode vitrine. URL = source de vérité.
-  useEffect(() => {
-    const cat = searchParams.get("category");
-    setCategory(cat || "all");
-  }, [searchParams]);
+  // Setter qui pousse dans l'URL. "all" = nettoie le param pour
+  // basculer en mode vitrine (URL propre /).
+  const setCategory = useCallback(
+    (slug: string) => {
+      setSearchParams(
+        slug === "all" ? {} : { category: slug },
+        { replace: false },
+      );
+    },
+    [setSearchParams],
+  );
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchInput), 200);
@@ -72,18 +79,24 @@ const Index = () => {
     });
   }, [allProducts, category, debouncedSearch]);
 
-  const resetFilters = () => {
-    setCategory("all");
+  const resetFilters = useCallback(() => {
+    setCategory("all"); // nettoie l'URL
     setSearchInput("");
-  };
+  }, [setCategory]);
 
   // Affiche EditorialIntro + WeeklyPicks uniquement en mode "all" sans
   // recherche : mode "vitrine". Dès qu'on filtre/cherche, on entre en
   // mode catalogue pur, plus efficace.
   const showVitrine = category === "all" && !debouncedSearch;
 
+  // Padding bas dynamique : BottomNav (~56+safe) + StickyCartCTA (~64+8)
+  // empilés = ~150px sur iPhone avec home indicator + panier rempli.
+  // pb-20 (80px) masquait les derniers produits / la fin du footer.
+  const cartCount = useCartCount();
+  const bottomPad = cartCount > 0 ? "pb-[150px] md:pb-0" : "pb-20 md:pb-0";
+
   return (
-    <div className="min-h-dvh bg-[#FAF7EE] pb-20 md:pb-0">
+    <div className={`min-h-dvh bg-[#FAF7EE] ${bottomPad}`}>
       <Header searchValue={searchInput} onSearchChange={setSearchInput} />
 
       {showVitrine && <EditorialIntro />}

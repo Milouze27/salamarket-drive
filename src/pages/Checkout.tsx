@@ -201,7 +201,7 @@ export default function Checkout() {
     <div className="min-h-dvh bg-background pb-24">
       {/* Header sticky — respecte safe-area-inset-top (Dynamic Island) */}
       <header
-        className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background px-4 pb-3"
+        className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background px-6 pb-3"
         style={{
           paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)",
         }}
@@ -216,7 +216,7 @@ export default function Checkout() {
         <h1 className="text-lg font-semibold">Paiement</h1>
       </header>
 
-      <div className="space-y-5 p-4 max-w-2xl mx-auto">
+      <div className="space-y-5 px-6 py-5 max-w-2xl mx-auto">
         {/* Récapitulatif */}
         <section className="rounded-2xl bg-card p-5 shadow-sm border border-border/50">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
