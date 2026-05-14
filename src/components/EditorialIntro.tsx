@@ -54,22 +54,23 @@ export const EditorialIntro = () => (
             Salamarket · 8 av. Larrieu&#8209;Thibaud
           </p>
 
-          {/* Titre display — Plus Jakarta Sans 800, tracking serré pour
-              donner du caractère sans changer de famille. L'accent gold
-              porte la signature éditoriale. */}
+          {/* Titre display — Plus Jakarta Sans 800, tracking serré.
+              Registre : supermarché pro, valeur métier (halal + click &
+              collect), pas commerce de quartier. L'accent gold porte
+              l'offre de service. */}
           <h2
             id="editorial-intro-title"
             className="text-[34px] leading-[1.05] md:text-[52px] md:leading-[1.02] text-[#0E3B2E] font-extrabold tracking-[-0.03em]"
           >
             Votre supermarché halal,{" "}
-            <span className="text-[#C9A227]">comme à la maison.</span>
+            <span className="text-[#C9A227]">en click &amp; collect.</span>
           </h2>
 
           <p className="mt-5 md:mt-6 text-[15px] md:text-base leading-relaxed text-[#0F1A14]/75 max-w-[44ch]">
-            Otmane, Ahmed et l'équipe préparent vos commandes chaque matin
-            avenue Larrieu&#8209;Thibaud. Vous choisissez vos produits ce
-            soir, vous récupérez demain entre vos rendez&#8209;vous. Aucune
-            file, aucune surprise.
+            Sélection halal certifiée, préparée chaque matin avenue
+            Larrieu&#8209;Thibaud. Vous commandez ce soir, vous récupérez
+            demain sur le créneau de votre choix. Aucune file, aucune
+            surprise.
           </p>
 
           {/* CTA pair — primary plein sapin, secondary lien souligné */}
