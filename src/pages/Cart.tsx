@@ -152,35 +152,39 @@ const Cart = () => {
               ))}
             </ul>
 
-            {/* Récap premium avec accent doré + icône retrait */}
-            <div className="mt-3 relative overflow-hidden rounded-2xl bg-white border border-[#C9A227]/30 p-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
-              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#C9A227]/10" />
-              <div className="relative flex flex-col gap-2.5">
-                <p className="text-xs uppercase tracking-wider text-muted font-semibold">
-                  Récapitulatif
-                </p>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted">Sous-total</span>
-                  <span className="text-text font-medium tabular-nums">
+            {/* Récap éditorial — lignes typographiques sur fond crème, plus
+                de gold ring qui crie. Le total prend la lumière en serif. */}
+            <section className="mt-5 px-1 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
+              <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[#C9A227] mb-4">
+                Récapitulatif
+              </p>
+              <div className="space-y-2.5 text-[14px]">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[#6B7280]">Sous-total</span>
+                  <span className="text-[#0F1A14] tabular-nums">
                     {formatPrice(subtotal)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted inline-flex items-center gap-1.5">
-                    <Store size={14} className="text-[#0E3B2E]" aria-hidden />
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[#6B7280] inline-flex items-center gap-1.5">
+                    <Store size={13} className="text-[#C9A227]" aria-hidden />
                     Retrait en magasin
                   </span>
                   <span className="text-[#0E3B2E] font-semibold">Gratuit</span>
                 </div>
-                <div className="border-t border-border my-1" />
-                <div className="flex items-baseline justify-between">
-                  <span className="text-base font-bold">Total</span>
-                  <span className="text-2xl font-bold text-[#0E3B2E] tabular-nums">
-                    {formatPrice(subtotal)}
-                  </span>
-                </div>
               </div>
-            </div>
+              <div className="mt-4 pt-4 border-t border-[#0E3B2E]/15 flex items-baseline justify-between">
+                <span className="text-[13px] uppercase tracking-[0.18em] font-bold text-[#0E3B2E]">
+                  Total
+                </span>
+                <span
+                  className="font-serif text-[28px] font-semibold text-[#0E3B2E] tabular-nums tracking-tight"
+                  style={{ fontVariationSettings: '"opsz" 72' }}
+                >
+                  {formatPrice(subtotal)}
+                </span>
+              </div>
+            </section>
           </>
         )}
       </main>

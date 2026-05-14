@@ -20,6 +20,10 @@ export default {
         // qui pointaient sur ce nom — il pointe désormais sur la même police.
         sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
         manrope: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+        // Display éditorial pour les titres hero / sections signature.
+        // Fraunces opsz variable : à grande taille la lettre s'épanouit
+        // (axe SOFT), à petite taille elle reste lisible.
+        serif: ['"Fraunces"', 'Georgia', 'serif'],
       },
       colors: {
         border: BRAND.colors.border,
