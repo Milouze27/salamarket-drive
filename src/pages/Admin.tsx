@@ -38,7 +38,7 @@ import {
 } from "@/services/admin";
 import { cn } from "@/lib/utils";
 
-const PRIMARY = "#0F4C3A";
+const PRIMARY = "#0E3B2E";
 
 const eurFormatter = new Intl.NumberFormat("fr-FR", {
   style: "currency",
@@ -200,30 +200,30 @@ const Admin = () => {
 
   return (
     <div
-      className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0"
+      className="min-h-dvh bg-[#FAF7EE] pb-20 md:pb-0"
       onClickCapture={() => {
         if (!soundEnabled) enableSound();
       }}
     >
       {/* Hero header gradient sapin — pattern app pro cohérent avec /employe */}
       <header
-        className="relative bg-gradient-to-b from-[#0F4C3A] via-[#0A3A2C] to-[#073025] text-white overflow-hidden"
+        className="relative bg-gradient-to-b from-[#0E3B2E] via-[#082A20] to-[#082A20] text-white overflow-hidden"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
         {/* Halos dorés décoratifs */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#D4A93C]/15 blur-3xl"
+          className="pointer-events-none absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#C9A227]/15 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1/2 -left-12 w-40 h-40 rounded-full bg-[#D4A93C]/10 blur-2xl"
+          className="pointer-events-none absolute top-1/2 -left-12 w-40 h-40 rounded-full bg-[#C9A227]/10 blur-2xl"
         />
 
         <div className="relative max-w-7xl mx-auto px-4 pb-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4A93C] font-bold mb-1.5">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9A227] font-bold mb-1.5">
                 Espace admin
               </p>
               <h1 className="text-3xl font-bold tracking-tight">
@@ -245,7 +245,7 @@ const Admin = () => {
                 type="button"
                 aria-label="Mon compte"
                 onClick={() => navigate("/compte")}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4A93C] to-[#C4992C] text-[#0F4C3A] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white/30 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A227] to-[#C4992C] text-[#0E3B2E] text-sm font-bold flex items-center justify-center shadow-md ring-2 ring-white/30 active:scale-95 transition-all"
               >
                 {initials}
               </button>
@@ -278,7 +278,7 @@ const Admin = () => {
               <TabsTrigger
                 key={p}
                 value={p}
-                className="data-[state=active]:bg-[#0F4C3A] data-[state=active]:text-white px-4 py-2 text-sm font-medium rounded-full transition-all"
+                className="data-[state=active]:bg-[#0E3B2E] data-[state=active]:text-white px-4 py-2 text-sm font-medium rounded-full transition-all"
               >
                 {PERIOD_LABEL[p]}
               </TabsTrigger>
@@ -307,11 +307,11 @@ const Admin = () => {
         <section className="relative bg-white rounded-2xl shadow-sm border border-border p-6 mb-4 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#D4A93C]/8"
+            className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-[#C9A227]/8"
           />
           <div className="relative flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#0F4C3A] font-bold">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#0E3B2E] font-bold">
                 Chiffre d'affaires
               </p>
               <p className="text-xs text-muted mt-1">{PERIOD_VS[period]}</p>
@@ -319,7 +319,7 @@ const Admin = () => {
                 {isLoading || !stats ? (
                   <Skeleton className="h-12 w-48" />
                 ) : (
-                  <h2 className="text-4xl md:text-5xl font-bold text-[#0F4C3A] tabular-nums tracking-tight">
+                  <h2 className="text-4xl md:text-5xl font-bold text-[#0E3B2E] tabular-nums tracking-tight">
                     {formatEUR(stats.ca.current)}
                   </h2>
                 )}
@@ -448,8 +448,8 @@ interface KpiCardProps {
 }
 
 const KpiCard = ({ title, Icon, value, change, isLoading }: KpiCardProps) => (
-  <div className="relative bg-white rounded-2xl shadow-sm border border-border p-5 hover:shadow-md hover:border-[#0F4C3A]/20 transition-all">
-    <div className="absolute top-4 right-4 w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white flex items-center justify-center shadow-md shadow-[#0F4C3A]/20">
+  <div className="relative bg-white rounded-2xl shadow-sm border border-border p-5 hover:shadow-md hover:border-[#0E3B2E]/20 transition-all">
+    <div className="absolute top-4 right-4 w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0E3B2E] to-[#082A20] text-white flex items-center justify-center shadow-md shadow-[#0E3B2E]/20">
       <Icon size={20} strokeWidth={2} aria-hidden />
     </div>
     <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-muted pr-14">
@@ -523,7 +523,7 @@ const TopProductsCard = ({
       <div className="mt-4">
         <Link
           to="/admin"
-          className="text-sm font-medium text-[#0F4C3A] hover:underline"
+          className="text-sm font-medium text-[#0E3B2E] hover:underline"
         >
           Voir tous
         </Link>
@@ -590,7 +590,7 @@ const RecentOrdersCard = ({
     <div className="mt-4">
       <Link
         to="/admin"
-        className="text-sm font-medium text-[#0F4C3A] hover:underline"
+        className="text-sm font-medium text-[#0E3B2E] hover:underline"
       >
         Voir toutes
       </Link>

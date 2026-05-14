@@ -106,7 +106,7 @@ export const HeroSlider = () => {
                 role="img"
                 aria-label={slide.imageAlt}
               >
-                <div className="relative h-72 md:h-80 w-full overflow-hidden bg-[#0F4C3A]">
+                <div className="relative h-72 md:h-80 w-full overflow-hidden bg-[#0E3B2E]">
                   {/* Image en background-image plutôt qu'<img> : permet
                       de rejouer le ken-burns via une `key` sur ce <div>
                       sans déclencher un remount qui causerait un flash
@@ -125,14 +125,14 @@ export const HeroSlider = () => {
                   {/* Voile sapin pour lisibilité du texte sur image. Léger
                       gradient radial pour donner un effet "spotlight" sur
                       la zone titre. */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C3A]/90 via-[#0F4C3A]/65 to-[#0F4C3A]/30" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#0E3B2E]/90 via-[#0E3B2E]/65 to-[#0E3B2E]/30" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(212,169,60,0.12)_0%,transparent_60%)]" />
 
                   <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto">
                     <span
                       key={`kicker-${index}-${current}`}
                       className={cn(
-                        "text-[#D4A93C] text-sm font-semibold uppercase tracking-[0.18em] mb-2",
+                        "text-[#C9A227] text-sm font-semibold uppercase tracking-[0.18em] mb-2",
                         isActive &&
                           "animate-in fade-in slide-in-from-left-3 duration-500 [animation-fill-mode:backwards]",
                       )}
@@ -163,7 +163,7 @@ export const HeroSlider = () => {
                       key={`cta-${index}-${current}`}
                       to={slide.ctaLink}
                       className={cn(
-                        "group/cta relative inline-flex items-center gap-2 overflow-hidden bg-[#D4A93C] text-[#0F4C3A] font-bold px-6 py-3 rounded-full shadow-lg shadow-[#D4A93C]/30 hover:bg-[#E0B940] hover:shadow-xl hover:shadow-[#D4A93C]/40 active:scale-[0.98] transition-all w-fit",
+                        "group/cta relative inline-flex items-center gap-2 overflow-hidden bg-[#C9A227] text-[#0E3B2E] font-bold px-6 py-3 rounded-full shadow-lg shadow-[#C9A227]/30 hover:bg-[#DDB31C] hover:shadow-xl hover:shadow-[#C9A227]/40 active:scale-[0.98] transition-all w-fit",
                         isActive &&
                           "animate-in fade-in zoom-in-95 duration-500 delay-300 [animation-fill-mode:backwards]",
                       )}
@@ -197,7 +197,7 @@ export const HeroSlider = () => {
             aria-label={`Aller à la slide ${index + 1}`}
             className={cn(
               "h-2 rounded-full transition-all duration-300",
-              index === current ? "w-8 bg-[#D4A93C]" : "w-2 bg-white/40",
+              index === current ? "w-8 bg-[#C9A227]" : "w-2 bg-white/40",
             )}
           />
         ))}

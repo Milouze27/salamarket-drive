@@ -213,7 +213,7 @@ const Slots = () => {
             </p>
             <button
               onClick={handleContinue}
-              className="group w-full h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+              className="group w-full h-14 rounded-2xl bg-gradient-to-r from-[#0E3B2E] to-[#082A20] text-white font-bold text-base shadow-lg shadow-[#0E3B2E]/30 hover:shadow-xl hover:shadow-[#0E3B2E]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
             >
               <span>Continuer</span>
               <ArrowRight

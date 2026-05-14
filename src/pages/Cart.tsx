@@ -30,7 +30,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#FAFAF7] text-text flex flex-col">
+    <div className="min-h-dvh bg-[#FAF7EE] text-text flex flex-col">
       <AppHeader showBack title="Mon panier" />
 
       <main
@@ -39,10 +39,10 @@ const Cart = () => {
       >
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center py-20 px-6 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-[#0F4C3A]/10 to-[#D4A93C]/10 flex items-center justify-center">
+            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-[#0E3B2E]/10 to-[#C9A227]/10 flex items-center justify-center">
               <div className="absolute inset-3 rounded-full bg-white shadow-sm" />
               <ShoppingBag
-                className="relative text-[#0F4C3A]"
+                className="relative text-[#0E3B2E]"
                 size={44}
                 strokeWidth={1.5}
                 aria-hidden
@@ -59,7 +59,7 @@ const Cart = () => {
             </div>
             <button
               onClick={() => navigate("/")}
-              className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0F4C3A] text-white text-sm font-semibold shadow-md shadow-[#0F4C3A]/20 hover:bg-[#0A3A2C] active:scale-[0.98] transition-all"
+              className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0E3B2E] text-white text-sm font-semibold shadow-md shadow-[#0E3B2E]/20 hover:bg-[#082A20] active:scale-[0.98] transition-all"
             >
               Découvrir le catalogue
             </button>
@@ -106,7 +106,7 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
                     <Link
                       to={`/produit/${item.product.id}`}
-                      className="block font-semibold text-sm text-text line-clamp-2 hover:text-[#0F4C3A] transition-colors"
+                      className="block font-semibold text-sm text-text line-clamp-2 hover:text-[#0E3B2E] transition-colors"
                     >
                       {item.product.name}
                     </Link>
@@ -114,11 +114,11 @@ const Cart = () => {
                       {unitLabel(item.product.unit)}
                     </p>
                     <div className="mt-2 flex items-center justify-between gap-2">
-                      <p className="text-base font-bold text-[#0F4C3A] tabular-nums">
+                      <p className="text-base font-bold text-[#0E3B2E] tabular-nums">
                         {formatPrice(item.product.priceCents * item.quantity)}
                       </p>
                       {/* Stepper compact intégré sous le prix */}
-                      <div className="flex items-center gap-1 bg-[#FAFAF7] rounded-full p-0.5 border border-border">
+                      <div className="flex items-center gap-1 bg-[#FAF7EE] rounded-full p-0.5 border border-border">
                         <button
                           onClick={() => decrement(item.product.id)}
                           aria-label={
@@ -141,7 +141,7 @@ const Cart = () => {
                           onClick={() => increment(item.product.id)}
                           disabled={item.quantity >= 99}
                           aria-label={`Augmenter ${item.product.name}`}
-                          className="w-7 h-7 rounded-full bg-[#0F4C3A] text-white flex items-center justify-center active:scale-90 transition-transform disabled:opacity-40 shadow-sm"
+                          className="w-7 h-7 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center active:scale-90 transition-transform disabled:opacity-40 shadow-sm"
                         >
                           <Plus size={12} strokeWidth={2.5} />
                         </button>
@@ -153,8 +153,8 @@ const Cart = () => {
             </ul>
 
             {/* Récap premium avec accent doré + icône retrait */}
-            <div className="mt-3 relative overflow-hidden rounded-2xl bg-white border border-[#D4A93C]/30 p-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
-              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#D4A93C]/10" />
+            <div className="mt-3 relative overflow-hidden rounded-2xl bg-white border border-[#C9A227]/30 p-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 [animation-fill-mode:backwards]">
+              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#C9A227]/10" />
               <div className="relative flex flex-col gap-2.5">
                 <p className="text-xs uppercase tracking-wider text-muted font-semibold">
                   Récapitulatif
@@ -167,15 +167,15 @@ const Cart = () => {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted inline-flex items-center gap-1.5">
-                    <Store size={14} className="text-[#0F4C3A]" aria-hidden />
+                    <Store size={14} className="text-[#0E3B2E]" aria-hidden />
                     Retrait en magasin
                   </span>
-                  <span className="text-[#0F4C3A] font-semibold">Gratuit</span>
+                  <span className="text-[#0E3B2E] font-semibold">Gratuit</span>
                 </div>
                 <div className="border-t border-border my-1" />
                 <div className="flex items-baseline justify-between">
                   <span className="text-base font-bold">Total</span>
-                  <span className="text-2xl font-bold text-[#0F4C3A] tabular-nums">
+                  <span className="text-2xl font-bold text-[#0E3B2E] tabular-nums">
                     {formatPrice(subtotal)}
                   </span>
                 </div>
@@ -195,7 +195,7 @@ const Cart = () => {
           >
             <button
               onClick={handleCheckout}
-              className="group w-full h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+              className="group w-full h-14 rounded-2xl bg-gradient-to-r from-[#0E3B2E] to-[#082A20] text-white font-bold text-base shadow-lg shadow-[#0E3B2E]/30 hover:shadow-xl hover:shadow-[#0E3B2E]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
             >
               <span>Choisir un créneau</span>
               <ArrowRight

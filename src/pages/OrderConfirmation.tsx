@@ -28,17 +28,17 @@ const SuccessBadge = () => (
       <span
         key={delay}
         aria-hidden
-        className="absolute inset-0 rounded-full bg-[#D4A93C]/40 animate-halo-ping"
+        className="absolute inset-0 rounded-full bg-[#C9A227]/40 animate-halo-ping"
         style={{ animationDelay: `${delay}s` }}
       />
     ))}
     {/* Cercle principal sapin avec gradient doré subtil */}
-    <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] shadow-xl shadow-[#0F4C3A]/30 animate-success-pop">
+    <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-[#0E3B2E] to-[#082A20] shadow-xl shadow-[#0E3B2E]/30 animate-success-pop">
       <svg
         viewBox="0 0 52 52"
         className="w-12 h-12"
         fill="none"
-        stroke="#D4A93C"
+        stroke="#C9A227"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -288,13 +288,13 @@ const OrderConfirmation = () => {
         </div>
 
         {/* Numéro de commande — card premium avec accent doré */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#D4A93C]/30 bg-gradient-to-br from-[#FAFAF7] to-white p-5 shadow-sm animate-in fade-in slide-in-from-bottom-3 duration-500 delay-500 [animation-fill-mode:backwards]">
-          <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-[#D4A93C]/10" />
+        <div className="relative overflow-hidden rounded-2xl border border-[#C9A227]/30 bg-gradient-to-br from-[#FAF7EE] to-white p-5 shadow-sm animate-in fade-in slide-in-from-bottom-3 duration-500 delay-500 [animation-fill-mode:backwards]">
+          <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-[#C9A227]/10" />
           <div className="relative">
             <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
               Numéro de commande
             </p>
-            <p className="text-2xl font-mono font-bold uppercase mt-1.5 text-[#0F4C3A] select-allow">
+            <p className="text-2xl font-mono font-bold uppercase mt-1.5 text-[#0E3B2E] select-allow">
               {orderShortId}
             </p>
           </div>
@@ -342,7 +342,7 @@ const OrderConfirmation = () => {
           <Separator className="my-3" />
           <div className="flex justify-between items-baseline">
             <span className="font-semibold">Total</span>
-            <span className="text-xl font-bold text-[#0F4C3A] tabular-nums">
+            <span className="text-xl font-bold text-[#0E3B2E] tabular-nums">
               {formatEUR(order.total_cents)}
             </span>
           </div>

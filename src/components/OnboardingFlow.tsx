@@ -94,7 +94,7 @@ export const OnboardingFlow = () => {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[60] min-h-dvh overflow-hidden bg-gradient-to-br from-[#0F4C3A] via-[#0A3A2C] to-[#073025]",
+        "fixed inset-0 z-[60] min-h-dvh overflow-hidden bg-gradient-to-br from-[#0E3B2E] via-[#082A20] to-[#082A20]",
         "transition-opacity duration-300 ease-out",
         isExiting && "opacity-0",
       )}
@@ -133,7 +133,7 @@ export const OnboardingFlow = () => {
                   <div className="lg:flex lg:w-1/2 lg:justify-center lg:flex-shrink-0">
                     <div
                       className={cn(
-                        "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#D4A93C]/20",
+                        "relative flex h-60 w-60 items-center justify-center rounded-full bg-[#C9A227]/20",
                         "lg:h-80 lg:w-80",
                         // Halo radial circulaire (évite le bug iOS Safari du
                         // filter:blur qui produit un halo carré).
@@ -144,12 +144,12 @@ export const OnboardingFlow = () => {
                       )}
                     >
                       <Icon
-                        className="relative z-10 text-[#D4A93C] lg:hidden"
+                        className="relative z-10 text-[#C9A227] lg:hidden"
                         size={120}
                         strokeWidth={1.5}
                       />
                       <Icon
-                        className="relative z-10 hidden text-[#D4A93C] lg:block"
+                        className="relative z-10 hidden text-[#C9A227] lg:block"
                         size={160}
                         strokeWidth={1.5}
                       />
@@ -169,7 +169,7 @@ export const OnboardingFlow = () => {
                     </h2>
                     <div
                       className={cn(
-                        "my-5 mx-auto h-0.5 w-16 bg-[#D4A93C] lg:mx-0",
+                        "my-5 mx-auto h-0.5 w-16 bg-[#C9A227] lg:mx-0",
                         shouldAnimate &&
                           "animate-in fade-in duration-500 delay-200 [animation-fill-mode:backwards]",
                       )}
@@ -195,7 +195,7 @@ export const OnboardingFlow = () => {
                           className={cn(
                             "h-2 rounded-full transition-all duration-300",
                             dotIndex === current
-                              ? "w-8 bg-[#D4A93C]"
+                              ? "w-8 bg-[#C9A227]"
                               : "w-2 bg-white/30",
                           )}
                         />
@@ -209,7 +209,7 @@ export const OnboardingFlow = () => {
                           ? handleComplete
                           : () => api?.scrollNext()
                       }
-                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-2xl lg:bg-[#D4A93C] lg:font-bold lg:text-[#0F4C3A] lg:shadow-lg lg:shadow-[#D4A93C]/25 lg:transition-all lg:hover:bg-[#E0B940] lg:active:scale-[0.98]"
+                      className="hidden lg:inline-flex lg:mt-8 lg:items-center lg:justify-center lg:h-14 lg:px-10 lg:rounded-2xl lg:bg-[#C9A227] lg:font-bold lg:text-[#0E3B2E] lg:shadow-lg lg:shadow-[#C9A227]/25 lg:transition-all lg:hover:bg-[#DDB31C] lg:active:scale-[0.98]"
                     >
                       {isLastIndex ? "Découvrir le catalogue" : "Suivant"}
                     </button>
@@ -228,7 +228,7 @@ export const OnboardingFlow = () => {
             key={index}
             className={cn(
               "h-2 rounded-full transition-all duration-300",
-              index === current ? "w-8 bg-[#D4A93C]" : "w-2 bg-white/30",
+              index === current ? "w-8 bg-[#C9A227]" : "w-2 bg-white/30",
             )}
           />
         ))}
@@ -239,7 +239,7 @@ export const OnboardingFlow = () => {
         <button
           type="button"
           onClick={handleComplete}
-          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-2xl bg-[#D4A93C] font-bold text-[#0F4C3A] shadow-lg shadow-[#D4A93C]/25 transition-all hover:bg-[#E0B940] active:scale-[0.98] lg:hidden"
+          className="fixed bottom-8 left-6 right-6 z-20 h-14 w-auto rounded-2xl bg-[#C9A227] font-bold text-[#0E3B2E] shadow-lg shadow-[#C9A227]/25 transition-all hover:bg-[#DDB31C] active:scale-[0.98] lg:hidden"
           style={{ bottom: "calc(env(safe-area-inset-bottom) + 2rem)" }}
         >
           Découvrir le catalogue

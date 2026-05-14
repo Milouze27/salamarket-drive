@@ -61,7 +61,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#FAFAF7] pb-20 md:pb-0">
+    <div className="min-h-dvh bg-[#FAF7EE] pb-20 md:pb-0">
       <Header searchValue={searchInput} onSearchChange={setSearchInput} />
       <HeroSlider />
       <CategoryTabs active={category} onChange={setCategory} />
@@ -80,7 +80,7 @@ const Index = () => {
             </p>
             <button
               onClick={() => refetch()}
-              className="mt-2 px-4 py-2 rounded-full bg-[#0F4C3A] text-white text-sm font-medium hover:bg-[#0A3A2C] transition-colors"
+              className="mt-2 px-4 py-2 rounded-full bg-[#0E3B2E] text-white text-sm font-medium hover:bg-[#082A20] transition-colors"
             >
               Réessayer
             </button>
@@ -117,7 +117,7 @@ const Index = () => {
             </p>
             <button
               onClick={resetFilters}
-              className="mt-2 px-4 py-2 rounded-full bg-[#0F4C3A] text-white text-sm font-medium hover:bg-[#0A3A2C] transition-colors"
+              className="mt-2 px-4 py-2 rounded-full bg-[#0E3B2E] text-white text-sm font-medium hover:bg-[#082A20] transition-colors"
             >
               Voir tous les produits
             </button>
@@ -128,12 +128,12 @@ const Index = () => {
       <footer className="mt-12 border-t border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 py-10 grid gap-8 sm:grid-cols-3 text-sm text-gray-600">
           <div>
-            <p className="font-semibold text-[#0F4C3A] mb-2">{BRAND.store.name}</p>
+            <p className="font-semibold text-[#0E3B2E] mb-2">{BRAND.store.name}</p>
             <p>{BRAND.store.address}</p>
             <p>{BRAND.store.postalCode} {BRAND.store.city}</p>
           </div>
           <div>
-            <p className="font-semibold text-[#0F4C3A] mb-2">Horaires</p>
+            <p className="font-semibold text-[#0E3B2E] mb-2">Horaires</p>
             <ul className="space-y-1">
               {BRAND.store.hours.map((h) => (
                 <li key={h.days} className="flex justify-between sm:flex-col sm:gap-0">
@@ -144,7 +144,7 @@ const Index = () => {
             </ul>
           </div>
           <div>
-            <p className="font-semibold text-[#0F4C3A] mb-2">Service</p>
+            <p className="font-semibold text-[#0E3B2E] mb-2">Service</p>
             <p>Click & collect uniquement</p>
             <p className="text-xs text-gray-500 mt-2">
               Commandez en ligne, retirez en magasin sur le créneau de votre choix.

@@ -1,7 +1,7 @@
 // Shimmer custom (gradient horizontal qui défile) plutôt que le pulse
 // Tailwind par défaut. Plus premium, plus proche d'un Stripe / Linear.
 const SHIMMER_BG =
-  "bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer";
+  "bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer";
 
 export const ProductCardSkeleton = () => (
   <div className="flex flex-col bg-white rounded-2xl border border-border overflow-hidden">

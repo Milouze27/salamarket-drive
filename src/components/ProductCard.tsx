@@ -36,7 +36,7 @@ export const ProductCard = ({ product }: Props) => {
       onKeyDown={(e) => {
         if (e.key === "Enter") handleOpen();
       }}
-      className="group flex flex-col bg-white rounded-2xl border border-border overflow-hidden cursor-pointer text-left shadow-sm hover:shadow-lg hover:shadow-[#0F4C3A]/8 hover:border-[#0F4C3A]/30 hover:-translate-y-0.5 transition-all duration-300"
+      className="group flex flex-col bg-white rounded-2xl border border-border overflow-hidden cursor-pointer text-left shadow-sm hover:shadow-lg hover:shadow-[#0E3B2E]/8 hover:border-[#0E3B2E]/30 hover:-translate-y-0.5 transition-all duration-300"
     >
       <div className="relative aspect-square w-full bg-bg overflow-hidden">
         <img
@@ -51,10 +51,10 @@ export const ProductCard = ({ product }: Props) => {
         {/* Badge halal — viandes/charcuterie uniquement */}
         {showHalalBadge && (
           <span
-            className="absolute top-2 right-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/95 backdrop-blur text-[#0F4C3A] text-[9px] font-bold shadow-sm"
+            className="absolute top-2 right-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/95 backdrop-blur text-[#0E3B2E] text-[9px] font-bold shadow-sm"
             aria-label="Produit halal certifié"
           >
-            <BadgeCheck size={10} className="text-[#D4A93C]" aria-hidden />
+            <BadgeCheck size={10} className="text-[#C9A227]" aria-hidden />
             Halal
           </span>
         )}
@@ -65,13 +65,13 @@ export const ProductCard = ({ product }: Props) => {
         </h3>
         <p className="text-xs text-muted">{unitLabel(product.unit)}</p>
         <div className="flex items-end justify-between mt-2">
-          <span className="font-bold text-[#0F4C3A] text-base tabular-nums">
+          <span className="font-bold text-[#0E3B2E] text-base tabular-nums">
             {formatPrice(product.priceCents)}
           </span>
           <button
             onClick={handleAdd}
             aria-label={`Ajouter ${product.name} au panier`}
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white flex items-center justify-center shadow-md shadow-[#0F4C3A]/25 hover:shadow-lg hover:shadow-[#0F4C3A]/35 hover:scale-105 active:scale-90 transition-all"
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0E3B2E] to-[#082A20] text-white flex items-center justify-center shadow-md shadow-[#0E3B2E]/25 hover:shadow-lg hover:shadow-[#0E3B2E]/35 hover:scale-105 active:scale-90 transition-all"
           >
             <Plus size={20} strokeWidth={2.5} aria-hidden />
           </button>

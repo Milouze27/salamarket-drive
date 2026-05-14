@@ -37,16 +37,16 @@ export const StaffBanner = () => {
   return (
     <div
       aria-label="Espace pro"
-      className="mt-4 rounded-2xl bg-gradient-to-br from-[#0F4C3A] to-[#0A3A2C] text-white p-4 shadow-lg shadow-[#0F4C3A]/20 overflow-hidden relative animate-in fade-in slide-in-from-bottom-1 duration-300"
+      className="mt-4 rounded-2xl bg-gradient-to-br from-[#0E3B2E] to-[#082A20] text-white p-4 shadow-lg shadow-[#0E3B2E]/20 overflow-hidden relative animate-in fade-in slide-in-from-bottom-1 duration-300"
     >
       {/* Halo doré décoratif */}
       <div
         aria-hidden
-        className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#D4A93C]/10"
+        className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#C9A227]/10"
       />
       <div className="relative flex items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#D4A93C]">
+          <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#C9A227]">
             Espace pro
           </p>
           <p className="text-base font-bold mt-0.5">
@@ -57,7 +57,7 @@ export const StaffBanner = () => {
           <button
             type="button"
             onClick={() => navigate("/employe")}
-            className="group inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-sm font-bold shadow-md active:scale-95 transition-all"
+            className="group inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full bg-[#C9A227] text-[#0E3B2E] text-sm font-bold shadow-md active:scale-95 transition-all"
             aria-label="Aller à la préparation des commandes"
           >
             <ClipboardList size={16} strokeWidth={2.5} aria-hidden />

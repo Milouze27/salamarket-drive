@@ -74,14 +74,14 @@ const ProductDetail = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-dvh bg-[#FAFAF7]">
+      <div className="min-h-dvh bg-[#FAF7EE]">
         <div
-          className="aspect-square w-full max-w-2xl mx-auto bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer"
+          className="aspect-square w-full max-w-2xl mx-auto bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer"
         />
         <div className="px-4 py-5 space-y-3 max-w-2xl mx-auto">
-          <div className="h-8 w-2/3 rounded bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
-          <div className="h-5 w-1/3 rounded bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
-          <div className="h-20 w-full rounded bg-[linear-gradient(90deg,#E5E5E0_0%,#F2F2EE_50%,#E5E5E0_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
+          <div className="h-8 w-2/3 rounded bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
+          <div className="h-5 w-1/3 rounded bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
+          <div className="h-20 w-full rounded bg-[linear-gradient(90deg,#E8E4D8_0%,#F2F2EE_50%,#E8E4D8_100%)] bg-[length:200%_100%] animate-skeleton-shimmer" />
         </div>
       </div>
     );
@@ -90,7 +90,7 @@ const ProductDetail = () => {
   // Error / not found
   if (isError || !product) {
     return (
-      <div className="min-h-dvh bg-[#FAFAF7] flex flex-col items-center justify-center px-6 gap-4 text-center">
+      <div className="min-h-dvh bg-[#FAF7EE] flex flex-col items-center justify-center px-6 gap-4 text-center">
         <AlertCircle size={48} className="text-destructive" aria-hidden />
         <h1 className="text-xl font-bold text-text">
           {isError ? "Erreur de chargement" : "Produit introuvable"}
@@ -102,7 +102,7 @@ const ProductDetail = () => {
         </p>
         <button
           onClick={() => navigate("/")}
-          className="mt-2 px-6 py-3 rounded-full bg-[#0F4C3A] text-white text-sm font-semibold active:scale-[0.98] transition-all"
+          className="mt-2 px-6 py-3 rounded-full bg-[#0E3B2E] text-white text-sm font-semibold active:scale-[0.98] transition-all"
         >
           Retour au catalogue
         </button>
@@ -111,7 +111,7 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="min-h-dvh bg-[#FAFAF7]">
+    <div className="min-h-dvh bg-[#FAF7EE]">
       {/* Header overlay transparent au-dessus de l'image */}
       <header
         className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-3 py-3 pointer-events-none"
@@ -123,13 +123,13 @@ const ProductDetail = () => {
             else navigate("/");
           }}
           aria-label="Retour"
-          className="pointer-events-auto w-11 h-11 rounded-full bg-white/95 backdrop-blur-md text-[#0F4C3A] flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+          className="pointer-events-auto w-11 h-11 rounded-full bg-white/95 backdrop-blur-md text-[#0E3B2E] flex items-center justify-center shadow-lg active:scale-90 transition-transform"
         >
           <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
         </button>
         {showHalalBadge && (
-          <div className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/95 backdrop-blur-md text-[#0F4C3A] text-xs font-bold shadow-lg">
-            <BadgeCheck size={14} className="text-[#D4A93C]" aria-hidden />
+          <div className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/95 backdrop-blur-md text-[#0E3B2E] text-xs font-bold shadow-lg">
+            <BadgeCheck size={14} className="text-[#C9A227]" aria-hidden />
             Halal certifié
           </div>
         )}
@@ -150,7 +150,7 @@ const ProductDetail = () => {
         {/* Gradient subtle bottom pour transition vers contenu */}
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#FAFAF7]/80"
+          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#FAF7EE]/80"
         />
       </div>
 
@@ -165,7 +165,7 @@ const ProductDetail = () => {
             <div className="min-w-0 flex-1">
               <Link
                 to={`/?category=${product.category}`}
-                className="text-[10px] uppercase tracking-[0.18em] text-[#D4A93C] font-bold hover:underline"
+                className="text-[10px] uppercase tracking-[0.18em] text-[#C9A227] font-bold hover:underline"
               >
                 {product.category.replace("-", " & ")}
               </Link>
@@ -177,7 +177,7 @@ const ProductDetail = () => {
               </p>
             </div>
             <div className="text-right whitespace-nowrap">
-              <span className="block text-3xl font-bold text-[#0F4C3A] tabular-nums tracking-tight">
+              <span className="block text-3xl font-bold text-[#0E3B2E] tabular-nums tracking-tight">
                 {formatPrice(product.priceCents)}
               </span>
               {product.unit === "kg" && (
@@ -227,9 +227,9 @@ const ProductDetail = () => {
         )}
 
         {/* Bandeau retrait info */}
-        <section className="mt-4 flex items-start gap-3 rounded-3xl border-2 border-[#0F4C3A]/15 bg-gradient-to-br from-[#0F4C3A]/5 to-[#D4A93C]/5 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:300ms] [animation-fill-mode:backwards]">
+        <section className="mt-4 flex items-start gap-3 rounded-3xl border-2 border-[#0E3B2E]/15 bg-gradient-to-br from-[#0E3B2E]/5 to-[#C9A227]/5 p-4 animate-in fade-in slide-in-from-bottom-2 duration-500 [animation-delay:300ms] [animation-fill-mode:backwards]">
           <div className="shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-            <Truck size={18} className="text-[#0F4C3A]" aria-hidden />
+            <Truck size={18} className="text-[#0E3B2E]" aria-hidden />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-text">Retrait en magasin</p>
@@ -267,7 +267,7 @@ const ProductDetail = () => {
         >
           <div className="flex items-center gap-3">
             {/* Stepper qty */}
-            <div className="flex items-center gap-1 bg-[#FAFAF7] rounded-full p-1 border border-border shrink-0">
+            <div className="flex items-center gap-1 bg-[#FAF7EE] rounded-full p-1 border border-border shrink-0">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -288,7 +288,7 @@ const ProductDetail = () => {
                 onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
                 disabled={qty >= MAX_QTY}
                 aria-label="Augmenter la quantité"
-                className="w-9 h-9 rounded-full bg-[#0F4C3A] text-white flex items-center justify-center active:scale-90 transition-transform shadow-sm disabled:opacity-40 disabled:active:scale-100"
+                className="w-9 h-9 rounded-full bg-[#0E3B2E] text-white flex items-center justify-center active:scale-90 transition-transform shadow-sm disabled:opacity-40 disabled:active:scale-100"
               >
                 <Plus size={14} strokeWidth={2.5} aria-hidden />
               </button>
@@ -299,13 +299,13 @@ const ProductDetail = () => {
               onClick={handleAdd}
               disabled={!product.inStock}
               className={cn(
-                "group flex-1 h-14 rounded-2xl bg-gradient-to-r from-[#0F4C3A] to-[#0A3A2C] text-white font-bold text-base shadow-lg shadow-[#0F4C3A]/30 hover:shadow-xl hover:shadow-[#0F4C3A]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none",
+                "group flex-1 h-14 rounded-2xl bg-gradient-to-r from-[#0E3B2E] to-[#082A20] text-white font-bold text-base shadow-lg shadow-[#0E3B2E]/30 hover:shadow-xl hover:shadow-[#0E3B2E]/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none",
                 justAdded && "animate-success-pop",
               )}
             >
               {justAdded ? (
                 <>
-                  <BadgeCheck size={20} className="text-[#D4A93C]" aria-hidden />
+                  <BadgeCheck size={20} className="text-[#C9A227]" aria-hidden />
                   <span>Ajouté !</span>
                 </>
               ) : (
@@ -332,16 +332,16 @@ const ProductDetail = () => {
           {cartQty > 0 && !justAdded && (
             <Link
               to="/panier"
-              className="mt-3 h-12 w-full bg-white border-2 border-[#0F4C3A]/15 rounded-2xl flex items-center justify-center gap-2 text-[#0F4C3A] font-bold text-[14px] shadow-sm active:scale-[0.99] transition-transform"
+              className="mt-3 h-12 w-full bg-white border-2 border-[#0E3B2E]/15 rounded-2xl flex items-center justify-center gap-2 text-[#0E3B2E] font-bold text-[14px] shadow-sm active:scale-[0.99] transition-transform"
             >
-              <span className="inline-flex w-7 h-7 rounded-full bg-[#0F4C3A] text-white items-center justify-center">
+              <span className="inline-flex w-7 h-7 rounded-full bg-[#0E3B2E] text-white items-center justify-center">
                 <ShoppingCart size={14} strokeWidth={2.4} />
               </span>
               Voir le panier
-              <span className="inline-flex min-w-[24px] h-6 rounded-full bg-[#D4A93C]/20 text-[#0F4C3A] items-center justify-center px-2 tabular-nums text-[12px] font-extrabold">
+              <span className="inline-flex min-w-[24px] h-6 rounded-full bg-[#C9A227]/20 text-[#0E3B2E] items-center justify-center px-2 tabular-nums text-[12px] font-extrabold">
                 {cartQty}
               </span>
-              <ArrowRight size={14} className="text-[#0F4C3A]/60" />
+              <ArrowRight size={14} className="text-[#0E3B2E]/60" />
             </Link>
           )}
         </div>
@@ -363,7 +363,7 @@ const FeatPill = ({
   const tones = {
     success: "bg-green-50 text-green-700",
     error: "bg-red-50 text-red-700",
-    brand: "bg-[#0F4C3A]/8 text-[#0F4C3A]",
+    brand: "bg-[#0E3B2E]/8 text-[#0E3B2E]",
   };
   return (
     <span

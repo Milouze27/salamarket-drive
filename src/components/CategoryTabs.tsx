@@ -11,7 +11,7 @@ const ITEMS = [{ slug: "all", name: "Tout" }, ...BRAND.categories.map(({ slug, n
 export const CategoryTabs = ({ active, onChange }: Props) => (
   <nav
     aria-label="Filtrer par catégorie"
-    className="sticky z-40 bg-[#FAFAF7]/95 backdrop-blur-md border-b border-border py-3"
+    className="sticky z-40 bg-[#FAF7EE]/95 backdrop-blur-md border-b border-border py-3"
     style={{ top: "calc(env(safe-area-inset-top) + 3.5rem)" }}
   >
     <div className="max-w-7xl mx-auto px-4">
@@ -30,8 +30,8 @@ export const CategoryTabs = ({ active, onChange }: Props) => (
               className={cn(
                 "shrink-0 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors border",
                 isActive
-                  ? "bg-[#0F4C3A] text-white border-[#0F4C3A]"
-                  : "bg-white text-gray-700 border-gray-200 hover:border-[#0F4C3A]/40",
+                  ? "bg-[#0E3B2E] text-white border-[#0E3B2E]"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-[#0E3B2E]/40",
               )}
             >
               {item.name}

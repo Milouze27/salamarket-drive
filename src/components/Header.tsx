@@ -58,13 +58,13 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
     <>
       {/* HERO — gradient sapin sombre, logo doré pleine valeur */}
       <section
-        className="relative bg-gradient-to-b from-[#0F4C3A] via-[#0A3A2C] to-[#073025] text-white px-4 pb-6 overflow-hidden"
+        className="relative bg-gradient-to-b from-[#0E3B2E] via-[#082A20] to-[#082A20] text-white px-4 pb-6 overflow-hidden"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
         {/* Halo doré décoratif blur */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-12 -right-12 w-56 h-56 rounded-full bg-[#D4A93C]/15 blur-2xl"
+          className="pointer-events-none absolute -top-12 -right-12 w-56 h-56 rounded-full bg-[#C9A227]/15 blur-2xl"
         />
 
         {/* Top row : logo + (cart desktop/tablette only) + account */}
@@ -85,7 +85,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
             >
               <ShoppingBag size={20} aria-hidden />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold flex items-center justify-center border-2 border-[#0F4C3A] shadow-sm">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#C9A227] text-[#0E3B2E] text-[10px] font-bold flex items-center justify-center border-2 border-[#0E3B2E] shadow-sm">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
@@ -109,7 +109,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
         <div className="relative mt-5">
           <Search
             size={20}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0F4C3A] pointer-events-none"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0E3B2E] pointer-events-none"
             aria-hidden
           />
           <input
@@ -118,7 +118,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Rechercher viandes, épices, riz..."
             aria-label="Rechercher un produit"
-            className="w-full h-14 rounded-2xl bg-white border-2 border-transparent pl-12 pr-12 text-base placeholder:text-muted/65 text-text focus:outline-none focus:border-[#D4A93C] focus:ring-4 focus:ring-[#D4A93C]/25 transition-all shadow-lg shadow-[#0A3A2C]/30"
+            className="w-full h-14 rounded-2xl bg-white border-2 border-transparent pl-12 pr-12 text-base placeholder:text-muted/65 text-text focus:outline-none focus:border-[#C9A227] focus:ring-4 focus:ring-[#C9A227]/25 transition-all shadow-lg shadow-[#082A20]/30"
             inputMode="search"
             enterKeyHint="search"
           />
@@ -127,7 +127,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               type="button"
               onClick={() => onSearchChange("")}
               aria-label="Effacer la recherche"
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full hover:bg-[#FAFAF7] flex items-center justify-center text-muted active:scale-90 transition-transform"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full hover:bg-[#FAF7EE] flex items-center justify-center text-muted active:scale-90 transition-transform"
             >
               <X size={18} aria-hidden />
             </button>
@@ -136,7 +136,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
 
         {/* Magasin info — petit texte blanc semi-transparent */}
         <div className="relative mt-4 inline-flex items-center gap-1.5 text-xs text-white/65">
-          <Store size={12} className="text-[#D4A93C]" aria-hidden />
+          <Store size={12} className="text-[#C9A227]" aria-hidden />
           <span>
             <span className="font-semibold text-white">Salamarket Toulouse</span>
             <span className="mx-1.5 text-white/40">·</span>
@@ -153,7 +153,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
       {/* COMPACT — sapin gradient sticky top, fade-in via IntersectionObserver */}
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0F4C3A] to-[#0A3A2C] text-white border-b border-white/10 shadow-md transition-opacity duration-200",
+          "fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0E3B2E] to-[#082A20] text-white border-b border-white/10 shadow-md transition-opacity duration-200",
           showCompact ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         style={{ paddingTop: "env(safe-area-inset-top)" }}
@@ -173,7 +173,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               <div className="relative flex-1">
                 <Search
                   size={16}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#0F4C3A] pointer-events-none"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#0E3B2E] pointer-events-none"
                   aria-hidden
                 />
                 <input
@@ -183,7 +183,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Rechercher..."
                   aria-label="Rechercher un produit"
-                  className="w-full h-10 rounded-full bg-white border border-transparent pl-10 pr-10 text-sm placeholder:text-muted/65 text-text focus:outline-none focus:border-[#D4A93C] focus:ring-2 focus:ring-[#D4A93C]/30 transition-all"
+                  className="w-full h-10 rounded-full bg-white border border-transparent pl-10 pr-10 text-sm placeholder:text-muted/65 text-text focus:outline-none focus:border-[#C9A227] focus:ring-2 focus:ring-[#C9A227]/30 transition-all"
                   inputMode="search"
                   enterKeyHint="search"
                 />
@@ -225,7 +225,7 @@ export const Header = ({ searchValue, onSearchChange }: Props) => {
               >
                 <ShoppingBag size={20} aria-hidden />
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#D4A93C] text-[#0F4C3A] text-[10px] font-bold flex items-center justify-center border-2 border-[#0F4C3A] shadow-sm">
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#C9A227] text-[#0E3B2E] text-[10px] font-bold flex items-center justify-center border-2 border-[#0E3B2E] shadow-sm">
                     {cartCount > 9 ? "9+" : cartCount}
                   </span>
                 )}
